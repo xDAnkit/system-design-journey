@@ -1,0 +1,37 @@
+{
+  "key": "staples",
+  "label": "Atta, Rice & Dal",
+  "icon": "rice_bowl",
+  "categories": {
+    "atta": { "label": "Atta", "icon": "grain", "core": true, "items": [
+      { "name": "Atta", "brands": ["Aashirvaad", "Fortune Chakki", "Pillsbury", "Patanjali", "Annapurna"], "variants": ["Shudh Chakki", "Multigrain", "Whole Wheat", "Sharbati"], "sizes": ["1 kg", "5 kg", "10 kg"], "price": [55, 70] }
+    ] },
+    "maida": { "label": "Maida", "icon": "grain", "core": true, "items": [
+      { "name": "Maida", "brands": ["Rajdhani", "Fortune", "Aashirvaad"], "variants": ["Regular", "Fine"], "sizes": ["500 g", "1 kg"], "price": [30, 40] }
+    ] },
+    "besan": { "label": "Besan", "icon": "grain", "core": true, "items": [
+      { "name": "Besan", "brands": ["Rajdhani", "Tata Sampann", "Fortune"], "variants": ["Regular", "Chana Dal"], "sizes": ["500 g", "1 kg"], "price": [55, 75] }
+    ] },
+    "sooji": { "label": "Sooji & Rava", "icon": "grain", "items": [
+      { "name": "Sooji", "brands": ["Rajdhani", "Aashirvaad", "Fortune"], "variants": ["Bombay Rava", "Fine", "Coarse"], "sizes": ["500 g", "1 kg"], "price": [30, 45] }
+    ] },
+    "rice": { "label": "Rice", "icon": "rice_bowl", "core": true, "items": [
+      { "name": "Rice", "brands": ["India Gate", "Daawat", "Kohinoor", "Fortune"], "variants": ["Basmati", "Sona Masoori", "Kolam", "Brown", "Dubar Basmati"], "sizes": ["1 kg", "5 kg"], "price": [90, 200] }
+    ] },
+    "poha": { "label": "Poha", "icon": "rice_bowl", "items": [
+      { "name": "Poha", "brands": ["Tata Sampann", "Rajdhani", "24 Mantra"], "variants": ["Thick", "Thin", "Red"], "sizes": ["500 g", "1 kg"], "price": [35, 50] }
+    ] },
+    "dal": { "label": "Dal & Pulses", "icon": "grain", "core": true, "items": [
+      { "name": "Dal", "brands": ["Tata Sampann", "Fortune", "24 Mantra", "Rajdhani"], "variants": ["Toor", "Moong", "Masoor", "Chana", "Urad"], "sizes": ["500 g", "1 kg"], "price": [70, 110] }
+    ] },
+    "sugar": { "label": "Sugar", "icon": "grain", "core": true, "items": [
+      { "name": "Sugar", "brands": ["Madhur", "Uttam", "Dhampure", "Trust"], "variants": ["Refined", "Sulphurless", "Brown"], "sizes": ["1 kg", "5 kg"], "price": [45, 55] }
+    ] },
+    "salt": { "label": "Salt", "icon": "grain", "core": true, "items": [
+      { "name": "Salt", "brands": ["Tata", "Catch", "Aashirvaad", "Annapurna"], "variants": ["Iodized", "Rock", "Black", "Low Sodium"], "sizes": ["500 g", "1 kg"], "price": [20, 30] }
+    ] },
+    "jaggery": { "label": "Jaggery", "icon": "grain", "items": [
+      { "name": "Jaggery", "brands": ["24 Mantra", "Natureland", "Dhampure"], "variants": ["Block", "Powder", "Organic"], "sizes": ["500 g", "1 kg"], "price": [50, 80] }
+    ] }
+  }
+}

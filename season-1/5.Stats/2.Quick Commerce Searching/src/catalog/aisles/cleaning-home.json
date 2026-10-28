@@ -1,0 +1,47 @@
+{
+  "key": "cleaning-home",
+  "label": "Cleaning, Home & Pooja",
+  "icon": "cleaning_services",
+  "categories": {
+    "detergent": { "label": "Detergent", "icon": "local_laundry_service", "core": true, "items": [
+      { "name": "Detergent", "brands": ["Surf Excel", "Ariel", "Tide", "Rin", "Wheel", "Ghadi", "Henko"], "variants": ["Easy Wash Powder", "Matic Liquid", "Quick Wash Powder", "Top Load Liquid"], "sizes": ["500 g", "1 kg", "4 kg"], "price": [60, 120] }
+    ] },
+    "dishwash": { "label": "Dishwash", "icon": "cleaning_services", "core": true, "items": [
+      { "name": "Dishwash", "brands": ["Vim", "Pril", "Exo"], "variants": ["Liquid Gel Lemon", "Bar", "Liquid Lime", "Anti Smell"], "sizes": ["250 ml", "500 ml", "750 ml"], "price": [50, 70] }
+    ] },
+    "toilet cleaner": { "label": "Toilet Cleaner", "icon": "wc", "items": [
+      { "name": "Toilet Cleaner", "brands": ["Harpic", "Domex", "Sani Fresh"], "variants": ["Power Plus", "Original", "Thick"], "sizes": ["500 ml", "1 L"], "price": [90, 110] }
+    ] },
+    "floor cleaner": { "label": "Floor Cleaner", "icon": "cleaning_services", "items": [
+      { "name": "Floor Cleaner", "brands": ["Lizol", "Presto", "Domex"], "variants": ["Citrus", "Floral", "Pine", "Lavender"], "sizes": ["500 ml", "975 ml", "2 L"], "price": [100, 120] }
+    ] },
+    "garbage bags": { "label": "Garbage Bags", "icon": "delete", "items": [
+      { "name": "Garbage Bags", "brands": ["Gala", "Presto", "Ezee"], "variants": ["Medium", "Large", "Biodegradable"], "sizes": ["15 pcs", "30 pcs"], "price": [80, 120] }
+    ] },
+    "aluminium foil": { "label": "Aluminium Foil", "icon": "kitchen", "items": [
+      { "name": "Aluminium Foil", "brands": ["Freshwrapp", "Hindalco"], "variants": ["Regular", "Heavy Duty"], "sizes": ["9 m", "25 m"], "price": [70, 100] }
+    ] },
+    "tissue paper": { "label": "Tissues", "icon": "inventory_2", "items": [
+      { "name": "Tissue", "brands": ["Origami", "Premier"], "variants": ["Facial", "Kitchen Towel", "Napkins"], "sizes": ["100 pcs", "200 pcs"], "price": [50, 90] }
+    ] },
+    "mosquito repellent": { "label": "Mosquito Repellent", "icon": "pest_control", "items": [
+      { "name": "Liquid Vaporizer Refill", "brands": ["Good Knight", "All Out", "Mortein", "Maxo"], "variants": ["Regular", "Gold Flash", "Ultra", "Neem"], "sizes": ["45 ml", "90 ml"], "price": [70, 90] },
+      { "name": "Vaporizer Machine with Refill", "brands": ["Good Knight", "All Out", "Mortein"], "variants": ["Regular", "Gold Flash", "Ultra"], "sizes": ["1 pc"], "price": [90, 140] },
+      { "name": "Mosquito Coil", "brands": ["Good Knight", "Mortein", "Maxo", "Tortoise"], "variants": ["Regular", "Jumbo", "Low Smoke", "Herbal"], "sizes": ["10 pcs", "12 pcs"], "price": [35, 60] },
+      { "name": "Mosquito Repellent Cream", "brands": ["Odomos", "Jaldi Home"], "variants": ["Regular", "Aloe Vera", "Non Sticky", "Kids"], "sizes": ["50 g", "100 g"], "price": [60, 110] },
+      { "name": "Mosquito Killer Spray", "brands": ["Hit", "Mortein", "Good Knight"], "variants": ["Regular", "Lavender", "Power"], "sizes": ["200 ml", "400 ml"], "price": [150, 220] },
+      { "name": "Mosquito Repellent Patches", "brands": ["Good Knight", "Jaldi Home"], "variants": ["Regular", "Kids", "Citronella"], "sizes": ["10 pcs", "24 pcs"], "price": [90, 150] },
+      { "name": "Mosquito Racket", "brands": ["Jaldi Home"], "variants": ["Rechargeable", "LED Torch", "Heavy Duty"], "sizes": ["1 pc"], "price": [299, 499] },
+      { "name": "Mosquito Net", "brands": ["Jaldi Home"], "variants": ["Single Bed", "Double Bed", "Foldable"], "sizes": ["1 pc"], "price": [299, 699], "after": true }
+    ] },
+    "agarbatti": { "label": "Agarbatti & Pooja", "icon": "temple_hindu", "items": [
+      { "name": "Agarbatti", "brands": ["Cycle", "Zed Black", "Mangaldeep"], "variants": ["Three in One", "Sandal", "Rose", "Lavender"], "sizes": ["45 sticks", "100 sticks"], "price": [40, 80] }
+    ] },
+    "matchbox": { "label": "Matchbox", "icon": "local_fire_department", "items": [
+      { "name": "Matchbox", "brands": ["Homelites", "Aim"], "variants": ["Regular", "Long"], "sizes": ["10 pcs"], "price": [10, 12] }
+    ] },
+    "batteries": { "label": "Batteries", "icon": "battery_full", "items": [
+      { "name": "Batteries", "brands": ["Duracell", "Eveready", "Panasonic"], "variants": ["AA", "AAA"], "sizes": ["2 pcs", "4 pcs"], "price": [60, 120] }
+    ] }
+  }
+}

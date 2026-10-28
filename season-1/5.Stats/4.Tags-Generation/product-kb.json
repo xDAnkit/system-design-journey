@@ -1,0 +1,694 @@
+{
+  "umbrella_brands": ["amul", "mother dairy", "tata", "aashirvaad", "britannia", "patanjali", "haldiram", "dettol", "dove", "nestle", "itc", "dabur", "hul", "milky mist", "gowardhan"],
+  "categories": {
+    "milk": {
+      "hindi": ["dudh", "doodh", "dugdh", "paal"],
+      "english": ["milk", "full cream", "toned milk", "cow milk"],
+      "all_langs": {
+        "Hindi": ["दूध", "दुग्ध"],
+        "Bengali": ["দুধ", "দুগ্ধ"],
+        "Gujarati": ["દૂધ", "દુગ્ધ"],
+        "Marathi": ["दूध", "दुग्ध"],
+        "Tamil": ["பால்", "பசும்பால்"],
+        "Telugu": ["పాలు", "ఆవు పాలు"],
+        "Kannada": ["ಹಾಲು", "ಹಸುವಿನ ಹಾಲು"],
+        "Malayalam": ["പാൽ", "പശുവിൻ പാൽ"],
+        "Punjabi": ["ਦੁੱਧ", "ਗਾਂ ਦਾ ਦੁੱਧ"],
+        "Odia": ["ଦୁଧ", "କ୍ଷୀର"],
+        "Assamese": ["গাখীৰ", "দুধ"],
+        "Urdu": ["دودھ", "گائے کا دودھ"]
+      },
+      "typos": ["mik", "mikl", "mlik", "dud", "dodh", "mil"],
+      "brands": []
+    },
+    "salt": {
+      "hindi": ["namak", "sendha namak", "kala namak", "sada namak"],
+      "english": ["salt", "table salt", "rock salt", "iodized salt"],
+      "all_langs": {
+        "Hindi": ["नमक", "सेंधा नमक"],
+        "Bengali": ["নুন", "লবণ"],
+        "Gujarati": ["મીઠું", "નમક"],
+        "Marathi": ["मीठ", "सैंधव मीठ"],
+        "Tamil": ["உப்பு", "கல் உப்பு"],
+        "Telugu": ["ఉప్పు", "రాతి ఉప్పు"],
+        "Kannada": ["ಉಪ್ಪು", "ಕಲ್ಲುಪ್ಪು"],
+        "Malayalam": ["ഉപ്പ്", "കല്ലുപ്പ്"],
+        "Punjabi": ["ਲੂਣ", "ਸੇਂਧਾ ਲੂਣ"],
+        "Odia": ["ଲୁଣ", "ସୈନ୍ଧବ ଲୁଣ"],
+        "Assamese": ["নিমখ", "সৈন্ধৱ নিমখ"],
+        "Urdu": ["نمک", "سیندھا نمک"]
+      },
+      "typos": ["solt", "slat", "nmak", "namk", "slt"],
+      "brands": ["catch salt"]
+    },
+    "atta": {
+      "hindi": ["atta", "aata", "gehu atta", "chakki atta"],
+      "english": ["flour", "wheat flour", "whole wheat"],
+      "all_langs": {
+        "Hindi": ["आटा", "गेहूं का आटा"],
+        "Bengali": ["আটা", "গমের আটা"],
+        "Gujarati": ["લોટ", "ઘઉંનો લોટ"],
+        "Marathi": ["पीठ", "गव्हाचे पीठ"],
+        "Tamil": ["மாவு", "கோதுமை மாவு"],
+        "Telugu": ["పిండి", "గోధుమ పిండి"],
+        "Kannada": ["ಹಿಟ್ಟು", "ಗೋಧಿ ಹಿಟ್ಟು"],
+        "Malayalam": ["മാവ്", "ഗോതമ്പ് പൊടി"],
+        "Punjabi": ["ਆਟਾ", "ਕਣਕ ਦਾ ਆਟਾ"],
+        "Odia": ["ଅଟା", "ଗହମ ଅଟା"],
+        "Assamese": ["আটা", "ঘেঁহুৰ আটা"],
+        "Urdu": ["آٹا", "گندم کا آٹا"]
+      },
+      "typos": ["ata", "aataa", "flourr"],
+      "brands": ["pillsbury", "fortune chakki"]
+    },
+    "sugar": {
+      "hindi": ["cheeni", "shakkar", "chini"],
+      "english": ["sugar", "white sugar"],
+      "all_langs": {
+        "Hindi": ["चीनी", "शक्कर"],
+        "Bengali": ["চিনি", "শর্করা"],
+        "Gujarati": ["ખાંડ", "સાકર"],
+        "Marathi": ["साखर"],
+        "Tamil": ["சர்க்கரை", "சீனி"],
+        "Telugu": ["చక్కెర", "పంచదార"],
+        "Kannada": ["ಸಕ್ಕರೆ"],
+        "Malayalam": ["പഞ്ചസാര"],
+        "Punjabi": ["ਖੰਡ", "ਚੀਨੀ"],
+        "Odia": ["ଚିନି", "ଶର୍କରା"],
+        "Assamese": ["চেনি", "শৰ্কৰা"],
+        "Urdu": ["چینی", "شکر"]
+      },
+      "typos": ["suger", "sugr"],
+      "brands": ["madhur"]
+    },
+    "oil": {
+      "hindi": ["tel", "sarson tel", "khane ka tel"],
+      "english": ["oil", "cooking oil", "mustard oil", "edible oil"],
+      "all_langs": {
+        "Hindi": ["तेल", "सरसों का तेल"],
+        "Bengali": ["তেল", "সরিষার তেল"],
+        "Gujarati": ["તેલ", "સરસવ તેલ"],
+        "Marathi": ["तेल", "मोहरी तेल"],
+        "Tamil": ["எண்ணெய்", "கடுகு எண்ணெய்"],
+        "Telugu": ["నూనె", "ఆవ నూనె"],
+        "Kannada": ["ಎಣ್ಣೆ", "ಸಾಸಿವೆ ಎಣ್ಣೆ"],
+        "Malayalam": ["എണ്ണ", "കടുക് എണ്ണ"],
+        "Punjabi": ["ਤੇਲ", "ਸਰ੍ਹੋਂ ਦਾ ਤੇਲ"],
+        "Odia": ["ତେଲ", "ସୋରିଷ ତେଲ"],
+        "Assamese": ["তেল", "সৰিয়হৰ তেল"],
+        "Urdu": ["تیل", "سرسوں کا تیل"]
+      },
+      "typos": ["oli", "oyl"],
+      "brands": ["fortune", "saffola", "dhara", "gemini"]
+    },
+    "hair oil": {
+      "hindi": ["balon ka tel", "sir ka tel", "baal ka tel"],
+      "english": ["hair oil", "coconut hair oil", "almond hair oil"],
+      "all_langs": {
+        "Hindi": ["हेयर ऑयल", "बालों का तेल"],
+        "Tamil": ["தலை எண்ணெய்"],
+        "Telugu": ["హెయిర్ ఆయిల్"],
+        "Kannada": ["ಹೇರ್ ಆಯಿಲ್"],
+        "Malayalam": ["ഹെയർ ഓയിൽ"],
+        "Bengali": ["হেয়ার অয়েল", "চুলের তেল"],
+        "Urdu": ["بالوں کا تیل"]
+      },
+      "typos": ["hair oli", "hare oil", "hairoil"],
+      "brands": ["parachute", "dabur amla", "bajaj almond drops", "navratna", "indulekha"]
+    },
+    "rice": {
+      "hindi": ["chawal", "chaval", "basmati"],
+      "english": ["rice", "basmati rice"],
+      "all_langs": {
+        "Hindi": ["चावल", "बासमती चावल"],
+        "Bengali": ["চাল", "ভাত"],
+        "Gujarati": ["ચોખા", "ભાત"],
+        "Marathi": ["तांदूळ", "भात"],
+        "Tamil": ["அரிசி", "சாதம்"],
+        "Telugu": ["బియ్యం", "అన్నం"],
+        "Kannada": ["ಅಕ್ಕಿ", "ಅನ್ನ"],
+        "Malayalam": ["അരി", "ചോറ്"],
+        "Punjabi": ["ਚੌਲ", "ਚਾਵਲ"],
+        "Odia": ["ଚାଉଳ", "ଭାତ"],
+        "Assamese": ["চাউল", "ভাত"],
+        "Urdu": ["چاول", "باسمتی چاول"]
+      },
+      "typos": ["ric", "chawl"],
+      "brands": ["india gate", "daawat", "kohinoor"]
+    },
+    "dal": {
+      "hindi": ["dal", "daal", "dhal"],
+      "english": ["lentils", "pulses"],
+      "all_langs": {
+        "Hindi": ["दाल"],
+        "Bengali": ["ডাল"],
+        "Tamil": ["பருப்பு"],
+        "Telugu": ["పప్పు"],
+        "Kannada": ["ಬೇಳೆ"],
+        "Urdu": ["دال"]
+      },
+      "typos": ["dall", "paruppu"],
+      "brands": ["tata sampann"]
+    },
+    "soap": {
+      "hindi": ["sabun", "saban", "nahane ka sabun"],
+      "english": ["soap", "bath soap", "bathing bar"],
+      "all_langs": {
+        "Hindi": ["साबुन"],
+        "Bengali": ["সাবান"],
+        "Tamil": ["சோப்பு"],
+        "Telugu": ["సబ్బు"],
+        "Kannada": ["ಸಾಬೂನು"],
+        "Malayalam": ["സോപ്പ്"],
+        "Urdu": ["صابن"]
+      },
+      "typos": ["sop", "saop", "soep"],
+      "brands": ["lux", "lifebuoy", "santoor", "pears", "cinthol", "medimix"]
+    },
+    "biscuit": {
+      "hindi": ["biskut"],
+      "english": ["biscuit", "biscuits", "cookies"],
+      "all_langs": {
+        "Hindi": ["बिस्कुट"],
+        "Bengali": ["বিস্কুট"],
+        "Tamil": ["பிஸ்கட்"],
+        "Telugu": ["బిస్కట్"],
+        "Kannada": ["ಬಿಸ್ಕತ್"],
+        "Malayalam": ["ബിസ്കറ്റ്"],
+        "Urdu": ["بسکٹ"]
+      },
+      "typos": ["biskit", "biscut", "bisket"],
+      "brands": ["parle", "parle g", "sunfeast", "oreo", "good day", "marie gold"]
+    },
+    "sanitary pad": {
+      "hindi": ["periods pad", "period pad", "mahwari pad", "mc pad"],
+      "english": ["sanitary pad", "sanitary pads", "sanitary napkin", "pads for women"],
+      "all_langs": {
+        "Hindi": ["सैनिटरी पैड"],
+        "Bengali": ["স্যানিটারি প্যাড"],
+        "Gujarati": ["સેનિટરી પેડ"],
+        "Marathi": ["सॅनिटरी पॅड"],
+        "Tamil": ["சானிட்டரி நாப்கின்"],
+        "Telugu": ["శానిటరీ ప్యాడ్"],
+        "Kannada": ["ಸ್ಯಾನಿಟರಿ ಪ್ಯಾಡ್"],
+        "Urdu": ["سینیٹری پیڈ"]
+      },
+      "typos": ["sanitry pad", "sanitery pad", "sanetary pad", "senetry pad", "sanitory pad"],
+      "brands": ["whisper", "stayfree", "sofy", "nua", "carefree"]
+    },
+    "toilet cleaner": {
+      "hindi": ["toilet saaf karne wala", "toilet ka cleaner", "bathroom saaf karne wala"],
+      "english": ["toilet cleaner", "bathroom cleaner", "washroom cleaner", "toilet bowl cleaner", "wc cleaner", "loo cleaner"],
+      "all_langs": {
+        "Hindi": ["टॉयलेट क्लीनर", "बाथरूम क्लीनर"],
+        "Bengali": ["টয়লেট ক্লিনার"],
+        "Tamil": ["டாய்லெட் கிளீனர்"],
+        "Telugu": ["టాయిలెట్ క్లీనర్"],
+        "Kannada": ["ಟಾಯ್ಲೆಟ್ ಕ್ಲೀನರ್"],
+        "Malayalam": ["ടോയ്‌ലറ്റ് ക്ലീനർ"],
+        "Urdu": ["ٹوائلٹ کلینر"]
+      },
+      "typos": ["toilet clener", "toilet claner", "toilat cleaner", "tolet cleaner"],
+      "brands": ["harpic", "domex", "sani fresh"]
+    },
+    "floor cleaner": {
+      "hindi": ["pocha", "pocha liquid", "farsh saaf karne wala", "floor saaf karne wala"],
+      "english": ["floor cleaner", "floor disinfectant", "surface cleaner", "mopping liquid", "phenyl"],
+      "all_langs": {
+        "Hindi": ["फ्लोर क्लीनर", "फिनाइल"],
+        "Bengali": ["ফ্লোর ক্লিনার"],
+        "Tamil": ["ஃப்ளோர் கிளீனர்"],
+        "Telugu": ["ఫ్లోర్ క్లీనర్"],
+        "Kannada": ["ಫ್ಲೋರ್ ಕ್ಲೀನರ್"],
+        "Malayalam": ["ഫ്ലോർ ക്ലീനർ"],
+        "Urdu": ["فلور کلینر"]
+      },
+      "typos": ["flor cleaner", "floor clener", "phenyle", "fenyl"],
+      "brands": ["lizol", "presto"]
+    },
+    "dishwash": {
+      "hindi": ["bartan saaf karne wala", "bartan dhone ka sabun", "bartan sabun"],
+      "english": ["dishwash", "dishwash liquid", "dishwash bar", "dish soap", "utensil cleaner"],
+      "all_langs": {
+        "Hindi": ["डिशवॉश", "बर्तन साबुन"],
+        "Bengali": ["ডিশওয়াশ", "বাসন মাজার সাবান"],
+        "Tamil": ["பாத்திரம் கழுவும் சோப்பு"],
+        "Telugu": ["డిష్ వాష్"],
+        "Kannada": ["ಡಿಶ್ ವಾಶ್"],
+        "Malayalam": ["ഡിഷ് വാഷ്"],
+        "Urdu": ["برتن دھونے کا صابن"]
+      },
+      "typos": ["dish wash", "dishwas", "dishvash", "dis wash"],
+      "brands": ["vim", "pril", "exo", "pitambari"]
+    },
+    "detergent": {
+      "hindi": ["kapde dhone ka powder", "kapde ka sabun", "surf"],
+      "english": ["detergent", "detergent powder", "washing powder", "liquid detergent", "laundry detergent"],
+      "all_langs": {
+        "Hindi": ["डिटर्जेंट", "कपड़े धोने का पाउडर"],
+        "Bengali": ["ডিটারজেন্ট", "কাপড় কাচার পাউডার"],
+        "Tamil": ["சலவை தூள்"],
+        "Telugu": ["డిటర్జెంట్"],
+        "Kannada": ["ಡಿಟರ್ಜೆಂಟ್"],
+        "Malayalam": ["ഡിറ്റർജന്റ്"],
+        "Urdu": ["ڈٹرجنٹ"]
+      },
+      "typos": ["detergant", "detergen", "dettergent", "washing powdar"],
+      "brands": ["surf excel", "ariel", "tide", "rin", "wheel", "ghadi", "henko"]
+    },
+    "handwash": {
+      "hindi": ["haath dhone ka sabun", "hath dhone wala liquid"],
+      "english": ["handwash", "hand wash", "liquid handwash", "hand soap"],
+      "all_langs": {
+        "Hindi": ["हैंडवॉश"],
+        "Bengali": ["হ্যান্ডওয়াশ"],
+        "Tamil": ["ஹேண்ட்வாஷ்"],
+        "Telugu": ["హ్యాండ్ వాష్"],
+        "Kannada": ["ಹ್ಯಾಂಡ್ ವಾಶ್"],
+        "Malayalam": ["ഹാൻഡ് വാഷ്"],
+        "Urdu": ["ہینڈ واش"]
+      },
+      "typos": ["handwas", "hendwash", "hand vash"],
+      "brands": ["savlon", "palmolive"]
+    },
+    "shampoo": {
+      "hindi": ["baal dhone ka shampoo", "balon ka shampoo"],
+      "english": ["shampoo", "hair shampoo", "anti dandruff shampoo", "hair wash"],
+      "all_langs": {
+        "Hindi": ["शैम्पू"],
+        "Bengali": ["শ্যাম্পু"],
+        "Tamil": ["ஷாம்பு"],
+        "Telugu": ["షాంపూ"],
+        "Kannada": ["ಶಾಂಪೂ"],
+        "Malayalam": ["ഷാംപൂ"],
+        "Urdu": ["شیمپو"]
+      },
+      "typos": ["shampo", "shampu", "shampooo", "sampoo"],
+      "brands": ["clinic plus", "head and shoulders", "head shoulders", "sunsilk", "pantene", "tresemme"]
+    },
+    "toothpaste": {
+      "hindi": ["manjan", "daant ka paste", "dant manjan"],
+      "english": ["toothpaste", "tooth paste", "dental cream"],
+      "all_langs": {
+        "Hindi": ["टूथपेस्ट", "मंजन"],
+        "Bengali": ["টুথপেস্ট"],
+        "Tamil": ["பற்பசை"],
+        "Telugu": ["టూత్‌పేస్ట్"],
+        "Kannada": ["ಟೂತ್‌ಪೇಸ್ಟ್"],
+        "Malayalam": ["ടൂത്ത്പേസ്റ്റ്"],
+        "Urdu": ["ٹوتھ پیسٹ"]
+      },
+      "typos": ["toothpest", "tooth pest", "tothpaste", "toothpast"],
+      "brands": ["colgate", "pepsodent", "close up", "closeup", "sensodyne", "dabur red"]
+    },
+    "eggs": {
+      "hindi": ["anda", "ande", "ande ki tray"],
+      "english": ["eggs", "egg", "brown eggs", "farm eggs"],
+      "all_langs": {
+        "Hindi": ["अंडा", "अंडे"],
+        "Bengali": ["ডিম"],
+        "Gujarati": ["ઈંડા"],
+        "Marathi": ["अंडी"],
+        "Tamil": ["முட்டை"],
+        "Telugu": ["గుడ్డు", "గుడ్లు"],
+        "Kannada": ["ಮೊಟ್ಟೆ"],
+        "Malayalam": ["മുട്ട"],
+        "Punjabi": ["ਆਂਡਾ"],
+        "Odia": ["ଅଣ୍ଡା"],
+        "Assamese": ["কণী"],
+        "Urdu": ["انڈا", "انڈے"]
+      },
+      "typos": ["egs", "eggz", "andaa"],
+      "brands": ["eggoz", "suguna"]
+    },
+    "ghee": {
+      "hindi": ["ghee", "ghi", "desi ghee"],
+      "english": ["ghee", "clarified butter", "cow ghee"],
+      "all_langs": {
+        "Hindi": ["घी"],
+        "Bengali": ["ঘি"],
+        "Gujarati": ["ઘી"],
+        "Marathi": ["तूप"],
+        "Tamil": ["நெய்"],
+        "Telugu": ["నెయ్యి"],
+        "Kannada": ["ತುಪ್ಪ"],
+        "Malayalam": ["നെയ്യ്"],
+        "Punjabi": ["ਘਿਓ"],
+        "Odia": ["ଘିଅ"],
+        "Assamese": ["ঘিউ"],
+        "Urdu": ["گھی"]
+      },
+      "typos": ["ghe", "gee", "ghie"],
+      "brands": ["nandini ghee"]
+    },
+    "curd": {
+      "hindi": ["dahi", "dahee"],
+      "english": ["curd", "yogurt", "yoghurt", "plain curd"],
+      "all_langs": {
+        "Hindi": ["दही"],
+        "Bengali": ["দই"],
+        "Gujarati": ["દહીં"],
+        "Marathi": ["दही"],
+        "Tamil": ["தயிர்"],
+        "Telugu": ["పెరుగు"],
+        "Kannada": ["ಮೊಸರು"],
+        "Malayalam": ["തൈര്"],
+        "Punjabi": ["ਦਹੀਂ"],
+        "Odia": ["ଦହି"],
+        "Assamese": ["দৈ"],
+        "Urdu": ["دہی"]
+      },
+      "typos": ["crud", "yogart", "dhai", "dahii"],
+      "brands": ["epigamia"]
+    },
+    "butter": {
+      "hindi": ["makhan", "makkhan"],
+      "english": ["butter", "salted butter", "table butter"],
+      "all_langs": {
+        "Hindi": ["मक्खन"],
+        "Bengali": ["মাখন"],
+        "Gujarati": ["માખણ"],
+        "Marathi": ["लोणी"],
+        "Tamil": ["வெண்ணெய்"],
+        "Telugu": ["వెన్న"],
+        "Kannada": ["ಬೆಣ್ಣೆ"],
+        "Malayalam": ["വെണ്ണ"],
+        "Punjabi": ["ਮੱਖਣ"],
+        "Odia": ["ଲହୁଣୀ"],
+        "Assamese": ["মাখন"],
+        "Urdu": ["مکھن"]
+      },
+      "typos": ["buter", "buttar", "makhkhan"],
+      "brands": []
+    },
+    "paneer": {
+      "hindi": ["paneer", "panir"],
+      "english": ["cottage cheese", "paneer block", "fresh paneer"],
+      "all_langs": {
+        "Hindi": ["पनीर"],
+        "Bengali": ["পনির", "ছানা"],
+        "Gujarati": ["પનીર"],
+        "Tamil": ["பனீர்"],
+        "Telugu": ["పనీర్"],
+        "Kannada": ["ಪನೀರ್"],
+        "Malayalam": ["പനീർ"],
+        "Punjabi": ["ਪਨੀਰ"],
+        "Urdu": ["پنیر"]
+      },
+      "typos": ["panner", "paner", "panneer"],
+      "brands": []
+    },
+    "bread": {
+      "hindi": ["double roti", "bread"],
+      "english": ["bread", "white bread", "brown bread", "sandwich bread"],
+      "all_langs": {
+        "Hindi": ["ब्रेड", "डबल रोटी"],
+        "Bengali": ["পাউরুটি"],
+        "Tamil": ["ரொட்டி", "பிரெட்"],
+        "Telugu": ["బ్రెడ్"],
+        "Kannada": ["ಬ್ರೆಡ್"],
+        "Malayalam": ["ബ്രെഡ്"],
+        "Urdu": ["ڈبل روٹی"]
+      },
+      "typos": ["bred", "braed", "bredd"],
+      "brands": ["modern", "harvest gold", "english oven"]
+    },
+    "tea": {
+      "hindi": ["chai", "chai patti", "chai ki patti"],
+      "english": ["tea", "tea leaves", "tea powder", "black tea"],
+      "all_langs": {
+        "Hindi": ["चाय", "चाय पत्ती"],
+        "Bengali": ["চা"],
+        "Gujarati": ["ચા"],
+        "Marathi": ["चहा"],
+        "Tamil": ["டீ", "தேயிலை"],
+        "Telugu": ["టీ", "టీ పొడి"],
+        "Kannada": ["ಚಹಾ", "ಟೀ"],
+        "Malayalam": ["ചായ"],
+        "Punjabi": ["ਚਾਹ"],
+        "Odia": ["ଚା"],
+        "Assamese": ["চাহ"],
+        "Urdu": ["چائے"]
+      },
+      "typos": ["tee", "chay", "chaai"],
+      "brands": ["tata tea", "red label", "taj mahal", "wagh bakri", "brooke bond"]
+    },
+    "coffee": {
+      "hindi": ["coffee", "kaafi"],
+      "english": ["coffee", "instant coffee", "filter coffee", "coffee powder"],
+      "all_langs": {
+        "Hindi": ["कॉफ़ी"],
+        "Bengali": ["কফি"],
+        "Tamil": ["காபி"],
+        "Telugu": ["కాఫీ"],
+        "Kannada": ["ಕಾಫಿ"],
+        "Malayalam": ["കാപ്പി"],
+        "Urdu": ["کافی"]
+      },
+      "typos": ["cofee", "coffe", "cofe", "kofi"],
+      "brands": ["nescafe", "bru", "davidoff"]
+    },
+    "noodles": {
+      "hindi": ["noodle", "chowmein"],
+      "english": ["noodles", "instant noodles", "2 minute noodles"],
+      "all_langs": {
+        "Hindi": ["नूडल्स"],
+        "Bengali": ["নুডলস"],
+        "Tamil": ["நூடுல்ஸ்"],
+        "Telugu": ["నూడుల్స్"],
+        "Kannada": ["ನೂಡಲ್ಸ್"],
+        "Malayalam": ["നൂഡിൽസ്"],
+        "Urdu": ["نوڈلز"]
+      },
+      "typos": ["nodles", "noodels", "nudles", "magi", "maggie"],
+      "brands": ["maggi", "yippee", "top ramen", "chings"]
+    },
+    "chips": {
+      "hindi": ["aloo chips", "aloo wafers"],
+      "english": ["chips", "potato chips", "potato wafers", "crisps"],
+      "all_langs": {
+        "Hindi": ["चिप्स"],
+        "Bengali": ["চিপস"],
+        "Tamil": ["சிப்ஸ்"],
+        "Telugu": ["చిప్స్"],
+        "Kannada": ["ಚಿಪ್ಸ್"],
+        "Malayalam": ["ചിപ്സ്"],
+        "Urdu": ["چپس"]
+      },
+      "typos": ["chps", "chipps", "cheaps"],
+      "brands": ["lays", "kurkure", "bingo", "uncle chipps", "pringles"]
+    },
+    "chocolate": {
+      "hindi": ["chocolate", "choco"],
+      "english": ["chocolate", "chocolate bar", "dark chocolate", "milk chocolate"],
+      "all_langs": {
+        "Hindi": ["चॉकलेट"],
+        "Bengali": ["চকলেট"],
+        "Tamil": ["சாக்லேட்"],
+        "Telugu": ["చాక్లెట్"],
+        "Kannada": ["ಚಾಕೊಲೇಟ್"],
+        "Malayalam": ["ചോക്ലേറ്റ്"],
+        "Urdu": ["چاکلیٹ"]
+      },
+      "typos": ["choclate", "chocolet", "chaklet", "chocklate"],
+      "brands": ["cadbury", "dairy milk", "kitkat", "5 star", "munch", "perk", "ferrero rocher"]
+    },
+    "cold drink": {
+      "hindi": ["thanda", "cold drink", "soft drink"],
+      "english": ["cold drink", "soft drink", "carbonated drink", "cola"],
+      "all_langs": {
+        "Hindi": ["कोल्ड ड्रिंक", "ठंडा"],
+        "Bengali": ["কোল্ড ড্রিংক"],
+        "Tamil": ["குளிர்பானம்"],
+        "Telugu": ["కూల్ డ్రింక్"],
+        "Kannada": ["ಕೂಲ್ ಡ್ರಿಂಕ್"],
+        "Malayalam": ["കൂൾ ഡ്രിങ്ക്"],
+        "Urdu": ["کولڈ ڈرنک"]
+      },
+      "typos": ["cold drnk", "coldrink", "cold drinks"],
+      "brands": ["coca cola", "coke", "pepsi", "sprite", "thums up", "fanta", "limca", "mountain dew", "7up"]
+    },
+    "onion": {
+      "hindi": ["pyaz", "pyaaz", "kanda"],
+      "english": ["onion", "onions", "red onion"],
+      "all_langs": {
+        "Hindi": ["प्याज़", "प्याज"],
+        "Bengali": ["পেঁয়াজ"],
+        "Gujarati": ["ડુંગળી"],
+        "Marathi": ["कांदा"],
+        "Tamil": ["வெங்காயம்"],
+        "Telugu": ["ఉల్లిపాయ", "ఉల్లిపాయలు"],
+        "Kannada": ["ಈರುಳ್ಳಿ"],
+        "Malayalam": ["ഉള്ളി", "സവാള"],
+        "Punjabi": ["ਪਿਆਜ਼"],
+        "Odia": ["ପିଆଜ"],
+        "Assamese": ["পিঁয়াজ"],
+        "Urdu": ["پیاز"]
+      },
+      "typos": ["onoin", "oinon", "piyaz", "pyaj"],
+      "brands": []
+    },
+    "potato": {
+      "hindi": ["aloo", "alu", "batata"],
+      "english": ["potato", "potatoes"],
+      "all_langs": {
+        "Hindi": ["आलू"],
+        "Bengali": ["আলু"],
+        "Gujarati": ["બટાકા"],
+        "Marathi": ["बटाटा"],
+        "Tamil": ["உருளைக்கிழங்கு"],
+        "Telugu": ["బంగాళాదుంప"],
+        "Kannada": ["ಆಲೂಗಡ್ಡೆ"],
+        "Malayalam": ["ഉരുളക്കിഴങ്ങ്"],
+        "Punjabi": ["ਆਲੂ"],
+        "Odia": ["ଆଳୁ"],
+        "Assamese": ["আলু"],
+        "Urdu": ["آلو"]
+      },
+      "typos": ["potatos", "poteto", "aaloo"],
+      "brands": []
+    },
+    "tomato": {
+      "hindi": ["tamatar"],
+      "english": ["tomato", "tomatoes"],
+      "all_langs": {
+        "Hindi": ["टमाटर"],
+        "Bengali": ["টমেটো"],
+        "Gujarati": ["ટામેટાં"],
+        "Marathi": ["टोमॅटो"],
+        "Tamil": ["தக்காளி"],
+        "Telugu": ["టమాటా"],
+        "Kannada": ["ಟೊಮೆಟೊ"],
+        "Malayalam": ["തക്കാളി"],
+        "Punjabi": ["ਟਮਾਟਰ"],
+        "Odia": ["ଟମାଟୋ"],
+        "Assamese": ["বিলাহী"],
+        "Urdu": ["ٹماٹر"]
+      },
+      "typos": ["tomatos", "tamato", "tomoto", "tamatr"],
+      "brands": []
+    },
+    "ketchup": {
+      "hindi": ["tomato sauce", "tamatar sauce"],
+      "english": ["ketchup", "tomato ketchup", "tomato sauce"],
+      "all_langs": {
+        "Hindi": ["केचप", "टमाटर सॉस"],
+        "Bengali": ["কেচাপ"],
+        "Tamil": ["கெட்சப்"],
+        "Telugu": ["కెచప్"],
+        "Kannada": ["ಕೆಚಪ್"],
+        "Malayalam": ["കെച്ചപ്പ്"],
+        "Urdu": ["کیچپ"]
+      },
+      "typos": ["ketchap", "kechup", "catchup", "ketchop"],
+      "brands": ["kissan", "heinz", "del monte"]
+    },
+    "namkeen": {
+      "hindi": ["namkeen", "bhujia", "mixture", "nashta"],
+      "english": ["namkeen", "indian snacks", "savoury snacks", "bhujia sev"],
+      "all_langs": {
+        "Hindi": ["नमकीन", "भुजिया"],
+        "Bengali": ["নমকিন"],
+        "Gujarati": ["નમકીન", "ફરસાણ"],
+        "Marathi": ["नमकीन", "चिवडा"],
+        "Tamil": ["மிக்சர்"],
+        "Urdu": ["نمکین"]
+      },
+      "typos": ["namkin", "nmkeen", "bujia", "bhujiya"],
+      "brands": ["bikaji", "balaji"]
+    },
+    "water": {
+      "hindi": ["paani", "pani", "peene ka paani"],
+      "english": ["water", "mineral water", "drinking water", "packaged drinking water", "water bottle"],
+      "all_langs": {
+        "Hindi": ["पानी"],
+        "Bengali": ["জল", "পানি"],
+        "Gujarati": ["પાણી"],
+        "Marathi": ["पाणी"],
+        "Tamil": ["தண்ணீர்"],
+        "Telugu": ["నీరు", "నీళ్లు"],
+        "Kannada": ["ನೀರು"],
+        "Malayalam": ["വെള്ളം"],
+        "Punjabi": ["ਪਾਣੀ"],
+        "Odia": ["ପାଣି"],
+        "Assamese": ["পানী"],
+        "Urdu": ["پانی"]
+      },
+      "typos": ["watter", "watr", "mineral watter", "paanee"],
+      "brands": ["bisleri", "kinley", "aquafina", "himalayan"]
+    },
+    "energy drink": {
+      "hindi": [],
+      "english": ["energy drink", "energy drinks", "caffeine drink"],
+      "all_langs": {
+        "Hindi": ["एनर्जी ड्रिंक"],
+        "Bengali": ["এনার্জি ড্রিংক"],
+        "Tamil": ["எனர்ஜி டிரிங்க்"],
+        "Telugu": ["ఎనర్జీ డ్రింక్"],
+        "Urdu": ["انرجی ڈرنک"]
+      },
+      "typos": ["enrgy drink", "energi drink", "enegry drink"],
+      "brands": ["red bull", "monster", "sting", "hell"]
+    },
+    "diapers": {
+      "hindi": ["bacchon ka diaper", "langot"],
+      "english": ["diapers", "diaper", "baby diapers", "diaper pants", "nappies"],
+      "all_langs": {
+        "Hindi": ["डायपर"],
+        "Bengali": ["ডায়াপার"],
+        "Tamil": ["டயப்பர்"],
+        "Telugu": ["డైపర్"],
+        "Kannada": ["ಡೈಪರ್"],
+        "Malayalam": ["ഡയപ്പർ"],
+        "Urdu": ["ڈائپر"]
+      },
+      "typos": ["dipers", "daiper", "diper", "dyper"],
+      "brands": ["pampers", "huggies", "mamypoko", "mamy poko"]
+    },
+    "juice": {
+      "hindi": ["juice", "phalon ka juice"],
+      "english": ["juice", "fruit juice", "packaged juice"],
+      "all_langs": {
+        "Hindi": ["जूस"],
+        "Bengali": ["জুস"],
+        "Tamil": ["ஜூஸ்", "பழச்சாறு"],
+        "Telugu": ["జ్యూస్"],
+        "Kannada": ["ಜ್ಯೂಸ್"],
+        "Malayalam": ["ജ്യൂസ്"],
+        "Urdu": ["جوس"]
+      },
+      "typos": ["jus", "juce", "jucie"],
+      "brands": ["tropicana", "paper boat", "maaza", "frooti"]
+    },
+    "ice cream": {
+      "hindi": ["ice cream", "kulfi"],
+      "english": ["ice cream", "icecream", "frozen dessert"],
+      "all_langs": {
+        "Hindi": ["आइसक्रीम"],
+        "Bengali": ["আইসক্রিম"],
+        "Tamil": ["ஐஸ்கிரீம்"],
+        "Telugu": ["ఐస్ క్రీం"],
+        "Kannada": ["ಐಸ್ ಕ್ರೀಮ್"],
+        "Malayalam": ["ഐസ്ക്രീം"],
+        "Urdu": ["آئس کریم"]
+      },
+      "typos": ["ice crem", "ise cream", "icecrem"],
+      "brands": ["kwality walls", "havmor", "baskin robbins", "vadilal"]
+    },
+    "cheese": {
+      "hindi": ["cheese", "chiz"],
+      "english": ["cheese", "cheese slices", "cheese cubes", "processed cheese", "mozzarella"],
+      "all_langs": {
+        "Hindi": ["चीज़"],
+        "Bengali": ["চিজ"],
+        "Tamil": ["சீஸ்"],
+        "Telugu": ["చీజ్"],
+        "Kannada": ["ಚೀಸ್"],
+        "Malayalam": ["ചീസ്"],
+        "Urdu": ["چیز"]
+      },
+      "typos": ["chese", "chees", "cheeze"],
+      "brands": []
+    }
+  }
+}

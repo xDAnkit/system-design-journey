@@ -1,0 +1,7 @@
+allowBuilds:
+  '@confluentinc/kafka-javascript': true
+  '@scarf/scarf': true
+  bcrypt: true
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@fastify/static@10.1.8'

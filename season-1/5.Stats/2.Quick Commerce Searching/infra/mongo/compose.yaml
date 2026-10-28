@@ -1,0 +1,96 @@
+name: fk
+
+networks:
+  net:
+    name: fk-net
+
+volumes:
+  mongo-primary-data:
+    name: fk-mongo-primary-data
+  mongo-secondary-1-data:
+    name: fk-mongo-secondary-1-data
+  mongo-secondary-2-data:
+    name: fk-mongo-secondary-2-data
+
+x-mongo: &mongo-common
+  image: mongo:8
+  restart: unless-stopped
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  environment:
+    # Docker Desktop Linux VM is kernel 6.19+; Mongo 8 refuses/crashes without this (SERVER-121912)
+    GLIBC_TUNABLES: glibc.pthread.rseq=1
+  networks:
+    - net
+  command:
+    - mongod
+    - --replSet
+    - fk-rs
+    - --bind_ip_all
+    - --wiredTigerCacheSizeGB
+    - "0.25"
+  healthcheck:
+    test:
+      [
+        "CMD",
+        "mongosh",
+        "--quiet",
+        "--eval",
+        "quit(db.adminCommand('ping').ok ? 0 : 2)",
+      ]
+    interval: 5s
+    timeout: 5s
+    retries: 12
+    start_period: 20s
+
+services:
+  mongo-primary:
+    <<: *mongo-common
+    container_name: fk-mongo-primary
+    hostname: fk-mongo-primary
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-primary-data:/data/db
+
+  mongo-secondary-1:
+    <<: *mongo-common
+    container_name: fk-mongo-secondary-1
+    hostname: fk-mongo-secondary-1
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-secondary-1-data:/data/db
+
+  mongo-secondary-2:
+    <<: *mongo-common
+    container_name: fk-mongo-secondary-2
+    hostname: fk-mongo-secondary-2
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo-secondary-2-data:/data/db
+
+  mongo-init:
+    image: mongo:8
+    container_name: fk-mongo-init
+    restart: "no"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - net
+    depends_on:
+      mongo-primary:
+        condition: service_healthy
+      mongo-secondary-1:
+        condition: service_healthy
+      mongo-secondary-2:
+        condition: service_healthy
+    volumes:
+      - ./scripts/rs-init.js:/rs-init.js:ro
+    command:
+      - mongosh
+      - --host
+      - fk-mongo-primary:27017
+      - --file
+      - /rs-init.js

@@ -1,0 +1,197 @@
+/* Theme colors for both pages. Tailwind reads them through assets/theme.js.
+ * Light = Tailwind's default palette. Dark = every scale mirrored (50 <-> 950, 100 <-> 900 ...), so each
+ * light-on-dark pair stays readable: a dark button with white text becomes a light button with dark text.
+ * Generated once from the Tailwind v3 palette; edit the numbers here, not in the pages. */
+:root {
+  color-scheme: light;
+  --tile-s1: 55%;
+  --tile-l1: 97%;
+  --tile-s2: 38%;
+  --tile-l2: 89%;
+  --tile-ink-s: 42%;
+  --tile-ink-l: 32%;
+  --c-white: 255 255 255;
+  --c-paper: 247 246 242;
+  --c-stone-50: 250 250 249;
+  --c-stone-100: 245 245 244;
+  --c-stone-200: 231 229 228;
+  --c-stone-300: 214 211 209;
+  --c-stone-400: 168 162 158;
+  --c-stone-500: 120 113 108;
+  --c-stone-600: 87 83 78;
+  --c-stone-700: 68 64 60;
+  --c-stone-800: 41 37 36;
+  --c-stone-900: 28 25 23;
+  --c-stone-950: 12 10 9;
+  --c-slate-50: 248 250 252;
+  --c-slate-100: 241 245 249;
+  --c-slate-200: 226 232 240;
+  --c-slate-300: 203 213 225;
+  --c-slate-400: 148 163 184;
+  --c-slate-500: 100 116 139;
+  --c-slate-600: 71 85 105;
+  --c-slate-700: 51 65 85;
+  --c-slate-800: 30 41 59;
+  --c-slate-900: 15 23 42;
+  --c-slate-950: 2 6 23;
+  --c-green-50: 240 253 244;
+  --c-green-100: 220 252 231;
+  --c-green-200: 187 247 208;
+  --c-green-300: 134 239 172;
+  --c-green-400: 74 222 128;
+  --c-green-500: 34 197 94;
+  --c-green-600: 22 163 74;
+  --c-green-700: 21 128 61;
+  --c-green-800: 22 101 52;
+  --c-green-900: 20 83 45;
+  --c-green-950: 5 46 22;
+  --c-rose-50: 255 241 242;
+  --c-rose-100: 255 228 230;
+  --c-rose-200: 254 205 211;
+  --c-rose-300: 253 164 175;
+  --c-rose-400: 251 113 133;
+  --c-rose-500: 244 63 94;
+  --c-rose-600: 225 29 72;
+  --c-rose-700: 190 18 60;
+  --c-rose-800: 159 18 57;
+  --c-rose-900: 136 19 55;
+  --c-rose-950: 76 5 25;
+  --c-amber-50: 255 251 235;
+  --c-amber-100: 254 243 199;
+  --c-amber-200: 253 230 138;
+  --c-amber-300: 252 211 77;
+  --c-amber-400: 251 191 36;
+  --c-amber-500: 245 158 11;
+  --c-amber-600: 217 119 6;
+  --c-amber-700: 180 83 9;
+  --c-amber-800: 146 64 14;
+  --c-amber-900: 120 53 15;
+  --c-amber-950: 69 26 3;
+  --c-blue-50: 239 246 255;
+  --c-blue-100: 219 234 254;
+  --c-blue-200: 191 219 254;
+  --c-blue-300: 147 197 253;
+  --c-blue-400: 96 165 250;
+  --c-blue-500: 59 130 246;
+  --c-blue-600: 37 99 235;
+  --c-blue-700: 29 78 216;
+  --c-blue-800: 30 64 175;
+  --c-blue-900: 30 58 138;
+  --c-blue-950: 23 37 84;
+  --c-brand-50: 239 246 241;
+  --c-brand-100: 217 235 223;
+  --c-brand-200: 179 214 191;
+  --c-brand-300: 132 187 152;
+  --c-brand-400: 79 154 108;
+  --c-brand-500: 47 129 82;
+  --c-brand-600: 36 107 67;
+  --c-brand-700: 29 87 55;
+  --c-brand-800: 24 70 45;
+  --c-brand-900: 18 54 35;
+}
+html.dark {
+  color-scheme: dark;
+  --tile-s1: 26%;
+  --tile-l1: 21%;
+  --tile-s2: 20%;
+  --tile-l2: 14%;
+  --tile-ink-s: 55%;
+  --tile-ink-l: 74%;
+  /* cards sit a step above the page, like white on paper in light mode */
+  --c-white: 24 24 27;
+  --c-paper: 12 12 11;
+  --c-stone-50: 12 10 9;
+  --c-stone-100: 28 25 23;
+  --c-stone-200: 41 37 36;
+  --c-stone-300: 68 64 60;
+  --c-stone-400: 87 83 78;
+  --c-stone-500: 120 113 108;
+  --c-stone-600: 168 162 158;
+  --c-stone-700: 214 211 209;
+  --c-stone-800: 231 229 228;
+  --c-stone-900: 245 245 244;
+  --c-stone-950: 250 250 249;
+  --c-slate-50: 2 6 23;
+  --c-slate-100: 15 23 42;
+  --c-slate-200: 30 41 59;
+  --c-slate-300: 51 65 85;
+  --c-slate-400: 71 85 105;
+  --c-slate-500: 100 116 139;
+  --c-slate-600: 148 163 184;
+  --c-slate-700: 203 213 225;
+  --c-slate-800: 226 232 240;
+  --c-slate-900: 241 245 249;
+  --c-slate-950: 248 250 252;
+  --c-green-50: 5 46 22;
+  --c-green-100: 20 83 45;
+  --c-green-200: 22 101 52;
+  --c-green-300: 21 128 61;
+  --c-green-400: 22 163 74;
+  --c-green-500: 34 197 94;
+  --c-green-600: 74 222 128;
+  --c-green-700: 134 239 172;
+  --c-green-800: 187 247 208;
+  --c-green-900: 220 252 231;
+  --c-green-950: 240 253 244;
+  --c-rose-50: 76 5 25;
+  --c-rose-100: 136 19 55;
+  --c-rose-200: 159 18 57;
+  --c-rose-300: 190 18 60;
+  --c-rose-400: 225 29 72;
+  --c-rose-500: 244 63 94;
+  --c-rose-600: 251 113 133;
+  --c-rose-700: 253 164 175;
+  --c-rose-800: 254 205 211;
+  --c-rose-900: 255 228 230;
+  --c-rose-950: 255 241 242;
+  --c-amber-50: 69 26 3;
+  --c-amber-100: 120 53 15;
+  --c-amber-200: 146 64 14;
+  --c-amber-300: 180 83 9;
+  --c-amber-400: 217 119 6;
+  --c-amber-500: 245 158 11;
+  --c-amber-600: 251 191 36;
+  --c-amber-700: 252 211 77;
+  --c-amber-800: 253 230 138;
+  --c-amber-900: 254 243 199;
+  --c-amber-950: 255 251 235;
+  --c-blue-50: 23 37 84;
+  --c-blue-100: 30 58 138;
+  --c-blue-200: 30 64 175;
+  --c-blue-300: 29 78 216;
+  --c-blue-400: 37 99 235;
+  --c-blue-500: 59 130 246;
+  --c-blue-600: 96 165 250;
+  --c-blue-700: 147 197 253;
+  --c-blue-800: 191 219 254;
+  --c-blue-900: 219 234 254;
+  --c-blue-950: 239 246 255;
+  --c-brand-50: 18 54 35;
+  --c-brand-100: 24 70 45;
+  --c-brand-200: 29 87 55;
+  --c-brand-300: 36 107 67;
+  --c-brand-400: 47 129 82;
+  --c-brand-500: 79 154 108;
+  --c-brand-600: 132 187 152;
+  --c-brand-700: 179 214 191;
+  --c-brand-800: 217 235 223;
+  --c-brand-900: 239 246 241;
+}
+
+/* shop CSS that uses raw colors instead of Tailwind classes */
+html.dark .hero {
+  background:
+    radial-gradient(60% 90% at 0% 0%, rgb(29 87 55 / 0.35), transparent 60%),
+    radial-gradient(45% 80% at 100% 100%, rgb(146 64 14 / 0.3), transparent 65%),
+    rgb(var(--c-white));
+}
+html.dark .try { background: rgb(var(--c-white) / 0.8); box-shadow: 0 0 0 1px rgb(var(--c-stone-200)); color: rgb(var(--c-stone-800)); }
+html.dark .try::before { color: rgb(var(--c-stone-400)); }
+html.dark .try:hover { background: rgb(var(--c-white)); box-shadow: 0 0 0 1px rgb(var(--c-brand-200)), 0 8px 20px -12px rgb(0 0 0 / 0.6); }
+html.dark :focus-visible { outline-color: rgb(var(--c-brand-300)); }
+html.dark body::before { opacity: 0.03; }
+/* map tiles in dark mode */
+html.dark .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9); }
+/* modal backdrops darken in both themes */
+html.dark .bg-stone-900\/30,
+html.dark .bg-stone-900\/20 { background-color: rgb(0 0 0 / 0.55); }

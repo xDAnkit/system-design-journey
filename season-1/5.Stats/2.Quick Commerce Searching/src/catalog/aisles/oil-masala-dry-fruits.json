@@ -1,0 +1,34 @@
+{
+  "key": "oil-masala",
+  "label": "Oil, Masala & Dry Fruits",
+  "icon": "oil_barrel",
+  "categories": {
+    "oil": { "label": "Cooking Oil", "icon": "oil_barrel", "core": true, "items": [
+      { "name": "Oil", "brands": ["Fortune", "Saffola", "Dhara", "Gemini", "Patanjali"], "variants": ["Kachi Ghani Mustard", "Sunflower", "Groundnut", "Rice Bran", "Soyabean"], "sizes": ["1 L", "5 L"], "price": [140, 220] }
+    ] },
+    "turmeric": { "label": "Turmeric", "icon": "grain", "items": [
+      { "name": "Turmeric Powder", "brands": ["Everest", "MDH", "Catch", "Tata Sampann"], "variants": ["Regular", "Organic"], "sizes": ["100 g", "200 g", "500 g"], "price": [30, 45] }
+    ] },
+    "chilli powder": { "label": "Chilli Powder", "icon": "local_fire_department", "items": [
+      { "name": "Chilli Powder", "brands": ["Everest", "MDH", "Catch"], "variants": ["Kashmiri", "Hot", "Regular"], "sizes": ["100 g", "200 g", "500 g"], "price": [40, 60] }
+    ] },
+    "jeera": { "label": "Jeera", "icon": "grain", "items": [
+      { "name": "Jeera", "brands": ["Everest", "Catch", "Tata Sampann"], "variants": ["Whole", "Powder"], "sizes": ["100 g", "200 g"], "price": [50, 80] }
+    ] },
+    "garam masala": { "label": "Garam Masala", "icon": "soup_kitchen", "items": [
+      { "name": "Garam Masala", "brands": ["Everest", "MDH", "Catch"], "variants": ["Regular", "Kitchen King", "Chana Masala"], "sizes": ["50 g", "100 g"], "price": [45, 90] }
+    ] },
+    "coriander powder": { "label": "Coriander Powder", "icon": "grain", "items": [
+      { "name": "Coriander Powder", "brands": ["Everest", "MDH", "Catch"], "variants": ["Regular"], "sizes": ["100 g", "200 g", "500 g"], "price": [30, 45] }
+    ] },
+    "almonds": { "label": "Almonds", "icon": "nutrition", "items": [
+      { "name": "Almonds", "brands": ["Happilo", "Nutraj", "Tulsi"], "variants": ["California", "Mamra", "Roasted"], "sizes": ["250 g", "500 g", "1 kg"], "price": [220, 320] }
+    ] },
+    "cashew": { "label": "Cashew", "icon": "nutrition", "items": [
+      { "name": "Cashew", "brands": ["Happilo", "Nutraj", "Tulsi"], "variants": ["Whole", "Broken", "Roasted Salted"], "sizes": ["250 g", "500 g"], "price": [250, 350] }
+    ] },
+    "raisins": { "label": "Raisins", "icon": "nutrition", "items": [
+      { "name": "Raisins", "brands": ["Happilo", "Nutraj", "Tulsi"], "variants": ["Golden", "Black", "Seedless"], "sizes": ["250 g", "500 g"], "price": [90, 140] }
+    ] }
+  }
+}

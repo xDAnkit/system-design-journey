@@ -1,0 +1,74 @@
+{
+  "key": "fruits-vegetables",
+  "label": "Fruits & Vegetables",
+  "icon": "nutrition",
+  "categories": {
+    "onion": { "label": "Onion", "icon": "eco", "core": true, "items": [
+      { "name": "Onion", "brands": ["Fresh", "Organic"], "variants": ["Red", "Small", "White"], "sizes": ["500 g", "1 kg", "2 kg"], "price": [18, 32] }
+    ] },
+    "potato": { "label": "Potato", "icon": "eco", "core": true, "items": [
+      { "name": "Potato", "brands": ["Fresh", "Organic"], "variants": ["Regular", "New", "Baby"], "sizes": ["500 g", "1 kg", "2 kg"], "price": [15, 25] }
+    ] },
+    "tomato": { "label": "Tomato", "icon": "eco", "core": true, "items": [
+      { "name": "Tomato", "brands": ["Fresh", "Organic"], "variants": ["Hybrid", "Local", "Cherry"], "sizes": ["500 g", "1 kg"], "price": [15, 40] }
+    ] },
+    "garlic": { "label": "Garlic", "icon": "eco", "core": true, "items": [
+      { "name": "Garlic", "brands": ["Fresh", "Organic"], "variants": ["Regular", "Peeled"], "sizes": ["100 g", "250 g"], "price": [20, 40] }
+    ] },
+    "ginger": { "label": "Ginger", "icon": "eco", "core": true, "items": [
+      { "name": "Ginger", "brands": ["Fresh", "Organic"], "variants": ["Regular", "Tender"], "sizes": ["100 g", "250 g"], "price": [15, 30] }
+    ] },
+    "green chilli": { "label": "Green Chilli", "icon": "local_fire_department", "core": true, "items": [
+      { "name": "Green Chilli", "brands": ["Fresh", "Organic"], "variants": ["Regular", "Long"], "sizes": ["100 g", "250 g"], "price": [10, 20] }
+    ] },
+    "coriander": { "label": "Coriander", "icon": "grass", "core": true, "items": [
+      { "name": "Coriander Leaves", "brands": ["Fresh", "Organic"], "variants": ["Regular"], "sizes": ["100 g", "250 g"], "price": [10, 20] }
+    ] },
+    "spinach": { "label": "Spinach", "icon": "grass", "items": [
+      { "name": "Spinach", "brands": ["Fresh", "Organic"], "variants": ["Regular", "Baby"], "sizes": ["250 g", "500 g"], "price": [20, 30] }
+    ] },
+    "cauliflower": { "label": "Cauliflower", "icon": "eco", "items": [
+      { "name": "Cauliflower", "brands": ["Fresh", "Organic"], "variants": ["Regular"], "sizes": ["1 pc", "2 pcs"], "price": [30, 50] }
+    ] },
+    "cabbage": { "label": "Cabbage", "icon": "eco", "items": [
+      { "name": "Cabbage", "brands": ["Fresh", "Organic"], "variants": ["Green", "Red"], "sizes": ["1 pc", "2 pcs"], "price": [25, 40] }
+    ] },
+    "carrot": { "label": "Carrot", "icon": "eco", "items": [
+      { "name": "Carrot", "brands": ["Fresh", "Organic"], "variants": ["Orange", "Red"], "sizes": ["500 g", "1 kg"], "price": [25, 40] }
+    ] },
+    "cucumber": { "label": "Cucumber", "icon": "eco", "items": [
+      { "name": "Cucumber", "brands": ["Fresh", "Organic"], "variants": ["Regular", "English"], "sizes": ["500 g", "1 kg"], "price": [20, 35] }
+    ] },
+    "capsicum": { "label": "Capsicum", "icon": "eco", "items": [
+      { "name": "Capsicum", "brands": ["Fresh", "Organic"], "variants": ["Green", "Red", "Yellow"], "sizes": ["250 g", "500 g"], "price": [25, 50] }
+    ] },
+    "brinjal": { "label": "Brinjal", "icon": "eco", "items": [
+      { "name": "Brinjal", "brands": ["Fresh", "Organic"], "variants": ["Purple", "Long", "Bharta"], "sizes": ["500 g", "1 kg"], "price": [25, 40] }
+    ] },
+    "okra": { "label": "Lady Finger (Bhindi)", "icon": "eco", "items": [
+      { "name": "Lady Finger", "brands": ["Fresh", "Organic"], "variants": ["Regular"], "sizes": ["250 g", "500 g"], "price": [20, 35] }
+    ] },
+    "peas": { "label": "Peas", "icon": "eco", "items": [
+      { "name": "Green Peas", "brands": ["Fresh", "Organic"], "variants": ["Regular"], "sizes": ["500 g", "1 kg"], "price": [40, 70] },
+      { "name": "Frozen Green Peas", "brands": ["Safal", "McCain"], "variants": ["Regular", "Sweet"], "sizes": ["500 g", "1 kg"], "price": [90, 130] }
+    ] },
+    "banana": { "label": "Banana", "icon": "nutrition", "core": true, "items": [
+      { "name": "Banana", "brands": ["Fresh", "Organic"], "variants": ["Robusta", "Yelakki", "Raw"], "sizes": ["6 pcs", "12 pcs"], "price": [40, 60] }
+    ] },
+    "apple": { "label": "Apple", "icon": "nutrition", "items": [
+      { "name": "Apple", "brands": ["Fresh", "Organic"], "variants": ["Shimla", "Royal Gala", "Green"], "sizes": ["4 pcs", "1 kg"], "price": [120, 180] }
+    ] },
+    "mango": { "label": "Mango", "icon": "nutrition", "items": [
+      { "name": "Mango", "brands": ["Fresh", "Organic"], "variants": ["Alphonso", "Kesar", "Banganapalli", "Dasheri"], "sizes": ["1 kg", "3 kg"], "price": [150, 400] }
+    ] },
+    "orange": { "label": "Orange", "icon": "nutrition", "items": [
+      { "name": "Orange", "brands": ["Fresh", "Organic"], "variants": ["Nagpur", "Kinnow"], "sizes": ["1 kg", "2 kg"], "price": [80, 140] }
+    ] },
+    "grapes": { "label": "Grapes", "icon": "nutrition", "items": [
+      { "name": "Grapes", "brands": ["Fresh", "Organic"], "variants": ["Green", "Black"], "sizes": ["500 g", "1 kg"], "price": [60, 120] }
+    ] },
+    "lemon": { "label": "Lemon", "icon": "nutrition", "items": [
+      { "name": "Lemon", "brands": ["Fresh", "Organic"], "variants": ["Regular"], "sizes": ["250 g", "500 g"], "price": [25, 40] }
+    ] }
+  }
+}

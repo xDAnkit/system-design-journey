@@ -8,11 +8,35 @@ This is not an app. There is no root build, lint, or test command. Each video to
 
 | Path | Topic |
 |---|---|
-| `season-1/1.compressions/` | Compressions |
+| `season-1/1.compressions/` | Compressions (planned) |
 | `season-1/2.vertical-vs-horizontal-scaling/` | Vertical vs horizontal scaling |
 | `season-1/3.Searching/` | Searching: username availability with Bloom, Cuckoo, Xor and Fuse filters |
+| `season-1/4.Database/` | Database: ScyllaDB with Fastify and Go (planned) |
+| `season-1/5.Stats/` | Stats: Insta Stats |
 
 New topic path: `season-1/<number>.<topic-name>/`.
+
+### Searching folders
+
+| Path | Contents |
+|---|---|
+| `1.bloom-filters/` | Bloom filter |
+| `2.cuckoo-filters/` | Cuckoo filter |
+| `3.binary-fuse-filters/` | Binary Fuse filter |
+| `3.xor-filters/` | Xor filter |
+| `3.cuckoo-filters-go/` | Cuckoo filter in Go |
+| `6.cuckoo-filters-uwebsocket/` | Cuckoo filter on uWebSockets |
+| `7.cuckoo-filters-with-rust/` | Cuckoo filter as a Rust native module |
+| `8.Filters/` | Planned |
+| `design/` | HLD and LLD |
+
+## Shared scripts
+
+| Path | What it does |
+|---|---|
+| `scripts/load-testing/1.api-test.js` | k6 test, 50 users for 15 seconds on `GET /api/v1/cities` |
+| `scripts/verify-setup.sh` | Checks the agent rules and hooks setup |
+| `pnpm nginx:local` | Runs the nginx from `season-1/2.vertical-vs-horizontal-scaling/servers/nginx/` |
 
 ## Searching benchmark
 

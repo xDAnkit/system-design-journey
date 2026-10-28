@@ -1,0 +1,37 @@
+{
+  "key": "beverages",
+  "label": "Tea, Coffee & Drinks",
+  "icon": "emoji_food_beverage",
+  "categories": {
+    "tea": { "label": "Tea", "icon": "emoji_food_beverage", "core": true, "items": [
+      { "name": "Tea", "brands": ["Tata Tea", "Red Label", "Taj Mahal", "Wagh Bakri", "Brooke Bond"], "variants": ["Premium", "Gold", "Masala", "Elaichi"], "sizes": ["250 g", "500 g", "1 kg"], "price": [120, 160] }
+    ] },
+    "green tea": { "label": "Green Tea", "icon": "emoji_food_beverage", "items": [
+      { "name": "Green Tea", "brands": ["Lipton", "Tetley", "Organic India"], "variants": ["Honey Lemon", "Classic", "Tulsi"], "sizes": ["25 bags", "100 bags"], "price": [140, 180] }
+    ] },
+    "coffee": { "label": "Coffee", "icon": "coffee", "core": true, "items": [
+      { "name": "Coffee", "brands": ["Nescafe", "Bru", "Tata Coffee", "Davidoff"], "variants": ["Classic Instant", "Gold", "Filter"], "sizes": ["50 g", "100 g", "200 g"], "price": [150, 200] }
+    ] },
+    "cold drink": { "label": "Cold Drinks", "icon": "sports_bar", "core": true, "items": [
+      { "name": "Soft Drink", "brands": ["Coca-Cola", "Pepsi", "Thums Up", "Sprite", "Fanta", "Limca", "Mountain Dew", "7UP"], "variants": ["Original", "Zero Sugar"], "sizes": ["250 ml", "750 ml", "2 L"], "price": [20, 20] }
+    ] },
+    "juice": { "label": "Juices", "icon": "local_drink", "items": [
+      { "name": "Fruit Juice", "brands": ["Tropicana", "Real", "Paper Boat", "B Natural"], "variants": ["Orange", "Mixed Fruit", "Mango", "Apple", "Guava"], "sizes": ["200 ml", "1 L"], "price": [20, 30] }
+    ] },
+    "water": { "label": "Water", "icon": "water_drop", "core": true, "items": [
+      { "name": "Water", "brands": ["Bisleri", "Kinley", "Aquafina", "Himalayan"], "variants": ["Packaged Drinking", "Mineral"], "sizes": ["500 ml", "1 L", "2 L", "5 L"], "price": [10, 10] }
+    ] },
+    "energy drink": { "label": "Energy Drinks", "icon": "bolt", "items": [
+      { "name": "Energy Drink", "brands": ["Red Bull", "Monster", "Sting"], "variants": ["Original", "Sugar Free"], "sizes": ["250 ml", "350 ml"], "price": [110, 125] }
+    ] },
+    "soda": { "label": "Soda", "icon": "bubble_chart", "items": [
+      { "name": "Soda", "brands": ["Kinley", "Schweppes", "Bisleri"], "variants": ["Club", "Lime"], "sizes": ["750 ml", "1.25 L"], "price": [20, 30] }
+    ] },
+    "coconut water": { "label": "Coconut Water", "icon": "local_drink", "items": [
+      { "name": "Coconut Water", "brands": ["Paper Boat", "Raw Pressery", "Cocojal"], "variants": ["Tender", "Natural"], "sizes": ["200 ml", "1 L"], "price": [40, 60] }
+    ] },
+    "health drink": { "label": "Health Drinks", "icon": "local_cafe", "items": [
+      { "name": "Health Drink", "brands": ["Bournvita", "Horlicks", "Complan", "Boost"], "variants": ["Chocolate", "Classic Malt", "Kesar Badam"], "sizes": ["500 g", "1 kg"], "price": [230, 300] }
+    ] }
+  }
+}

@@ -1,0 +1,36 @@
+name: qc
+
+volumes:
+  kafka-data:
+    name: qc-kafka-data
+
+# One broker, KRaft (no Zookeeper). The app runs on the host, so it connects to localhost:9094.
+# Own project, container, volume and port: it never touches the Insta Stats broker (insta-kafka on 9092),
+# and both can run at the same time.
+services:
+  kafka:
+    image: apache/kafka:4.3.1
+    container_name: qc-kafka
+    restart: unless-stopped
+    ports:
+      - "9094:9094"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_LISTENERS: PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      # 3 partitions per topic: the same key (productId, sessionId) stays ordered, 3 consumers can share the load
+      KAFKA_NUM_PARTITIONS: 3
+      # The app creates its topics at startup. A typo in a topic name then fails loudly
+      # instead of silently creating a new, empty topic.
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"

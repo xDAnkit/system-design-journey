@@ -1,0 +1,22 @@
+name: qc-search
+
+volumes:
+  typesense-data:
+    name: qc-typesense-data
+
+# Typesense, one node. The app runs on the host and connects to localhost:8108.
+# The API key comes from TYPESENSE_API_KEY in the project .env (pnpm typesense:up passes --env-file .env).
+# Own project, container and volume: nothing here touches another project's search data.
+services:
+  typesense:
+    image: typesense/typesense:30.2
+    container_name: qc-typesense
+    restart: unless-stopped
+    ports:
+      - "8108:8108"
+    volumes:
+      - typesense-data:/data
+    command:
+      - "--data-dir=/data"
+      - "--api-key=${TYPESENSE_API_KEY:-qc-local-typesense-key}"
+      - "--enable-cors"

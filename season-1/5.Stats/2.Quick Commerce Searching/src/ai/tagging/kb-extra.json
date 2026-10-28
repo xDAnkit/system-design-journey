@@ -1,0 +1,516 @@
+{
+  "about": "Categories added for the quick commerce catalog, same format as product-kb.json. Languages left out are filled from the Hindi word by transliteration (only right for loanwords).",
+  "categories": {
+    "medicine": {
+      "hindi": ["dawai", "dawa", "goli", "bukhar ki dawai", "sir dard ki goli"],
+      "english": ["medicine", "tablet", "paracetamol", "fever tablet", "pain relief"],
+      "all_langs": { "Hindi": ["दवाई", "दवा"], "Marathi": ["औषध", "गोळी"], "Bengali": ["ওষুধ"], "Assamese": ["ঔষধ"], "Gujarati": ["દવા"], "Punjabi": ["ਦਵਾਈ"], "Odia": ["ଔଷଧ"], "Tamil": ["மருந்து", "மாத்திரை"], "Telugu": ["మందు", "మాత్ర"], "Kannada": ["ಔಷಧಿ", "ಮಾತ್ರೆ"], "Malayalam": ["മരുന്ന്", "ഗുളിക"], "Urdu": ["دوا", "گولی"] },
+      "typos": ["medcine", "medicin", "paracitamol", "parcetamol", "dawaai"],
+      "brands": ["dolo", "crocin", "calpol", "saridon", "disprin"]
+    },
+    "antacid": {
+      "hindi": ["gas ki dawai", "acidity ki goli", "pet ki dawai"],
+      "english": ["antacid", "acidity tablet", "digestive"],
+      "all_langs": { "Hindi": ["गैस की दवा"], "Urdu": ["گیس کی دوا"] },
+      "typos": ["antasid", "acidty"],
+      "brands": ["eno", "digene", "pudin hara"]
+    },
+    "cough syrup": {
+      "hindi": ["khansi ki dawai", "khansi syrup", "sardi zukam"],
+      "english": ["cough syrup", "cold and cough"],
+      "all_langs": { "Hindi": ["खांसी की दवा"], "Tamil": ["இருமல் மருந்து"], "Telugu": ["దగ్గు మందు"], "Kannada": ["ಕೆಮ್ಮಿನ ಔಷಧಿ"], "Malayalam": ["ചുമ മരുന്ന്"], "Bengali": ["কাশির ওষুধ"], "Urdu": ["کھانسی کی دوا"] },
+      "typos": ["caugh syrup", "cough sirup"],
+      "brands": ["benadryl", "honitus"]
+    },
+    "ors": {
+      "hindi": ["ors", "jeevan jal", "electral"],
+      "english": ["ors", "electrolyte", "oral rehydration"],
+      "all_langs": { "Hindi": ["ओआरएस"] },
+      "typos": ["o r s"],
+      "brands": ["electral", "enerzal"]
+    },
+    "bandage": {
+      "hindi": ["band aid", "chot ki patti"],
+      "english": ["bandage", "band aid", "plaster", "first aid"],
+      "all_langs": { "Hindi": ["बैंडेज"] },
+      "typos": ["bandaid", "bandej"],
+      "brands": ["hansaplast"]
+    },
+    "mosquito repellent": {
+      "hindi": ["machhar bhagane wala", "machhar ki dawa", "machhar coil"],
+      "english": ["mosquito repellent", "mosquito coil", "mosquito liquid", "mosquito vaporizer"],
+      "all_langs": { "Hindi": ["मच्छर भगाने वाला", "मच्छर"], "Marathi": ["डास"], "Bengali": ["মশা তাড়ানোর"], "Assamese": ["মহ"], "Gujarati": ["મચ્છર"], "Punjabi": ["ਮੱਛਰ"], "Odia": ["ମଶା"], "Tamil": ["கொசு விரட்டி"], "Telugu": ["దోమల మందు"], "Kannada": ["ಸೊಳ್ಳೆ"], "Malayalam": ["കൊതുക്"], "Urdu": ["مچھر"] },
+      "typos": ["mosquto", "mosqito", "machar", "macchar"],
+      "brands": ["good knight", "all out", "mortein", "odomos"]
+    },
+    "dog food": {
+      "hindi": ["kutte ka khana", "kutton ka khana"],
+      "english": ["dog food", "pet food", "puppy food"],
+      "all_langs": { "Hindi": ["कुत्ते का खाना"], "Marathi": ["कुत्र्याचे अन्न"], "Bengali": ["কুকুরের খাবার"], "Gujarati": ["કૂતરાનો ખોરાક"], "Punjabi": ["ਕੁੱਤੇ ਦਾ ਖਾਣਾ"], "Tamil": ["நாய் உணவு"], "Telugu": ["కుక్క ఆహారం"], "Kannada": ["ನಾಯಿ ಆಹಾರ"], "Malayalam": ["നായ ഭക്ഷണം"], "Urdu": ["کتے کا کھانا"] },
+      "typos": ["dog fod", "dogfood"],
+      "brands": ["pedigree", "drools", "royal canin"]
+    },
+    "cat food": {
+      "hindi": ["billi ka khana"],
+      "english": ["cat food", "kitten food"],
+      "all_langs": { "Hindi": ["बिल्ली का खाना"], "Marathi": ["मांजरीचे अन्न"], "Bengali": ["বিড়ালের খাবার"], "Gujarati": ["બિલાડીનો ખોરાક"], "Punjabi": ["ਬਿੱਲੀ ਦਾ ਖਾਣਾ"], "Tamil": ["பூனை உணவு"], "Telugu": ["పిల్లి ఆహారం"], "Kannada": ["ಬೆಕ್ಕಿನ ಆಹಾರ"], "Malayalam": ["പൂച്ച ഭക്ഷണം"], "Urdu": ["بلی کا کھانا"] },
+      "typos": ["cat fod", "catfood"],
+      "brands": ["whiskas", "sheba"]
+    },
+    "cornflakes": {
+      "hindi": ["cornflakes", "nashte ka cereal"],
+      "english": ["corn flakes", "breakfast cereal", "cereal"],
+      "all_langs": { "Hindi": ["कॉर्न फ्लेक्स"] },
+      "typos": ["corn flaks", "cornflaks", "conflakes"],
+      "brands": ["kelloggs", "bagrrys"]
+    },
+    "oats": {
+      "hindi": ["oats", "daliya oats"],
+      "english": ["oats", "rolled oats", "oatmeal"],
+      "all_langs": { "Hindi": ["ओट्स"] },
+      "typos": ["otes", "oat meal"],
+      "brands": ["quaker", "saffola oats"]
+    },
+    "poha": {
+      "hindi": ["poha", "chivda", "pauwa"],
+      "english": ["flattened rice", "beaten rice"],
+      "all_langs": { "Hindi": ["पोहा", "चिवड़ा"], "Marathi": ["पोहे"], "Bengali": ["চিঁড়া"], "Assamese": ["চিৰা"], "Gujarati": ["પૌંઆ"], "Punjabi": ["ਪੋਹਾ"], "Odia": ["ଚୁଡ଼ା"], "Tamil": ["அவல்"], "Telugu": ["అటుకులు"], "Kannada": ["ಅವಲಕ್ಕಿ"], "Malayalam": ["അവൽ"], "Urdu": ["پوہا"] },
+      "typos": ["poah", "pohaa"],
+      "brands": []
+    },
+    "rusk": {
+      "hindi": ["rusk", "toast", "chai toast"],
+      "english": ["rusk", "tea rusk", "toast"],
+      "all_langs": { "Hindi": ["रस्क", "टोस्ट"] },
+      "typos": ["rask", "rusck"],
+      "brands": ["britannia toastea", "bonn"]
+    },
+    "honey": {
+      "hindi": ["shahad", "shehad", "madhu"],
+      "english": ["honey"],
+      "all_langs": { "Hindi": ["शहद"], "Marathi": ["मध"], "Bengali": ["মধু"], "Assamese": ["মৌ"], "Gujarati": ["મધ"], "Punjabi": ["ਸ਼ਹਿਦ"], "Odia": ["ମହୁ"], "Tamil": ["தேன்"], "Telugu": ["తేనె"], "Kannada": ["ಜೇನುತುಪ್ಪ"], "Malayalam": ["തേൻ"], "Urdu": ["شہد"] },
+      "typos": ["hony", "honney", "shahd"],
+      "brands": ["dabur honey", "saffola honey", "apis"]
+    },
+    "jaggery": {
+      "hindi": ["gud", "gur"],
+      "english": ["jaggery"],
+      "all_langs": { "Hindi": ["गुड़"], "Marathi": ["गूळ"], "Bengali": ["গুড়"], "Assamese": ["গুড়"], "Gujarati": ["ગોળ"], "Punjabi": ["ਗੁੜ"], "Odia": ["ଗୁଡ଼"], "Tamil": ["வெல்லம்"], "Telugu": ["బెల్లం"], "Kannada": ["ಬೆಲ್ಲ"], "Malayalam": ["ശർക്കര"], "Urdu": ["گڑ"] },
+      "typos": ["jaggary", "jagery"],
+      "brands": []
+    },
+    "green tea": {
+      "hindi": ["green tea", "hari chai"],
+      "english": ["green tea", "herbal tea"],
+      "all_langs": { "Hindi": ["ग्रीन टी"] },
+      "typos": ["grean tea", "gren tea"],
+      "brands": ["lipton", "organic india", "tetley"]
+    },
+    "buttermilk": {
+      "hindi": ["chaas", "chhachh", "chhach", "mattha"],
+      "english": ["buttermilk", "butter milk", "spiced buttermilk"],
+      "all_langs": { "Hindi": ["छाछ", "मट्ठा"], "Marathi": ["ताक"], "Bengali": ["ঘোল"], "Assamese": ["ঘোল"], "Gujarati": ["છાશ"], "Punjabi": ["ਛਾਛ"], "Odia": ["ଘୋଳ"], "Tamil": ["மோர்"], "Telugu": ["మజ్జిగ"], "Kannada": ["ಮಜ್ಜಿಗೆ"], "Malayalam": ["മോര്"], "Urdu": ["چھاچھ"] },
+      "typos": ["butermilk", "chas"],
+      "brands": ["amul masti"]
+    },
+    "lassi": {
+      "hindi": ["lassi", "meethi lassi"],
+      "english": ["lassi", "sweet lassi"],
+      "all_langs": { "Hindi": ["लस्सी"], "Punjabi": ["ਲੱਸੀ"], "Gujarati": ["લસ્સી"], "Bengali": ["লস্যি"] },
+      "typos": ["lasi", "lassee"],
+      "brands": []
+    },
+    "banana": {
+      "hindi": ["kela", "kele"],
+      "english": ["banana", "bananas"],
+      "all_langs": { "Hindi": ["केला"], "Marathi": ["केळी"], "Bengali": ["কলা"], "Assamese": ["কল"], "Gujarati": ["કેળા"], "Punjabi": ["ਕੇਲਾ"], "Odia": ["କଦଳୀ"], "Tamil": ["வாழைப்பழம்"], "Telugu": ["అరటిపండు"], "Kannada": ["ಬಾಳೆಹಣ್ಣು"], "Malayalam": ["പഴം"], "Urdu": ["کیلا"] },
+      "typos": ["banan", "bananna", "kella"],
+      "brands": []
+    },
+    "apple": {
+      "hindi": ["seb", "saib"],
+      "english": ["apple", "apples"],
+      "all_langs": { "Hindi": ["सेब"], "Marathi": ["सफरचंद"], "Bengali": ["আপেল"], "Assamese": ["আপেল"], "Gujarati": ["સફરજન"], "Punjabi": ["ਸੇਬ"], "Odia": ["ସେଓ"], "Tamil": ["ஆப்பிள்"], "Telugu": ["ఆపిల్"], "Kannada": ["ಸೇಬು"], "Malayalam": ["ആപ്പിൾ"], "Urdu": ["سیب"] },
+      "typos": ["aple", "appel"],
+      "brands": []
+    },
+    "mango": {
+      "hindi": ["aam"],
+      "english": ["mango", "mangoes"],
+      "all_langs": { "Hindi": ["आम"], "Marathi": ["आंबा"], "Bengali": ["আম"], "Assamese": ["আম"], "Gujarati": ["કેરી"], "Punjabi": ["ਅੰਬ"], "Odia": ["ଆମ୍ବ"], "Tamil": ["மாம்பழம்"], "Telugu": ["మామిడి పండు"], "Kannada": ["ಮಾವಿನ ಹಣ್ಣು"], "Malayalam": ["മാങ്ങ"], "Urdu": ["آم"] },
+      "typos": ["mangoo", "mngo"],
+      "brands": []
+    },
+    "orange": {
+      "hindi": ["santra", "santara", "narangi"],
+      "english": ["orange", "oranges"],
+      "all_langs": { "Hindi": ["संतरा"], "Marathi": ["संत्री"], "Bengali": ["কমলা"], "Assamese": ["কমলা"], "Gujarati": ["નારંગી"], "Punjabi": ["ਸੰਤਰਾ"], "Odia": ["କମଳା"], "Tamil": ["ஆரஞ்சு"], "Telugu": ["నారింజ"], "Kannada": ["ಕಿತ್ತಳೆ"], "Malayalam": ["ഓറഞ്ച്"], "Urdu": ["سنترا"] },
+      "typos": ["orang", "oragne"],
+      "brands": []
+    },
+    "grapes": {
+      "hindi": ["angoor", "angur"],
+      "english": ["grapes", "grape"],
+      "all_langs": { "Hindi": ["अंगूर"], "Marathi": ["द्राक्षे"], "Bengali": ["আঙুর"], "Assamese": ["আঙুৰ"], "Gujarati": ["દ્રાક્ષ"], "Punjabi": ["ਅੰਗੂਰ"], "Odia": ["ଅଙ୍ଗୁର"], "Tamil": ["திராட்சை"], "Telugu": ["ద్రాక్ష"], "Kannada": ["ದ್ರಾಕ್ಷಿ"], "Malayalam": ["മുന്തിരി"], "Urdu": ["انگور"] },
+      "typos": ["grap", "graps"],
+      "brands": []
+    },
+    "lemon": {
+      "hindi": ["nimbu", "neembu"],
+      "english": ["lemon", "lime"],
+      "all_langs": { "Hindi": ["नींबू"], "Marathi": ["लिंबू"], "Bengali": ["লেবু"], "Assamese": ["নেমু"], "Gujarati": ["લીંબુ"], "Punjabi": ["ਨਿੰਬੂ"], "Odia": ["ଲେମ୍ବୁ"], "Tamil": ["எலுமிச்சை"], "Telugu": ["నిమ్మకాయ"], "Kannada": ["ನಿಂಬೆಹಣ್ಣು"], "Malayalam": ["നാരങ്ങ"], "Urdu": ["لیموں"] },
+      "typos": ["lemn", "nimboo"],
+      "brands": []
+    },
+    "garlic": {
+      "hindi": ["lahsun", "lehsun", "lasun"],
+      "english": ["garlic"],
+      "all_langs": { "Hindi": ["लहसुन"], "Marathi": ["लसूण"], "Bengali": ["রসুন"], "Assamese": ["নহৰু"], "Gujarati": ["લસણ"], "Punjabi": ["ਲਸਣ"], "Odia": ["ରସୁଣ"], "Tamil": ["பூண்டு"], "Telugu": ["వెల్లుల్లి"], "Kannada": ["ಬೆಳ್ಳುಳ್ಳಿ"], "Malayalam": ["വെളുത്തുള്ളി"], "Urdu": ["لہسن"] },
+      "typos": ["garlik", "garlc"],
+      "brands": []
+    },
+    "ginger": {
+      "hindi": ["adrak", "adrakh"],
+      "english": ["ginger"],
+      "all_langs": { "Hindi": ["अदरक"], "Marathi": ["आले"], "Bengali": ["আদা"], "Assamese": ["আদা"], "Gujarati": ["આદુ"], "Punjabi": ["ਅਦਰਕ"], "Odia": ["ଅଦା"], "Tamil": ["இஞ்சி"], "Telugu": ["అల్లం"], "Kannada": ["ಶುಂಠಿ"], "Malayalam": ["ഇഞ്ചി"], "Urdu": ["ادرک"] },
+      "typos": ["gingr", "adrk"],
+      "brands": []
+    },
+    "green chilli": {
+      "hindi": ["hari mirch", "mirchi"],
+      "english": ["green chilli", "green chili", "chilli"],
+      "all_langs": { "Hindi": ["हरी मिर्च"], "Marathi": ["हिरवी मिरची"], "Bengali": ["কাঁচা লঙ্কা"], "Gujarati": ["લીલું મરચું"], "Punjabi": ["ਹਰੀ ਮਿਰਚ"], "Odia": ["କଞ୍ଚା ଲଙ୍କା"], "Tamil": ["பச்சை மிளகாய்"], "Telugu": ["పచ్చి మిర్చి"], "Kannada": ["ಹಸಿರು ಮೆಣಸಿನಕಾಯಿ"], "Malayalam": ["പച്ചമുളക്"], "Urdu": ["ہری مرچ"] },
+      "typos": ["chilly", "grean chilli"],
+      "brands": []
+    },
+    "coriander": {
+      "hindi": ["dhaniya", "hara dhaniya", "dhania"],
+      "english": ["coriander", "coriander leaves", "cilantro"],
+      "all_langs": { "Hindi": ["धनिया"], "Marathi": ["कोथिंबीर"], "Bengali": ["ধনে পাতা"], "Assamese": ["ধনীয়া"], "Gujarati": ["કોથમીર"], "Punjabi": ["ਧਨੀਆ"], "Odia": ["ଧନିଆ ପତ୍ର"], "Tamil": ["கொத்தமல்லி"], "Telugu": ["కొత్తిమీర"], "Kannada": ["ಕೊತ್ತಂಬರಿ"], "Malayalam": ["മല്ലിയില"], "Urdu": ["دھنیا"] },
+      "typos": ["corriander", "dhaniyaa"],
+      "brands": []
+    },
+    "spinach": {
+      "hindi": ["palak"],
+      "english": ["spinach"],
+      "all_langs": { "Hindi": ["पालक"], "Marathi": ["पालक"], "Bengali": ["পালং শাক"], "Assamese": ["পালেং শাক"], "Gujarati": ["પાલક"], "Punjabi": ["ਪਾਲਕ"], "Odia": ["ପାଳଙ୍ଗ ଶାଗ"], "Tamil": ["பசலைக்கீரை"], "Telugu": ["పాలకూర"], "Kannada": ["ಪಾಲಕ್"], "Malayalam": ["ചീര"], "Urdu": ["پالک"] },
+      "typos": ["spinch", "palk"],
+      "brands": []
+    },
+    "cauliflower": {
+      "hindi": ["gobhi", "phool gobhi", "gobi"],
+      "english": ["cauliflower"],
+      "all_langs": { "Hindi": ["फूलगोभी", "गोभी"], "Marathi": ["फुलकोबी"], "Bengali": ["ফুলকপি"], "Assamese": ["ফুলকবি"], "Gujarati": ["ફૂલકોબી"], "Punjabi": ["ਫੁੱਲ ਗੋਭੀ"], "Odia": ["ଫୁଲକୋବି"], "Tamil": ["காலிஃபிளவர்"], "Telugu": ["కాలీఫ్లవర్"], "Kannada": ["ಹೂಕೋಸು"], "Malayalam": ["കോളിഫ്ലവർ"], "Urdu": ["پھول گوبھی"] },
+      "typos": ["cauliflwer", "coliflower", "gobhee"],
+      "brands": []
+    },
+    "cabbage": {
+      "hindi": ["patta gobhi", "band gobhi", "bandh gobhi"],
+      "english": ["cabbage"],
+      "all_langs": { "Hindi": ["पत्ता गोभी", "बंद गोभी"], "Marathi": ["कोबी"], "Bengali": ["বাঁধাকপি"], "Assamese": ["বন্ধাকবি"], "Gujarati": ["કોબી"], "Punjabi": ["ਬੰਦ ਗੋਭੀ"], "Odia": ["ବନ୍ଧାକୋବି"], "Tamil": ["முட்டைக்கோஸ்"], "Telugu": ["క్యాబేజీ"], "Kannada": ["ಎಲೆಕೋಸು"], "Malayalam": ["കാബേജ്"], "Urdu": ["بند گوبھی"] },
+      "typos": ["cabage", "cabbge"],
+      "brands": []
+    },
+    "carrot": {
+      "hindi": ["gajar"],
+      "english": ["carrot", "carrots"],
+      "all_langs": { "Hindi": ["गाजर"], "Marathi": ["गाजर"], "Bengali": ["গাজর"], "Assamese": ["গাজৰ"], "Gujarati": ["ગાજર"], "Punjabi": ["ਗਾਜਰ"], "Odia": ["ଗାଜର"], "Tamil": ["கேரட்"], "Telugu": ["క్యారెట్"], "Kannada": ["ಕ್ಯಾರೆಟ್"], "Malayalam": ["കാരറ്റ്"], "Urdu": ["گاجر"] },
+      "typos": ["carot", "carrt"],
+      "brands": []
+    },
+    "cucumber": {
+      "hindi": ["kheera", "khira"],
+      "english": ["cucumber"],
+      "all_langs": { "Hindi": ["खीरा"], "Marathi": ["काकडी"], "Bengali": ["শসা"], "Assamese": ["তিয়ঁহ"], "Gujarati": ["કાકડી"], "Punjabi": ["ਖੀਰਾ"], "Odia": ["କାକୁଡ଼ି"], "Tamil": ["வெள்ளரிக்காய்"], "Telugu": ["దోసకాయ"], "Kannada": ["ಸೌತೆಕಾಯಿ"], "Malayalam": ["വെള്ളരിക്ക"], "Urdu": ["کھیرا"] },
+      "typos": ["cucmber", "kheeraa"],
+      "brands": []
+    },
+    "capsicum": {
+      "hindi": ["shimla mirch"],
+      "english": ["capsicum", "bell pepper"],
+      "all_langs": { "Hindi": ["शिमला मिर्च"], "Marathi": ["ढोबळी मिरची"], "Bengali": ["ক্যাপসিকাম"], "Gujarati": ["કેપ્સિકમ"], "Punjabi": ["ਸ਼ਿਮਲਾ ਮਿਰਚ"], "Tamil": ["குடைமிளகாய்"], "Telugu": ["క్యాప్సికమ్"], "Kannada": ["ದೊಣ್ಣೆ ಮೆಣಸಿನಕಾಯಿ"], "Malayalam": ["കാപ്സിക്കം"], "Urdu": ["شملہ مرچ"] },
+      "typos": ["capsicam", "capcicum"],
+      "brands": []
+    },
+    "brinjal": {
+      "hindi": ["baingan", "bengan"],
+      "english": ["brinjal", "eggplant"],
+      "all_langs": { "Hindi": ["बैंगन"], "Marathi": ["वांगी"], "Bengali": ["বেগুন"], "Assamese": ["বেঙেনা"], "Gujarati": ["રીંગણ"], "Punjabi": ["ਬੈਂਗਣ"], "Odia": ["ବାଇଗଣ"], "Tamil": ["கத்தரிக்காய்"], "Telugu": ["వంకాయ"], "Kannada": ["ಬದನೆಕಾಯಿ"], "Malayalam": ["വഴുതനങ്ങ"], "Urdu": ["بینگن"] },
+      "typos": ["brinjl", "baigan"],
+      "brands": []
+    },
+    "okra": {
+      "hindi": ["bhindi"],
+      "english": ["okra", "lady finger", "ladyfinger"],
+      "all_langs": { "Hindi": ["भिंडी"], "Marathi": ["भेंडी"], "Bengali": ["ঢেঁড়স"], "Assamese": ["ভেণ্ডি"], "Gujarati": ["ભીંડા"], "Punjabi": ["ਭਿੰਡੀ"], "Odia": ["ଭେଣ୍ଡି"], "Tamil": ["வெண்டைக்காய்"], "Telugu": ["బెండకాయ"], "Kannada": ["ಬೆಂಡೆಕಾಯಿ"], "Malayalam": ["വെണ്ടയ്ക്ക"], "Urdu": ["بھنڈی"] },
+      "typos": ["bhindee", "ladyfiger"],
+      "brands": []
+    },
+    "peas": {
+      "hindi": ["matar", "mattar"],
+      "english": ["peas", "green peas", "frozen peas"],
+      "all_langs": { "Hindi": ["मटर"], "Marathi": ["वाटाणा"], "Bengali": ["মটরশুঁটি"], "Assamese": ["মটৰ"], "Gujarati": ["વટાણા"], "Punjabi": ["ਮਟਰ"], "Odia": ["ମଟର"], "Tamil": ["பட்டாணி"], "Telugu": ["బఠానీలు"], "Kannada": ["ಬಟಾಣಿ"], "Malayalam": ["പട്ടാണി"], "Urdu": ["مٹر"] },
+      "typos": ["pease", "matr"],
+      "brands": ["safal"]
+    },
+    "maida": {
+      "hindi": ["maida", "meda"],
+      "english": ["refined flour", "all purpose flour"],
+      "all_langs": { "Hindi": ["मैदा"], "Marathi": ["मैदा"], "Bengali": ["ময়দা"], "Assamese": ["ময়দা"], "Gujarati": ["મેંદો"], "Punjabi": ["ਮੈਦਾ"], "Odia": ["ମଇଦା"], "Tamil": ["மைதா"], "Telugu": ["మైదా"], "Kannada": ["ಮೈದಾ"], "Malayalam": ["മൈദ"], "Urdu": ["میدہ"] },
+      "typos": ["mayda", "maidaa"],
+      "brands": ["rajdhani"]
+    },
+    "besan": {
+      "hindi": ["besan", "besun"],
+      "english": ["gram flour", "chickpea flour"],
+      "all_langs": { "Hindi": ["बेसन"], "Marathi": ["बेसन"], "Bengali": ["বেসন"], "Assamese": ["বেচন"], "Gujarati": ["ચણાનો લોટ"], "Punjabi": ["ਵੇਸਣ"], "Odia": ["ବେସନ"], "Tamil": ["கடலை மாவு"], "Telugu": ["శనగపిండి"], "Kannada": ["ಕಡಲೆ ಹಿಟ್ಟು"], "Malayalam": ["കടലമാവ്"], "Urdu": ["بیسن"] },
+      "typos": ["besn", "bessan"],
+      "brands": []
+    },
+    "sooji": {
+      "hindi": ["sooji", "suji", "rava"],
+      "english": ["semolina", "rava", "sooji"],
+      "all_langs": { "Hindi": ["सूजी", "रवा"], "Marathi": ["रवा"], "Bengali": ["সুজি"], "Assamese": ["চুজি"], "Gujarati": ["સોજી"], "Punjabi": ["ਸੂਜੀ"], "Odia": ["ସୁଜି"], "Tamil": ["ரவை"], "Telugu": ["రవ్వ"], "Kannada": ["ರವೆ"], "Malayalam": ["റവ"], "Urdu": ["سوجی"] },
+      "typos": ["soji", "sujji"],
+      "brands": []
+    },
+    "baby food": {
+      "hindi": ["bacchon ka khana", "baby khana"],
+      "english": ["baby food", "infant cereal", "baby cereal"],
+      "all_langs": { "Hindi": ["बेबी फूड", "बच्चों का खाना"] },
+      "typos": ["babyfood", "baby fod"],
+      "brands": ["cerelac", "nestum"]
+    },
+    "baby wipes": {
+      "hindi": ["baby wipes", "geele tissue"],
+      "english": ["baby wipes", "wet wipes"],
+      "all_langs": { "Hindi": ["बेबी वाइप्स"] },
+      "typos": ["baby wips", "babywipes"],
+      "brands": ["mamaearth", "himalaya baby"]
+    },
+    "chicken": {
+      "hindi": ["murga", "murgi", "chicken"],
+      "english": ["chicken", "chicken curry cut", "boneless chicken"],
+      "all_langs": { "Hindi": ["चिकन", "मुर्गा"], "Marathi": ["कोंबडी"], "Bengali": ["মুরগি"], "Assamese": ["কুকুৰা"], "Gujarati": ["ચિકન"], "Punjabi": ["ਮੁਰਗਾ"], "Odia": ["ଚିକେନ"], "Tamil": ["கோழி"], "Telugu": ["కోడి"], "Kannada": ["ಕೋಳಿ"], "Malayalam": ["കോഴി"], "Urdu": ["مرغی"] },
+      "typos": ["chiken", "chikn", "chicen"],
+      "brands": ["licious"]
+    },
+    "mutton": {
+      "hindi": ["mutton", "bakre ka gosht", "gosht"],
+      "english": ["mutton", "goat meat"],
+      "all_langs": { "Hindi": ["मटन", "बकरे का गोश्त"], "Urdu": ["مٹن", "گوشت"], "Tamil": ["ஆட்டுக்கறி"], "Telugu": ["మటన్"], "Bengali": ["খাসির মাংস"] },
+      "typos": ["muton", "mutten"],
+      "brands": []
+    },
+    "fish": {
+      "hindi": ["machli", "machhli"],
+      "english": ["fish", "fish fillet", "rohu"],
+      "all_langs": { "Hindi": ["मछली"], "Marathi": ["मासे"], "Bengali": ["মাছ"], "Assamese": ["মাছ"], "Gujarati": ["માછલી"], "Punjabi": ["ਮੱਛੀ"], "Odia": ["ମାଛ"], "Tamil": ["மீன்"], "Telugu": ["చేప"], "Kannada": ["ಮೀನು"], "Malayalam": ["മീൻ"], "Urdu": ["مچھلی"] },
+      "typos": ["fsh", "machhali"],
+      "brands": []
+    },
+    "toothbrush": {
+      "hindi": ["daant ka brush", "dant brush"],
+      "english": ["toothbrush", "tooth brush"],
+      "all_langs": { "Hindi": ["टूथब्रश"] },
+      "typos": ["toothbrsh", "tooth bursh"],
+      "brands": ["oral b"]
+    },
+    "face wash": {
+      "hindi": ["face wash", "chehra dhone wala"],
+      "english": ["face wash", "facewash", "face cleanser"],
+      "all_langs": { "Hindi": ["फेस वॉश"] },
+      "typos": ["facewsh", "fase wash"],
+      "brands": ["garnier", "ponds", "clean and clear", "himalaya"]
+    },
+    "deodorant": {
+      "hindi": ["deo", "perfume spray"],
+      "english": ["deodorant", "deo", "body spray", "perfume"],
+      "all_langs": { "Hindi": ["डियो", "डिओडोरेंट"] },
+      "typos": ["deodrant", "dio"],
+      "brands": ["axe", "fogg", "park avenue"]
+    },
+    "body lotion": {
+      "hindi": ["lotion", "body lotion"],
+      "english": ["body lotion", "moisturizer", "moisturiser", "skin lotion"],
+      "all_langs": { "Hindi": ["बॉडी लोशन"] },
+      "typos": ["lotin", "body loshan"],
+      "brands": ["nivea", "vaseline"]
+    },
+    "razor": {
+      "hindi": ["razor", "shaving"],
+      "english": ["razor", "shaving razor", "shaving cream"],
+      "all_langs": { "Hindi": ["रेज़र"] },
+      "typos": ["rezor", "razer"],
+      "brands": ["gillette"]
+    },
+    "hand sanitizer": {
+      "hindi": ["sanitizer", "haath saaf karne wala"],
+      "english": ["hand sanitizer", "sanitiser", "hand sanitiser"],
+      "all_langs": { "Hindi": ["सैनिटाइज़र"] },
+      "typos": ["sanitzer", "sanitaizer"],
+      "brands": ["purell"]
+    },
+    "agarbatti": {
+      "hindi": ["agarbatti", "dhoop"],
+      "english": ["incense sticks", "agarbatti", "incense"],
+      "all_langs": { "Hindi": ["अगरबत्ती", "धूप"], "Marathi": ["उदबत्ती"], "Bengali": ["ধূপকাঠি"], "Assamese": ["ধূপ"], "Gujarati": ["અગરબત્તી"], "Punjabi": ["ਅਗਰਬੱਤੀ"], "Odia": ["ଅଗରବତି"], "Tamil": ["ஊதுபத்தி"], "Telugu": ["అగరుబత్తి"], "Kannada": ["ಊದುಬತ್ತಿ"], "Malayalam": ["ചന്ദനത്തിരി"], "Urdu": ["اگربتی"] },
+      "typos": ["agarbati", "agarbathi"],
+      "brands": ["cycle", "zed black", "mangaldeep"]
+    },
+    "matchbox": {
+      "hindi": ["machis", "maachis", "diyasalai"],
+      "english": ["matchbox", "matches", "match box"],
+      "all_langs": { "Hindi": ["माचिस"] },
+      "typos": ["matchbx", "machiss"],
+      "brands": []
+    },
+    "batteries": {
+      "hindi": ["battery", "cell"],
+      "english": ["battery", "batteries", "aa battery", "aaa battery"],
+      "all_langs": { "Hindi": ["बैटरी", "सेल"] },
+      "typos": ["batery", "battary"],
+      "brands": ["duracell", "eveready"]
+    },
+    "tissue paper": {
+      "hindi": ["tissue", "tissue paper"],
+      "english": ["tissue paper", "tissues", "paper napkin", "facial tissue"],
+      "all_langs": { "Hindi": ["टिश्यू पेपर"] },
+      "typos": ["tisue", "tishu"],
+      "brands": ["origami", "premier"]
+    },
+    "garbage bags": {
+      "hindi": ["kachra bag", "kude ki thaili", "dustbin bag"],
+      "english": ["garbage bags", "dustbin bags", "trash bags"],
+      "all_langs": { "Hindi": ["कचरा बैग"] },
+      "typos": ["garbge bag", "garbage bag"],
+      "brands": ["presto garbage", "gala"]
+    },
+    "aluminium foil": {
+      "hindi": ["foil", "silver foil", "chandi paper"],
+      "english": ["aluminium foil", "aluminum foil", "kitchen foil"],
+      "all_langs": { "Hindi": ["एल्युमिनियम फॉयल"] },
+      "typos": ["aluminiun foil", "foyal"],
+      "brands": ["freshwrapp", "hindalco"]
+    },
+    "turmeric": {
+      "hindi": ["haldi", "haldi powder"],
+      "english": ["turmeric", "turmeric powder"],
+      "all_langs": { "Hindi": ["हल्दी"], "Marathi": ["हळद"], "Bengali": ["হলুদ"], "Assamese": ["হালধি"], "Gujarati": ["હળદર"], "Punjabi": ["ਹਲਦੀ"], "Odia": ["ହଳଦୀ"], "Tamil": ["மஞ்சள்"], "Telugu": ["పసుపు"], "Kannada": ["ಅರಿಶಿನ"], "Malayalam": ["മഞ്ഞൾ"], "Urdu": ["ہلدی"] },
+      "typos": ["turmric", "haldee"],
+      "brands": ["everest", "mdh"]
+    },
+    "chilli powder": {
+      "hindi": ["lal mirch", "lal mirch powder", "mirchi powder"],
+      "english": ["red chilli powder", "chilli powder"],
+      "all_langs": { "Hindi": ["लाल मिर्च"], "Marathi": ["लाल तिखट"], "Bengali": ["লঙ্কা গুঁড়ো"], "Gujarati": ["લાલ મરચું"], "Punjabi": ["ਲਾਲ ਮਿਰਚ"], "Tamil": ["மிளகாய் தூள்"], "Telugu": ["కారం"], "Kannada": ["ಖಾರದ ಪುಡಿ"], "Malayalam": ["മുളകുപൊടി"], "Urdu": ["لال مرچ"] },
+      "typos": ["chili powder", "chilly powder"],
+      "brands": []
+    },
+    "jeera": {
+      "hindi": ["jeera", "zeera"],
+      "english": ["cumin", "cumin seeds", "jeera"],
+      "all_langs": { "Hindi": ["जीरा"], "Marathi": ["जिरे"], "Bengali": ["জিরা"], "Assamese": ["জিৰা"], "Gujarati": ["જીરું"], "Punjabi": ["ਜ਼ੀਰਾ"], "Odia": ["ଜିରା"], "Tamil": ["சீரகம்"], "Telugu": ["జీలకర్ర"], "Kannada": ["ಜೀರಿಗೆ"], "Malayalam": ["ജീരകം"], "Urdu": ["زیرہ"] },
+      "typos": ["jira", "cumen"],
+      "brands": []
+    },
+    "garam masala": {
+      "hindi": ["garam masala", "sabzi masala"],
+      "english": ["garam masala", "spice mix", "curry masala"],
+      "all_langs": { "Hindi": ["गरम मसाला"] },
+      "typos": ["garam masal", "garm masala"],
+      "brands": []
+    },
+    "coriander powder": {
+      "hindi": ["dhaniya powder", "dhania powder"],
+      "english": ["coriander powder"],
+      "all_langs": { "Hindi": ["धनिया पाउडर"], "Marathi": ["धणे पूड"], "Bengali": ["ধনে গুঁড়ো"], "Gujarati": ["ધાણા પાવડર"], "Punjabi": ["ਧਨੀਆ ਪਾਊਡਰ"], "Tamil": ["மல்லித்தூள்"], "Telugu": ["ధనియాల పొడి"], "Kannada": ["ಕೊತ್ತಂಬರಿ ಪುಡಿ"], "Malayalam": ["മല്ലിപ്പൊടി"], "Urdu": ["دھنیا پاؤڈر"] },
+      "typos": ["corriander powder"],
+      "brands": []
+    },
+    "pasta": {
+      "hindi": ["pasta", "macaroni"],
+      "english": ["pasta", "penne", "macaroni", "spaghetti"],
+      "all_langs": { "Hindi": ["पास्ता"] },
+      "typos": ["pastaa", "macroni"],
+      "brands": ["bambino", "borges"]
+    },
+    "jam": {
+      "hindi": ["jam", "fruit jam"],
+      "english": ["jam", "fruit jam", "mixed fruit jam"],
+      "all_langs": { "Hindi": ["जैम"] },
+      "typos": ["jaam", "jem"],
+      "brands": ["mapro"]
+    },
+    "peanut butter": {
+      "hindi": ["peanut butter", "mungfali makhan"],
+      "english": ["peanut butter"],
+      "all_langs": { "Hindi": ["पीनट बटर"] },
+      "typos": ["penut butter", "peanut buter"],
+      "brands": ["pintola", "sundrop"]
+    },
+    "soda": {
+      "hindi": ["soda", "soda water"],
+      "english": ["soda", "club soda", "soda water"],
+      "all_langs": { "Hindi": ["सोडा"] },
+      "typos": ["sodaa"],
+      "brands": []
+    },
+    "coconut water": {
+      "hindi": ["nariyal pani", "nariyal paani", "daab"],
+      "english": ["coconut water", "tender coconut"],
+      "all_langs": { "Hindi": ["नारियल पानी"], "Marathi": ["नारळ पाणी"], "Bengali": ["ডাবের জল"], "Gujarati": ["નાળિયેર પાણી"], "Punjabi": ["ਨਾਰੀਅਲ ਪਾਣੀ"], "Tamil": ["இளநீர்"], "Telugu": ["కొబ్బరి నీళ్ళు"], "Kannada": ["ಎಳನೀರು"], "Malayalam": ["ഇളനീർ"], "Urdu": ["ناریل پانی"] },
+      "typos": ["coconut watr", "nariyal pni"],
+      "brands": []
+    },
+    "health drink": {
+      "hindi": ["health drink", "doodh wala powder"],
+      "english": ["health drink", "malt drink", "chocolate health drink"],
+      "all_langs": { "Hindi": ["हेल्थ ड्रिंक"] },
+      "typos": ["helth drink"],
+      "brands": ["bournvita", "horlicks", "complan"]
+    },
+    "cake": {
+      "hindi": ["cake", "pastry"],
+      "english": ["cake", "muffin", "pastry"],
+      "all_langs": { "Hindi": ["केक"] },
+      "typos": ["caek", "keak"],
+      "brands": ["winkies"]
+    },
+    "pav": {
+      "hindi": ["pav", "pao", "ladi pav"],
+      "english": ["pav", "dinner rolls", "burger bun", "bun"],
+      "all_langs": { "Hindi": ["पाव"], "Marathi": ["पाव"], "Gujarati": ["પાઉં"] },
+      "typos": ["paav"],
+      "brands": []
+    },
+    "paratha": {
+      "hindi": ["paratha", "parantha", "frozen paratha"],
+      "english": ["frozen paratha", "malabar paratha"],
+      "all_langs": { "Hindi": ["पराठा"] },
+      "typos": ["parata", "paratah"],
+      "brands": []
+    },
+    "almonds": {
+      "hindi": ["badam"],
+      "english": ["almonds", "badam giri"],
+      "all_langs": { "Hindi": ["बादाम"], "Marathi": ["बदाम"], "Bengali": ["কাঠবাদাম"], "Assamese": ["বাদাম"], "Gujarati": ["બદામ"], "Punjabi": ["ਬਦਾਮ"], "Odia": ["ବାଦାମ"], "Tamil": ["பாதாம்"], "Telugu": ["బాదం"], "Kannada": ["ಬಾದಾಮಿ"], "Malayalam": ["ബദാം"], "Urdu": ["بادام"] },
+      "typos": ["almnds", "badaam"],
+      "brands": []
+    },
+    "cashew": {
+      "hindi": ["kaju"],
+      "english": ["cashew", "cashews", "cashew nuts"],
+      "all_langs": { "Hindi": ["काजू"], "Marathi": ["काजू"], "Bengali": ["কাজু"], "Assamese": ["কাজু"], "Gujarati": ["કાજુ"], "Punjabi": ["ਕਾਜੂ"], "Odia": ["କାଜୁ"], "Tamil": ["முந்திரி"], "Telugu": ["జీడిపప్పు"], "Kannada": ["ಗೋಡಂಬಿ"], "Malayalam": ["കശുവണ്ടി"], "Urdu": ["کاجو"] },
+      "typos": ["cashw", "kaaju"],
+      "brands": []
+    },
+    "raisins": {
+      "hindi": ["kishmish", "kismis"],
+      "english": ["raisins", "dry grapes"],
+      "all_langs": { "Hindi": ["किशमिश"], "Marathi": ["बेदाणे"], "Bengali": ["কিশমিশ"], "Assamese": ["কিচমিচ"], "Gujarati": ["કિસમિસ"], "Punjabi": ["ਕਿਸ਼ਮਿਸ਼"], "Odia": ["କିସମିସ"], "Tamil": ["உலர் திராட்சை"], "Telugu": ["ఎండు ద్రాక్ష"], "Kannada": ["ಒಣ ದ್ರಾಕ್ಷಿ"], "Malayalam": ["ഉണക്കമുന്തിരി"], "Urdu": ["کشمش"] },
+      "typos": ["raisin", "kishmis"],
+      "brands": []
+    }
+  }
+}

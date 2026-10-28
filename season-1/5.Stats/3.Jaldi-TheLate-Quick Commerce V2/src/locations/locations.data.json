@@ -1,0 +1,128 @@
+{
+  "about": "Demo dark stores. Pincode coordinates are approximate area centers. Pincodes no store serves are on purpose: they show up as demand where a new store could open. langMix drives the fake traffic.",
+  "cities": [
+    {
+      "name": "Delhi", "state": "Delhi", "weight": 20, "langMix": { "Hinglish": 60, "Hindi": 15, "English": 25 },
+      "pincodes": [
+        ["110001", "Connaught Place", 28.6315, 77.2167], ["110002", "Daryaganj", 28.6448, 77.241], ["110005", "Karol Bagh", 28.6519, 77.1909],
+        ["110016", "Hauz Khas", 28.5494, 77.2001], ["110017", "Malviya Nagar", 28.5355, 77.21], ["110019", "Kalkaji", 28.5494, 77.2588],
+        ["110024", "Lajpat Nagar", 28.5677, 77.2433], ["110025", "Okhla", 28.5623, 77.28], ["110048", "Greater Kailash", 28.5482, 77.2386],
+        ["110058", "Janakpuri", 28.6219, 77.0878], ["110075", "Dwarka", 28.5921, 77.046], ["110034", "Pitampura", 28.6981, 77.1384],
+        ["110085", "Rohini", 28.7167, 77.1167], ["110052", "Ashok Vihar", 28.695, 77.176], ["110092", "Laxmi Nagar", 28.6304, 77.2771],
+        ["110091", "Mayur Vihar", 28.6077, 77.2922], ["110070", "Vasant Kunj", 28.52, 77.159]
+      ],
+      "stores": [
+        { "id": "del-cp", "name": "Connaught Place", "pin": "110001", "serves": ["110001", "110002", "110005"] },
+        { "id": "del-lajpat", "name": "Lajpat Nagar", "pin": "110024", "serves": ["110024", "110048", "110019", "110017", "110016", "110025"] },
+        { "id": "del-janakpuri", "name": "Janakpuri", "pin": "110058", "serves": ["110058", "110075"] }
+      ]
+    },
+    {
+      "name": "Mumbai", "state": "Maharashtra", "weight": 20, "langMix": { "Hinglish": 45, "Marathi": 10, "Hindi": 5, "English": 40 },
+      "pincodes": [
+        ["400001", "Fort", 18.9339, 72.8355], ["400005", "Colaba", 18.9067, 72.8147], ["400007", "Grant Road", 18.9633, 72.816],
+        ["400016", "Mahim", 19.041, 72.841], ["400028", "Dadar", 19.0213, 72.8424], ["400050", "Bandra West", 19.0596, 72.8295],
+        ["400052", "Khar", 19.07, 72.837], ["400054", "Santacruz", 19.081, 72.841], ["400058", "Andheri West", 19.1364, 72.8296],
+        ["400069", "Andheri East", 19.1136, 72.8697], ["400076", "Powai", 19.1176, 72.906], ["400064", "Malad West", 19.186, 72.8485],
+        ["400080", "Mulund", 19.1726, 72.9565], ["400092", "Borivali West", 19.2307, 72.8567], ["400101", "Kandivali East", 19.205, 72.869],
+        ["400601", "Thane West", 19.2183, 72.9781], ["400703", "Vashi", 19.0771, 72.9986]
+      ],
+      "stores": [
+        { "id": "mum-fort", "name": "Fort", "pin": "400001", "serves": ["400001", "400005", "400007"] },
+        { "id": "mum-bandra", "name": "Bandra", "pin": "400050", "serves": ["400050", "400052", "400054", "400016", "400028"] },
+        { "id": "mum-andheri", "name": "Andheri", "pin": "400058", "serves": ["400058", "400069", "400076", "400064"] }
+      ]
+    },
+    {
+      "name": "Bengaluru", "state": "Karnataka", "weight": 16, "langMix": { "English": 50, "Hinglish": 25, "Kannada": 15, "Tamil": 5, "Telugu": 5 },
+      "pincodes": [
+        ["560001", "MG Road", 12.9757, 77.6011], ["560038", "Indiranagar", 12.9719, 77.6412], ["560034", "Koramangala", 12.9352, 77.6245],
+        ["560102", "HSR Layout", 12.9116, 77.6474], ["560068", "Bommanahalli", 12.902, 77.623], ["560076", "BTM Layout", 12.9166, 77.6101],
+        ["560041", "Jayanagar", 12.925, 77.5938], ["560070", "Banashankari", 12.9255, 77.5468], ["560078", "JP Nagar", 12.9063, 77.5857],
+        ["560037", "Marathahalli", 12.9569, 77.7011], ["560103", "Bellandur", 12.926, 77.6762], ["560010", "Rajajinagar", 12.991, 77.555],
+        ["560003", "Malleshwaram", 13.0031, 77.5643], ["560066", "Whitefield", 12.9698, 77.75], ["560100", "Electronic City", 12.8452, 77.6602],
+        ["560024", "Hebbal", 13.0358, 77.597]
+      ],
+      "stores": [
+        { "id": "blr-koramangala", "name": "Koramangala", "pin": "560034", "serves": ["560034", "560102", "560068", "560076"] },
+        { "id": "blr-indiranagar", "name": "Indiranagar", "pin": "560038", "serves": ["560038", "560001", "560037", "560103"] },
+        { "id": "blr-jayanagar", "name": "Jayanagar", "pin": "560041", "serves": ["560041", "560070", "560078", "560010", "560003"] }
+      ]
+    },
+    {
+      "name": "Hyderabad", "state": "Telangana", "weight": 12, "langMix": { "English": 40, "Telugu": 25, "Hinglish": 25, "Urdu": 10 },
+      "pincodes": [
+        ["500001", "Abids", 17.392, 78.474], ["500003", "Secunderabad", 17.4399, 78.4983], ["500004", "Khairatabad", 17.411, 78.46],
+        ["500016", "Begumpet", 17.4448, 78.4664], ["500032", "Gachibowli", 17.4401, 78.3489], ["500033", "Jubilee Hills", 17.4325, 78.4073],
+        ["500034", "Banjara Hills", 17.4156, 78.4347], ["500038", "Ameerpet", 17.4375, 78.4482], ["500081", "Madhapur", 17.4483, 78.3915],
+        ["500084", "Kondapur", 17.46, 78.36], ["500072", "Kukatpally", 17.4849, 78.4138], ["500060", "Dilsukhnagar", 17.3688, 78.5247],
+        ["500008", "Tolichowki", 17.395, 78.41], ["500049", "Miyapur", 17.4968, 78.3614]
+      ],
+      "stores": [
+        { "id": "hyd-banjara", "name": "Banjara Hills", "pin": "500034", "serves": ["500034", "500033", "500004", "500038", "500016"] },
+        { "id": "hyd-madhapur", "name": "Madhapur", "pin": "500081", "serves": ["500081", "500032", "500084"] },
+        { "id": "hyd-secunderabad", "name": "Secunderabad", "pin": "500003", "serves": ["500003", "500001"] }
+      ]
+    },
+    {
+      "name": "Chennai", "state": "Tamil Nadu", "weight": 10, "langMix": { "English": 50, "Tamil": 40, "Hinglish": 10 },
+      "pincodes": [
+        ["600001", "George Town", 13.095, 80.288], ["600002", "Anna Salai", 13.064, 80.262], ["600004", "Mylapore", 13.0339, 80.2619],
+        ["600017", "T Nagar", 13.0418, 80.2341], ["600020", "Adyar", 13.0067, 80.257], ["600024", "Kodambakkam", 13.052, 80.225],
+        ["600040", "Anna Nagar", 13.085, 80.2101], ["600041", "Thiruvanmiyur", 12.983, 80.2594], ["600042", "Velachery", 12.9815, 80.218],
+        ["600083", "Ashok Nagar", 13.035, 80.212], ["600096", "Perungudi", 12.9654, 80.2461], ["600106", "Arumbakkam", 13.072, 80.21],
+        ["600044", "Chromepet", 12.9516, 80.1462], ["600053", "Ambattur", 13.1143, 80.1548], ["600100", "Medavakkam", 12.917, 80.192]
+      ],
+      "stores": [
+        { "id": "che-tnagar", "name": "T Nagar", "pin": "600017", "serves": ["600017", "600083", "600024", "600004"] },
+        { "id": "che-adyar", "name": "Adyar", "pin": "600020", "serves": ["600020", "600041", "600042", "600096"] },
+        { "id": "che-annanagar", "name": "Anna Nagar", "pin": "600040", "serves": ["600040", "600106", "600002", "600001"] }
+      ]
+    },
+    {
+      "name": "Kolkata", "state": "West Bengal", "weight": 10, "langMix": { "Bengali": 40, "English": 35, "Hinglish": 25 },
+      "pincodes": [
+        ["700001", "BBD Bagh", 22.5726, 88.3511], ["700016", "Park Street", 22.553, 88.353], ["700019", "Ballygunge", 22.527, 88.365],
+        ["700020", "Bhowanipore", 22.535, 88.346], ["700026", "Kalighat", 22.5203, 88.3436], ["700027", "Alipore", 22.528, 88.333],
+        ["700029", "Gariahat", 22.518, 88.367], ["700032", "Jadavpur", 22.499, 88.371], ["700054", "Kankurgachi", 22.579, 88.392],
+        ["700064", "Salt Lake", 22.58, 88.415], ["700091", "Salt Lake Sector V", 22.576, 88.433], ["700156", "New Town", 22.58, 88.47],
+        ["700034", "Behala", 22.498, 88.31], ["700084", "Garia", 22.463, 88.398], ["700004", "Shyambazar", 22.6, 88.373]
+      ],
+      "stores": [
+        { "id": "kol-parkstreet", "name": "Park Street", "pin": "700016", "serves": ["700016", "700001", "700020", "700027"] },
+        { "id": "kol-ballygunge", "name": "Ballygunge", "pin": "700019", "serves": ["700019", "700029", "700026", "700032"] },
+        { "id": "kol-saltlake", "name": "Salt Lake", "pin": "700064", "serves": ["700064", "700091", "700054"] }
+      ]
+    },
+    {
+      "name": "Pune", "state": "Maharashtra", "weight": 7, "langMix": { "English": 40, "Hinglish": 35, "Marathi": 25 },
+      "pincodes": [
+        ["411001", "Camp", 18.5167, 73.879], ["411004", "Deccan Gymkhana", 18.5167, 73.84], ["411005", "Shivajinagar", 18.5308, 73.8475],
+        ["411006", "Yerawada", 18.552, 73.889], ["411007", "Aundh", 18.559, 73.807], ["411014", "Viman Nagar", 18.5679, 73.9143],
+        ["411028", "Hadapsar", 18.5089, 73.926], ["411030", "Sadashiv Peth", 18.51, 73.85], ["411038", "Kothrud", 18.5074, 73.8077],
+        ["411040", "Wanowrie", 18.49, 73.9], ["411045", "Baner", 18.559, 73.7868], ["411057", "Hinjewadi", 18.5913, 73.7389],
+        ["411048", "Kondhwa", 18.463, 73.89], ["411018", "Pimpri", 18.6279, 73.8009]
+      ],
+      "stores": [
+        { "id": "pun-camp", "name": "Camp", "pin": "411001", "serves": ["411001", "411030", "411040", "411004"] },
+        { "id": "pun-kothrud", "name": "Kothrud", "pin": "411038", "serves": ["411038", "411005", "411007"] },
+        { "id": "pun-vimannagar", "name": "Viman Nagar", "pin": "411014", "serves": ["411014", "411006", "411028"] }
+      ]
+    },
+    {
+      "name": "Ahmedabad", "state": "Gujarat", "weight": 5, "langMix": { "Gujarati": 35, "Hinglish": 35, "English": 30 },
+      "pincodes": [
+        ["380001", "Old City", 23.0225, 72.58], ["380007", "Paldi", 23.012, 72.56], ["380008", "Maninagar", 22.996, 72.603],
+        ["380009", "Navrangpura", 23.0365, 72.5611], ["380013", "Naranpura", 23.056, 72.555], ["380015", "Satellite", 23.0275, 72.524],
+        ["380051", "Vejalpur", 23.003, 72.52], ["380054", "Bodakdev", 23.04, 72.51], ["380058", "Bopal", 23.03, 72.47],
+        ["380059", "Thaltej", 23.05, 72.5], ["380061", "Ghatlodia", 23.07, 72.54], ["380005", "Sabarmati", 23.08, 72.59],
+        ["382424", "Chandkheda", 23.109, 72.585], ["382481", "Gota", 23.1, 72.54]
+      ],
+      "stores": [
+        { "id": "amd-navrangpura", "name": "Navrangpura", "pin": "380009", "serves": ["380009", "380013", "380061", "380005"] },
+        { "id": "amd-satellite", "name": "Satellite", "pin": "380015", "serves": ["380015", "380054", "380059", "380051", "380058"] },
+        { "id": "amd-oldcity", "name": "Old City", "pin": "380001", "serves": ["380001", "380007", "380008"] }
+      ]
+    }
+  ]
+}

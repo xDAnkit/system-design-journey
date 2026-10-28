@@ -1,0 +1,70 @@
+{
+  "name": "quick-commerce-search",
+  "version": "1.0.0",
+  "description": "Multilingual quick commerce search: Typesense hybrid search, Ollama AI tags and vectors, Kafka pipeline, analytics dashboard",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsup --minify --watch --onSuccess \"node dist/workers.js & W=$!; node dist/server.js; kill $W 2>/dev/null\"",
+    "build": "tsup",
+    "build:prod": "tsup --minify --clean",
+    "start:prod": "pnpm build:prod && NODE_ENV=production MONGO_MODE=replica node dist/server.js",
+    "start:test": "pnpm build:prod && NODE_ENV=test node dist/server.js",
+    "workers": "tsup && node dist/workers.js",
+    "workers:test": "tsup && NODE_ENV=test node dist/workers.js",
+    "ai:check": "tsup && node dist/ai-check.js",
+    "seed:products": "tsup && node dist/seed-products.js",
+    "seed:test": "tsup && NODE_ENV=test node dist/seed-products.js",
+    "seed:traffic": "tsup && node dist/seed-traffic.js",
+    "reindex": "tsup && node dist/reindex.js",
+    "eval:search": "tsup && node dist/eval-search.js",
+    "check": "tsup && node dist/checks.js",
+    "typecheck": "tsc --noEmit",
+    "typesense:up": "docker compose --env-file .env -f infra/typesense/compose.yaml up -d",
+    "typesense:stop": "docker compose --env-file .env -f infra/typesense/compose.yaml stop",
+    "typesense:down": "docker compose --env-file .env -f infra/typesense/compose.yaml down",
+    "typesense:status": "docker compose --env-file .env -f infra/typesense/compose.yaml ps",
+    "typesense:logs": "docker compose --env-file .env -f infra/typesense/compose.yaml logs -f --tail=100 typesense",
+    "mongo:up": "node scripts/mongo-preflight.mjs && docker compose -f infra/mongo/compose.yaml up -d",
+    "mongo:down": "docker compose -f infra/mongo/compose.yaml down",
+    "mongo:status": "bash infra/mongo/status.sh",
+    "kafka:up": "docker compose -f infra/kafka/compose.yaml up -d",
+    "kafka:stop": "docker compose -f infra/kafka/compose.yaml stop",
+    "kafka:down": "docker compose -f infra/kafka/compose.yaml down",
+    "kafka:status": "docker compose -f infra/kafka/compose.yaml ps",
+    "kafka:logs": "docker compose -f infra/kafka/compose.yaml logs -f --tail=100 kafka",
+    "kafka:reset": "docker compose -f infra/kafka/compose.yaml down -v && docker compose -f infra/kafka/compose.yaml up -d"
+  },
+  "dependencies": {
+    "@confluentinc/kafka-javascript": "^1.11.0",
+    "@fastify/compress": "^9.2.0",
+    "@fastify/cors": "^11.3.0",
+    "@fastify/static": "^10.1.8",
+    "@fastify/swagger": "^9.9.0",
+    "@fastify/swagger-ui": "^6.1.1",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.12.5",
+    "mongoose": "^9.9.5",
+    "redis": "^6.2.1",
+    "swagger-jsdoc": "^6.3.0",
+    "typesense": "^3.2.0",
+    "winston": "^3.19.0",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "tsup": "^8.5.1",
+    "typescript": "^7.0.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.5.2",
+      "onFail": "download"
+    }
+  },
+  "type": "module"
+}

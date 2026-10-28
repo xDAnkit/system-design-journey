@@ -1,0 +1,43 @@
+{
+  "key": "personal-care",
+  "label": "Personal Care",
+  "icon": "spa",
+  "categories": {
+    "soap": { "label": "Bathing Soap", "icon": "soap", "core": true, "items": [
+      { "name": "Bathing Soap", "brands": ["Lux", "Lifebuoy", "Santoor", "Pears", "Dove", "Cinthol", "Medimix"], "variants": ["Soft Glow", "Total", "Sandal", "Original", "Moisturising"], "sizes": ["100 g", "125 g", "4 x 100 g"], "price": [35, 60] }
+    ] },
+    "shampoo": { "label": "Shampoo", "icon": "shower", "items": [
+      { "name": "Shampoo", "brands": ["Clinic Plus", "Head & Shoulders", "Sunsilk", "Pantene", "Dove"], "variants": ["Strong & Long", "Anti Dandruff", "Smooth & Silky", "Hair Fall Rescue"], "sizes": ["80 ml", "180 ml", "340 ml", "650 ml"], "price": [60, 90] }
+    ] },
+    "hair oil": { "label": "Hair Oil", "icon": "spa", "items": [
+      { "name": "Hair Oil", "brands": ["Parachute", "Dabur Amla", "Bajaj Almond Drops", "Navratna", "Indulekha"], "variants": ["Coconut", "Amla", "Almond", "Cool"], "sizes": ["100 ml", "250 ml", "500 ml"], "price": [50, 100] }
+    ] },
+    "toothpaste": { "label": "Toothpaste", "icon": "dentistry", "core": true, "items": [
+      { "name": "Toothpaste", "brands": ["Colgate", "Pepsodent", "Close Up", "Sensodyne", "Dabur Red"], "variants": ["Strong Teeth", "Fresh Gel", "Herbal", "Sensitive", "Whitening"], "sizes": ["100 g", "150 g", "200 g"], "price": [50, 90] }
+    ] },
+    "toothbrush": { "label": "Toothbrush", "icon": "dentistry", "items": [
+      { "name": "Toothbrush", "brands": ["Colgate", "Oral-B", "Pepsodent"], "variants": ["Soft", "Medium", "Charcoal"], "sizes": ["1 pc", "4 pcs"], "price": [30, 60] }
+    ] },
+    "face wash": { "label": "Face Wash", "icon": "face", "items": [
+      { "name": "Face Wash", "brands": ["Himalaya", "Garnier", "Ponds", "Clean & Clear", "Mamaearth"], "variants": ["Neem", "Oil Control", "Brightening", "Vitamin C"], "sizes": ["50 g", "100 g", "150 g"], "price": [100, 200] }
+    ] },
+    "deodorant": { "label": "Deodorant", "icon": "air", "items": [
+      { "name": "Deodorant", "brands": ["Axe", "Fogg", "Park Avenue", "Nivea"], "variants": ["Signature", "Fresh", "Cool", "Intense"], "sizes": ["150 ml", "220 ml"], "price": [180, 280] }
+    ] },
+    "body lotion": { "label": "Body Lotion", "icon": "spa", "items": [
+      { "name": "Body Lotion", "brands": ["Nivea", "Vaseline", "Ponds"], "variants": ["Nourishing", "Aloe", "Cocoa Butter"], "sizes": ["100 ml", "200 ml", "400 ml"], "price": [150, 250] }
+    ] },
+    "razor": { "label": "Razor", "icon": "content_cut", "items": [
+      { "name": "Razor", "brands": ["Gillette", "Bombay Shaving Company"], "variants": ["Mach3", "Guard", "Presto"], "sizes": ["1 pc", "3 pcs"], "price": [50, 250] }
+    ] },
+    "sanitary pad": { "label": "Sanitary Pads", "icon": "health_and_safety", "items": [
+      { "name": "Sanitary Pads", "brands": ["Whisper", "Stayfree", "Sofy", "Nua"], "variants": ["Ultra Clean XL", "Choice", "Overnight", "Regular"], "sizes": ["7 pcs", "15 pcs", "30 pcs"], "price": [40, 80] }
+    ] },
+    "handwash": { "label": "Handwash", "icon": "wash", "items": [
+      { "name": "Liquid Handwash", "brands": ["Dettol", "Lifebuoy", "Savlon", "Palmolive"], "variants": ["Original", "Total", "Aloe", "Lemon"], "sizes": ["200 ml", "750 ml"], "price": [90, 110] }
+    ] },
+    "hand sanitizer": { "label": "Hand Sanitizer", "icon": "sanitizer", "items": [
+      { "name": "Hand Sanitizer", "brands": ["Dettol", "Savlon", "Lifebuoy"], "variants": ["Original", "Aloe"], "sizes": ["50 ml", "200 ml", "500 ml"], "price": [25, 40] }
+    ] }
+  }
+}

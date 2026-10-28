@@ -1,0 +1,47 @@
+{
+  "key": "baby-pet-pharmacy",
+  "label": "Baby, Pet, Pharmacy & Meat",
+  "icon": "medication",
+  "categories": {
+    "diapers": { "label": "Diapers", "icon": "child_care", "items": [
+      { "name": "Diaper Pants", "brands": ["Pampers", "Huggies", "MamyPoko"], "variants": ["Small", "Medium", "Large", "New Born"], "sizes": ["20 pcs", "42 pcs", "76 pcs"], "price": [300, 500] }
+    ] },
+    "baby food": { "label": "Baby Food", "icon": "child_friendly", "items": [
+      { "name": "Baby Cereal", "brands": ["Cerelac", "Nestum"], "variants": ["Wheat Apple", "Rice", "Multigrain"], "sizes": ["300 g"], "price": [230, 300] }
+    ] },
+    "baby wipes": { "label": "Baby Wipes", "icon": "child_care", "items": [
+      { "name": "Baby Wipes", "brands": ["Pampers", "Himalaya Baby", "Mamaearth"], "variants": ["Aloe", "Fragrance Free"], "sizes": ["72 pcs", "2 x 72 pcs"], "price": [150, 250] }
+    ] },
+    "dog food": { "label": "Dog Food", "icon": "pets", "items": [
+      { "name": "Dog Food", "brands": ["Pedigree", "Drools", "Royal Canin"], "variants": ["Adult Chicken", "Puppy", "Vegetarian"], "sizes": ["400 g", "1 kg", "3 kg"], "price": [200, 450] }
+    ] },
+    "cat food": { "label": "Cat Food", "icon": "pets", "items": [
+      { "name": "Cat Food", "brands": ["Whiskas", "Sheba", "Me-O"], "variants": ["Ocean Fish", "Tuna", "Kitten"], "sizes": ["400 g", "1.2 kg"], "price": [180, 300] }
+    ] },
+    "medicine": { "label": "Fever & Pain", "icon": "medication", "core": true, "items": [
+      { "name": "Paracetamol Tablet", "brands": ["Dolo 650", "Crocin Advance", "Calpol 500"], "variants": ["Regular"], "sizes": ["10 pcs", "15 pcs"], "price": [30, 40] },
+      { "name": "Pain Relief Tablet", "brands": ["Saridon", "Disprin"], "variants": ["Regular"], "sizes": ["10 pcs"], "price": [35, 45] }
+    ] },
+    "antacid": { "label": "Acidity & Digestion", "icon": "medication", "items": [
+      { "name": "Antacid", "brands": ["Eno", "Digene", "Pudin Hara"], "variants": ["Regular", "Lemon", "Mint"], "sizes": ["6 pcs", "30 pcs"], "price": [50, 100] }
+    ] },
+    "cough syrup": { "label": "Cough & Cold", "icon": "medication_liquid", "items": [
+      { "name": "Cough Syrup", "brands": ["Benadryl", "Honitus", "Dabur"], "variants": ["Regular", "Honey"], "sizes": ["50 ml", "100 ml"], "price": [80, 150] }
+    ] },
+    "ors": { "label": "ORS & Electrolytes", "icon": "medication_liquid", "items": [
+      { "name": "ORS", "brands": ["Electral", "Enerzal"], "variants": ["Orange", "Lemon", "Apple"], "sizes": ["21 g", "4 x 21 g"], "price": [20, 25] }
+    ] },
+    "bandage": { "label": "First Aid", "icon": "healing", "items": [
+      { "name": "Bandage Strips", "brands": ["Hansaplast", "Band-Aid"], "variants": ["Washproof", "Fabric"], "sizes": ["10 pcs", "20 pcs"], "price": [30, 60] }
+    ] },
+    "chicken": { "label": "Chicken", "icon": "kebab_dining", "items": [
+      { "name": "Chicken", "brands": ["Licious", "FreshToHome", "Fresh"], "variants": ["Curry Cut", "Boneless", "Breast", "Drumsticks"], "sizes": ["500 g", "1 kg"], "price": [150, 250] }
+    ] },
+    "mutton": { "label": "Mutton", "icon": "kebab_dining", "items": [
+      { "name": "Mutton", "brands": ["Licious", "FreshToHome", "Fresh"], "variants": ["Curry Cut", "Keema"], "sizes": ["500 g", "1 kg"], "price": [400, 550] }
+    ] },
+    "fish": { "label": "Fish", "icon": "set_meal", "items": [
+      { "name": "Fish", "brands": ["Licious", "FreshToHome", "Fresh"], "variants": ["Rohu", "Pomfret", "Basa", "Seer"], "sizes": ["500 g", "1 kg"], "price": [200, 400] }
+    ] }
+  }
+}

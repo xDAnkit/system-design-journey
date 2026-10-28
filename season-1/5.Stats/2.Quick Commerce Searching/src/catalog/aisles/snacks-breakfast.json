@@ -1,0 +1,49 @@
+{
+  "key": "snacks",
+  "label": "Snacks, Breakfast & Spreads",
+  "icon": "cookie",
+  "categories": {
+    "chips": { "label": "Chips", "icon": "fastfood", "core": true, "items": [
+      { "name": "Potato Chips", "brands": ["Lay's", "Bingo", "Uncle Chipps", "Pringles"], "variants": ["Classic Salted", "Magic Masala", "Cream & Onion", "Tomato Tango", "Chilli Lemon"], "sizes": ["52 g", "90 g", "150 g"], "price": [20, 30] }
+    ] },
+    "namkeen": { "label": "Namkeen", "icon": "tapas", "core": true, "items": [
+      { "name": "Namkeen", "brands": ["Haldiram's", "Bikaji", "Balaji", "Bikanervala"], "variants": ["Aloo Bhujia", "Bhujia Sev", "Navratan Mixture", "Moong Dal", "Khatta Meetha"], "sizes": ["200 g", "400 g", "1 kg"], "price": [55, 70] }
+    ] },
+    "biscuit": { "label": "Biscuits", "icon": "cookie", "core": true, "items": [
+      { "name": "Biscuits", "brands": ["Parle", "Britannia", "Sunfeast", "McVitie's"], "variants": ["Glucose", "Marie", "Cream", "Butter Cookies", "Digestive"], "sizes": ["100 g", "250 g", "800 g"], "price": [10, 40] }
+    ] },
+    "chocolate": { "label": "Chocolates", "icon": "cake", "items": [
+      { "name": "Chocolate", "brands": ["Cadbury", "Nestle", "Amul", "Ferrero Rocher"], "variants": ["Milk", "Dark", "Fruit & Nut", "Roast Almond"], "sizes": ["50 g", "150 g"], "price": [40, 100] }
+    ] },
+    "noodles": { "label": "Noodles", "icon": "ramen_dining", "core": true, "items": [
+      { "name": "Noodles", "brands": ["Maggi", "Yippee", "Ching's", "Top Ramen"], "variants": ["Masala", "Atta", "Hakka", "Cup"], "sizes": ["70 g", "280 g", "560 g"], "price": [14, 16] }
+    ] },
+    "pasta": { "label": "Pasta", "icon": "dinner_dining", "items": [
+      { "name": "Pasta", "brands": ["Bambino", "Borges", "Saffola"], "variants": ["Penne", "Fusilli", "Macaroni"], "sizes": ["500 g", "1 kg"], "price": [80, 150] }
+    ] },
+    "ketchup": { "label": "Ketchup & Sauces", "icon": "kitchen", "items": [
+      { "name": "Ketchup", "brands": ["Kissan", "Maggi", "Heinz", "Del Monte"], "variants": ["Tomato", "Hot & Sweet", "No Onion No Garlic"], "sizes": ["500 g", "1 kg"], "price": [100, 130] }
+    ] },
+    "jam": { "label": "Jam", "icon": "breakfast_dining", "items": [
+      { "name": "Jam", "brands": ["Kissan", "Mapro", "Del Monte"], "variants": ["Mixed Fruit", "Strawberry", "Mango"], "sizes": ["200 g", "500 g"], "price": [70, 120] }
+    ] },
+    "peanut butter": { "label": "Peanut Butter", "icon": "breakfast_dining", "items": [
+      { "name": "Peanut Butter", "brands": ["Pintola", "Sundrop", "MyFitness"], "variants": ["Creamy", "Crunchy", "Chocolate"], "sizes": ["340 g", "1 kg"], "price": [150, 250] }
+    ] },
+    "honey": { "label": "Honey", "icon": "hive", "items": [
+      { "name": "Honey", "brands": ["Dabur", "Saffola", "Patanjali", "Apis"], "variants": ["Pure", "Raw", "Organic"], "sizes": ["250 g", "500 g", "1 kg"], "price": [120, 180] }
+    ] },
+    "cornflakes": { "label": "Corn Flakes & Cereal", "icon": "breakfast_dining", "items": [
+      { "name": "Corn Flakes", "brands": ["Kellogg's", "Bagrry's", "Saffola"], "variants": ["Original", "Almond", "Honey"], "sizes": ["250 g", "475 g", "875 g"], "price": [100, 140] }
+    ] },
+    "oats": { "label": "Oats", "icon": "breakfast_dining", "items": [
+      { "name": "Oats", "brands": ["Quaker", "Saffola", "Kellogg's"], "variants": ["Rolled", "Masala", "Instant"], "sizes": ["500 g", "1 kg"], "price": [100, 170] }
+    ] },
+    "ice cream": { "label": "Ice Cream", "icon": "icecream", "items": [
+      { "name": "Ice Cream", "brands": ["Kwality Wall's", "Amul", "Havmor", "Vadilal"], "variants": ["Vanilla", "Chocolate", "Butterscotch", "Kesar Pista"], "sizes": ["100 ml", "500 ml", "1 L"], "price": [30, 60] }
+    ] },
+    "paratha": { "label": "Frozen Paratha", "icon": "bakery_dining", "items": [
+      { "name": "Paratha", "brands": ["ITC Kitchens", "Haldiram's", "Sumeru"], "variants": ["Malabar", "Aloo", "Lachha"], "sizes": ["5 pcs", "10 pcs"], "price": [100, 150] }
+    ] }
+  }
+}

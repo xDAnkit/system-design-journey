@@ -1,0 +1,46 @@
+{
+  "key": "dairy",
+  "label": "Dairy, Bread & Eggs",
+  "icon": "egg",
+  "categories": {
+    "milk": { "label": "Milk", "icon": "local_drink", "core": true, "items": [
+      { "name": "Milk", "brands": ["Amul", "Mother Dairy", "Nandini", "Aavin", "Heritage", "Gowardhan"], "variants": ["Toned", "Full Cream", "Double Toned", "Cow", "Buffalo"], "sizes": ["500 ml", "1 L"], "price": [27, 36] }
+    ] },
+    "curd": { "label": "Curd & Yogurt", "icon": "soup_kitchen", "core": true, "items": [
+      { "name": "Curd", "brands": ["Amul", "Mother Dairy", "Nestle", "Milky Mist", "Epigamia"], "variants": ["Classic", "Probiotic", "Low Fat", "Thick"], "sizes": ["200 g", "400 g", "1 kg"], "price": [25, 40] }
+    ] },
+    "paneer": { "label": "Paneer", "icon": "egg_alt", "core": true, "items": [
+      { "name": "Paneer", "brands": ["Amul", "Mother Dairy", "Milky Mist", "Gowardhan"], "variants": ["Fresh", "Malai", "Low Fat"], "sizes": ["200 g", "500 g", "1 kg"], "price": [80, 110] }
+    ] },
+    "butter": { "label": "Butter", "icon": "breakfast_dining", "core": true, "items": [
+      { "name": "Butter", "brands": ["Amul", "Mother Dairy", "Britannia", "Gowardhan"], "variants": ["Salted", "Unsalted", "Garlic"], "sizes": ["100 g", "500 g"], "price": [56, 64] }
+    ] },
+    "ghee": { "label": "Ghee", "icon": "water_drop", "core": true, "items": [
+      { "name": "Ghee", "brands": ["Amul", "Patanjali", "Gowardhan", "Nandini", "Aashirvaad"], "variants": ["Pure Cow", "Desi", "A2"], "sizes": ["200 ml", "500 ml", "1 L"], "price": [140, 190] }
+    ] },
+    "cheese": { "label": "Cheese", "icon": "breakfast_dining", "items": [
+      { "name": "Cheese", "after": true, "brands": ["Amul", "Britannia", "Go", "Mother Dairy"], "variants": ["Slices", "Cubes", "Spread", "Mozzarella"], "sizes": ["100 g", "200 g", "400 g"], "price": [70, 95] }
+    ] },
+    "buttermilk": { "label": "Buttermilk", "icon": "local_drink", "items": [
+      { "name": "Buttermilk", "brands": ["Amul Masti", "Mother Dairy", "Nandini"], "variants": ["Spiced", "Plain", "Masala"], "sizes": ["200 ml", "500 ml", "1 L"], "price": [15, 20] }
+    ] },
+    "lassi": { "label": "Lassi", "icon": "local_drink", "items": [
+      { "name": "Lassi", "brands": ["Amul", "Mother Dairy", "Nandini"], "variants": ["Sweet", "Mango", "Rose"], "sizes": ["200 ml", "1 L"], "price": [20, 30] }
+    ] },
+    "eggs": { "label": "Eggs", "icon": "egg", "core": true, "items": [
+      { "name": "Eggs", "brands": ["Eggoz", "Suguna", "Farm Fresh", "Country"], "variants": ["White", "Brown", "Free Range"], "sizes": ["6 pcs", "12 pcs", "30 pcs"], "price": [45, 70] }
+    ] },
+    "bread": { "label": "Bread", "icon": "bakery_dining", "core": true, "items": [
+      { "name": "Bread", "brands": ["Harvest Gold", "Britannia", "Modern", "English Oven"], "variants": ["White", "Brown", "Multigrain", "Whole Wheat", "Sandwich"], "sizes": ["400 g", "700 g"], "price": [40, 60] }
+    ] },
+    "pav": { "label": "Pav & Buns", "icon": "bakery_dining", "items": [
+      { "name": "Pav", "brands": ["Harvest Gold", "Britannia", "Modern"], "variants": ["Ladi", "Masala", "Burger Bun"], "sizes": ["6 pcs", "12 pcs"], "price": [30, 45] }
+    ] },
+    "rusk": { "label": "Rusk", "icon": "bakery_dining", "items": [
+      { "name": "Rusk", "brands": ["Britannia Toastea", "Bonn", "Parle"], "variants": ["Premium", "Elaichi", "Suji"], "sizes": ["200 g", "300 g", "600 g"], "price": [35, 60] }
+    ] },
+    "cake": { "label": "Cakes", "icon": "cake", "items": [
+      { "name": "Cake", "brands": ["Britannia", "Winkies", "Parle"], "variants": ["Chocolate", "Fruit", "Vanilla", "Orange"], "sizes": ["60 g", "100 g", "250 g"], "price": [20, 40] }
+    ] }
+  }
+}
