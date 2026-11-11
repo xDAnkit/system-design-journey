@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Jaldi V2 - High Level Design</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true, theme: "neutral", flowchart: { curve: "basis" } });
+</script>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; }
+  .card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; }
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<div class="max-w-5xl mx-auto px-6 py-10 space-y-10">
+
+  <header>
+    <h1 class="text-3xl font-bold">Jaldi V2 - High Level Design</h1>
+    <p class="text-slate-500 mt-1">Quick Commerce Search (Blinkit-style). Source: this repo's code, file:line noted where it matters.</p>
+  </header>
+
+  <!-- COMPONENTS -->
+  <section class="card">
+    <h2 class="text-xl font-semibold mb-3">1. Components (real, from code)</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+      <div class="p-3 bg-blue-50 rounded-lg"><b>Fastify API</b><br>Node 24, port <code>5004</code></div>
+      <div class="p-3 bg-green-50 rounded-lg"><b>MongoDB</b><br>db <code>jaldi</code>, source of truth</div>
+      <div class="p-3 bg-yellow-50 rounded-lg"><b>Typesense</b><br>:8108, hybrid search</div>
+      <div class="p-3 bg-purple-50 rounded-lg"><b>Kafka</b><br>:9094, 5 topics, prefix <code>jaldi.</code></div>
+      <div class="p-3 bg-red-50 rounded-lg"><b>Redis</b><br>DB 1, cache + live counters</div>
+      <div class="p-3 bg-orange-50 rounded-lg"><b>Ollama</b><br><code>gemma3:4b</code> tags, <code>bge-m3</code> vectors (default, free, local)</div>
+      <div class="p-3 bg-slate-100 rounded-lg"><b>Cloud AI (optional)</b><br>Anthropic / Gemini / OpenAI, only if API key set</div>
+      <div class="p-3 bg-pink-50 rounded-lg"><b>UI</b><br>Plain HTML + Tailwind CDN, no build step</div>
+    </div>
+  </section>
+
+  <!-- HLD DIAGRAM -->
+  <section class="card">
+    <h2 class="text-xl font-semibold mb-3">2. System Diagram (HLD)</h2>
+    <pre class="mermaid">
+flowchart LR
+  Shopper["Shopper browser"] -->|GET /search| API["Fastify API :5004"]
+  Admin["Admin browser"] -->|POST /products, x-admin-key| API
+
+  API -->|read/write| Mongo[("MongoDB\ndb: jaldi")]
+  API -->|query vector + rewrite cache| Redis[("Redis\nDB 1")]
+  API -->|hybrid search| TS[("Typesense\n:8108")]
+  API -->|tags + embeddings| Ollama["Ollama\ngemma3:4b / bge-m3"]
+  Ollama -.optional switch.-> Cloud["Anthropic / Gemini / OpenAI"]
+
+  API -->|publish| Kafka{{"Kafka :9094\nprefix jaldi."}}
+  Kafka --> Ingest["ingest worker"]
+  Kafka --> Enrich["enrich worker"]
+  Kafka --> Index["index worker"]
+  Kafka --> Analytics["analytics worker"]
+
+  Ingest --> Mongo
+  Enrich --> Ollama
+  Enrich --> Mongo
+  Index --> TS
+  Analytics --> Mongo
+  Analytics --> Redis
+    </pre>
+  </section>
+
+  <!-- FLOW 1 -->
+  <section class="card">
+    <h2 class="text-xl font-semibold mb-3">3. Flow: Admin Adds a Product</h2>
+    <pre class="mermaid">
+sequenceDiagram
+  participant A as Admin
+  participant API as Fastify
+  participant K as Kafka
+  participant W1 as ingest worker
+  participant M as MongoDB
+  participant W2 as enrich worker
+  participant AI as Ollama
+  participant W3 as index worker
+  participant TS as Typesense
+
+  A->>API: POST /products
+  API-->>A: 202 Accepted
+  API->>K: topic products.ingest
+  K->>W1: consume
+  W1->>M: insert (status: pending)
+  W1->>K: topic products.enrich
+  K->>W2: consume
+  W2->>AI: get tags + vector
+  Note over W2: admin tags present -> LLM tagging skipped
+  W2->>M: update tags + vector
+  alt fails 3 times
+    W2->>K: products.enrich.dlq
+  else ok
+    W2->>K: topic products.index
+    K->>W3: consume
+    W3->>TS: upsert into alias "products"
+  end
+    </pre>
+  </section>
+
+  <!-- FLOW 2 -->
+  <section class="card">
+    <h2 class="text-xl font-semibold mb-3">4. Flow: Shopper Searches</h2>
+    <pre class="mermaid">
+sequenceDiagram
+  participant S as Shopper
+  participant API as Fastify
+  participant R as Redis
+  participant TS as Typesense
+  participant K as Kafka
+  participant W4 as analytics worker
+  participant M as MongoDB
+
+  S->>API: GET /search?q=...
+  API->>API: parse query (brand, size, price, intent)
+  API->>R: check cached rewrite / vector
+  API->>TS: hybrid search (keyword + vector)
+  TS-->>API: ranked results
+  API-->>S: response
+  API->>K: topic search.events
+  K->>W4: consume
+  W4->>M: raw event (90 days) + daily counters
+  W4->>R: live ticker, unique visitors
+  Note over W4: vector-only hit becomes an AI-suggested tag candidate (needs admin approval)
+    </pre>
+  </section>
+
+  <!-- NOTES -->
+  <section class="card">
+    <h2 class="text-xl font-semibold mb-3">5. Facts Worth Knowing</h2>
+    <ul class="list-disc list-inside text-sm space-y-1">
+      <li>Kafka delivery is <b>at-least-once</b>, a crash can double-count analytics (fine for dashboards, per repo notes).</li>
+      <li><code>products.enrich.dlq</code> catches a product after 3 failed enrich attempts.</li>
+      <li>Admin routes need header <code>x-admin-key</code>. No JWT, despite <code>.env.example</code> having leftover JWT vars (unused in code).</li>
+      <li>Shares Kafka + Typesense containers with V1 (Quick Commerce Searching), own data by prefix (<code>jaldi.</code>, <code>jaldi_</code>) and own Mongo db / Redis DB.</li>
+      <li>Only REST + Kafka found in code. No WebSocket, gRPC, or GraphQL.</li>
+      <li>No formal test framework. Only plain <code>node:assert</code> self-checks (<code>pnpm check</code>), no DB/Kafka/HTTP involved in those checks.</li>
+    </ul>
+  </section>
+
+</div>
+</body>
+</html>
