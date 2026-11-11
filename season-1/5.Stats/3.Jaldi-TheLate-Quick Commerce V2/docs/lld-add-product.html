@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Jaldi V2 - LLD: Admin Add Product</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true, theme: "neutral", flowchart: { curve: "basis" } });
+</script>
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; }
+  .card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; }
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+  table { width: 100%; font-size: 0.85em; border-collapse: collapse; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #e5e7eb; }
+  th { background: #f8fafc; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<div class="max-w-5xl mx-auto px-6 py-10 space-y-10">
+
+  <header>
+    <h1 class="text-3xl font-bold">LLD: Admin Add Product</h1>
+    <p class="text-slate-500 mt-1">Feature: <code>POST /products</code>. File:line traced from code, no guessing.</p>
+  </header>
+
+  <!-- MODULE GRAPH -->
+  <section class="card">
+    <h2 class="text-xl font-semibold mb-3">1. File / Module Call Graph</h2>
+    <pre class="mermaid">
+flowchart TD
+  R["products.router.ts :49\nPOST /"] -->|requireAdmin| C["products.controller.ts :93\ncreate()"]
+  C --> V["products.validation.ts\ncreateProductSchema (zod)"]
+  C --> PS["catalog/size.ts\nparseSize()"]
+  C --> G["controller.ts :77\nguardAdminTags()"]
+  G --> TE["ai/tagging/tag-engine.ts\nruleTags()"]
+  G --> TG["ai/tagging/tag-guard.ts\nsafeTags() -- LLM judge"]
+  C --> K["bootstrap/kafka.ts\nsendEvent(products.ingest)"]
+  K -.Kafka topic.-> IW["workers/ingest.worker.ts\nhandle()"]
+  IW --> M1[("MongoDB\nProductModel.bulkWrite")]
+  IW --> K2["sendEvents(products.enrich)"]
+  K2 -.Kafka topic.-> EW["workers/enrich.worker.ts\nenrichOne()"]
+  EW --> TE2["tag-engine.ts\ngenerateTags()"]
+  EW --> EMB["search/embeddings.ts\ngetOrCreateEmbeddings() -- bge-m3"]
+  EW --> M2[("MongoDB\nupdate tags+embedKey")]
+  EW -->|3 fail| DLQ["sendEvents(products.enrich.dlq)"]
+  EW -->|ok| K3["sendEvents(products.index)"]
+  K3 -.Kafka topic.-> XW["workers/index.worker.ts\nhandle()"]
+  XW --> TS2["search/typesense.schema.ts\nimportDocs()"]
+  XW --> M3[("MongoDB\nstatus -> indexed")]
+    </pre>
+  </section>
+
+  <!-- SEQUENCE -->
+  <section class="card">
+    <h2 class="text-xl font-semibold mb-3">2. Full Sequence (with retry + DLQ branch)</h2>
+    <pre class="mermaid">
+sequenceDiagram
+  participant Admin
+  participant Router as products.router.ts
+  participant Ctrl as products.controller.ts
+  participant Guard as tag-guard.ts
+  participant Kafka
+  participant IW as ingest.worker.ts
+  participant Mongo
+  participant EW as enrich.worker.ts
+  participant Ollama
+  participant XW as index.worker.ts
+  participant TS as Typesense
+
+  Admin->>Router: POST /products (x-admin-key)
+  Router->>Router: requireAdmin check
+  Router->>Ctrl: create(req)
+  Ctrl->>Ctrl: zod validate + parseSize
+  opt admin sent tags
+    Ctrl->>Guard: safeTags(name, unchecked tags)
+    alt gate down
+      Guard-->>Ctrl: throws
+      Ctrl-->>Admin: 503, nothing queued
+    else gate ok
+      Guard-->>Ctrl: {tags, dropped}
+    end
+  end
+  Ctrl->>Kafka: publish products.ingest (key=id)
+  Ctrl-->>Admin: 202 {id, status:"queued", dropped}
+
+  Kafka->>IW: consume batch (max 500)
+  IW->>Mongo: bulkWrite upsert ($setOnInsert, status:pending)
+  Note over IW,Mongo: replayed message = no-op (idempotent)
+  IW->>Kafka: publish products.enrich (key=id)
+
+  Kafka->>EW: consume batch (max 8, 2 lanes)
+  loop attempt 1..3
+    EW->>Mongo: read product
+    EW->>Ollama: generateTags() + embeddings (bge-m3)
+    alt ok
+      EW->>Mongo: set tags, embedKey, status:enriched
+    else error
+      Note over EW: sleep(1000*attempt), retry
+    end
+  end
+  alt 3 attempts failed
+    EW->>Mongo: status:failed
+    EW->>Kafka: publish products.enrich.dlq
+  else success
+    EW->>Kafka: publish products.index (key=id)
+  end
+
+  Kafka->>XW: consume batch (max 1000)
+  XW->>Mongo: read product + embedKey vector
+  XW->>TS: importDocs() upsert into alias "products"
+  XW->>Mongo: status:enriched -> indexed
+    </pre>
+  </section>
+
+  <!-- STATE MACHINE -->
+  <section class="card">
+    <h2 class="text-xl font-semibold mb-3">3. Product.status State Machine</h2>
+    <pre class="mermaid">
+stateDiagram-v2
+  [*] --> pending: ingest worker (bulkWrite)
+  pending --> enriched: enrich worker success
+  pending --> failed: enrich worker, 3/3 attempts failed
+  enriched --> indexed: index worker upsert into Typesense
+  failed --> [*]: sits in products.enrich.dlq for a manual look
+    </pre>
+    <p class="text-sm text-slate-500 mt-2">Source: <code>products.model.ts:24</code> (enum) + <code>ingest.worker.ts:32</code>, <code>enrich.worker.ts:28,49</code>, <code>index.worker.ts:31</code>.</p>
+  </section>
+
+  <!-- DATA MODEL -->
+  <section class="card">
+    <h2 class="text-xl font-semibold mb-3">4. Data Model (MongoDB, <code>products.model.ts</code>)</h2>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Set by</th></tr>
+      <tr><td>name, brand, category, size, price, mrp, icon, storeIds</td><td>product fields</td><td>Admin, at create</td></tr>
+      <tr><td>tags</td><td>Mixed (en, hinglish, native, typos, ai)</td><td>Admin (guarded) or enrich worker</td></tr>
+      <tr><td>tagsSource</td><td>enum: kb / kb+ai / admin</td><td>enrich worker</td></tr>
+      <tr><td>embedKey</td><td>string, points to a cached vector</td><td>enrich worker (bge-m3)</td></tr>
+      <tr><td>status</td><td>enum: pending / enriched / indexed / failed</td><td>ingest -> enrich -> index workers</td></tr>
+      <tr><td>error</td><td>string, last failure message</td><td>enrich worker, on final failure</td></tr>
+    </table>
+    <p class="text-sm text-slate-500 mt-2">Indexes: <code>category</code>, <code>{status, updatedAt}</code>, <code>baseKey</code> &mdash; <code>products.model.ts:31-33</code>.</p>
+  </section>
+
+  <!-- EDGE CASES -->
+  <section class="card">
+    <h2 class="text-xl font-semibold mb-3">5. Edge Cases Found in Code</h2>
+    <table>
+      <tr><th>Case</th><th>What happens</th><th>File</th></tr>
+      <tr><td>Kafka message replayed</td><td><code>$setOnInsert</code> upsert, second delivery changes nothing</td><td>ingest.worker.ts:19-41</td></tr>
+      <tr><td>Admin tag fails the LLM safety gate</td><td>Tag silently dropped, listed in <code>dropped[]</code> in the 202 response</td><td>products.controller.ts:88-89</td></tr>
+      <tr><td>Safety gate itself is down</td><td>503, request not queued at all (fail closed)</td><td>products.controller.ts:85-87</td></tr>
+      <tr><td>Enrich fails 3 times</td><td>status:failed, message sent to <code>products.enrich.dlq</code></td><td>enrich.worker.ts:44-51</td></tr>
+      <tr><td>Typesense was built with a different embed model</td><td>Product indexed without a vector, until <code>pnpm reindex</code> runs</td><td>index.worker.ts:19-23</td></tr>
+      <tr><td>Delete for an id Typesense never had</td><td>404 from Typesense is swallowed, not thrown</td><td>index.worker.ts:39-41</td></tr>
+    </table>
+  </section>
+
+</div>
+</body>
+</html>

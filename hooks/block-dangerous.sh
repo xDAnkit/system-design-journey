@@ -148,15 +148,48 @@ command_denied() {
   fi
 }
 
-input="$(cat || true)"
-if [[ -z "${input//[[:space:]]/}" ]]; then
+# Read stdin to a temp file first. Huge Write payloads exceed bash ARG_MAX
+# if kept in variables and passed to functions (failClosed -> false deny).
+TMP_INPUT="$(mktemp)"
+trap 'rm -f "$TMP_INPUT" "$TMP_INPUT.cmd" "$TMP_INPUT.meta"' EXIT
+cat > "$TMP_INPUT" || true
+if [[ ! -s "$TMP_INPUT" ]]; then
   deny "empty-input"
 fi
 
-tool="$(json_string tool_name "$input")"
-command="$(json_string command "$input")"
-file_path="$(json_string file_path "$input")"
-path_value="$(json_string path "$input")"
+python3 - "$TMP_INPUT" <<'PY'
+import json, sys
+path = sys.argv[1]
+raw = open(path, "rb").read()
+tool = file_path = path_value = command = ""
+has_command_key = "no"
+if raw.strip():
+    try:
+        data = json.loads(raw)
+    except Exception:
+        data = None
+    if isinstance(data, dict):
+        def dig(obj, *keys):
+            cur = obj
+            for k in keys:
+                if not isinstance(cur, dict) or k not in cur:
+                    return ""
+                cur = cur[k]
+            if cur is None or isinstance(cur, (dict, list)):
+                return ""
+            return str(cur)
+        tool = dig(data, "tool_name") or dig(data, "toolName") or ""
+        command = dig(data, "command") or dig(data, "tool_input", "command") or ""
+        file_path = dig(data, "file_path") or dig(data, "tool_input", "file_path") or ""
+        path_value = dig(data, "path") or dig(data, "tool_input", "path") or ""
+        if "command" in data or (isinstance(data.get("tool_input"), dict) and "command" in data["tool_input"]):
+            has_command_key = "yes"
+open(path + ".meta", "w", encoding="utf-8").write("|".join([tool, file_path, path_value, has_command_key]))
+open(path + ".cmd", "w", encoding="utf-8").write(command)
+PY
+
+IFS='|' read -r tool file_path path_value has_command_key < "$TMP_INPUT.meta"
+command="$(cat "$TMP_INPUT.cmd")"
 target="${file_path:-$path_value}"
 
 tool_lower="$(printf '%s' "$tool" | tr '[:upper:]' '[:lower:]')"
@@ -173,7 +206,7 @@ if [[ -n "$command" ]]; then
   allow
 fi
 
-if printf '%s' "$input" | grep -Eq '"command"[[:space:]]*:'; then
+if [[ "$has_command_key" == "yes" ]]; then
   deny "empty-command"
 fi
 
