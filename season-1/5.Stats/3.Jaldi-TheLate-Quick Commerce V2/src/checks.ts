@@ -4,6 +4,7 @@ import { run as rollup } from "./analytics/rollup.check.js";
 import { run as catalog } from "./seed/catalog.check.js";
 import { run as queryParser } from "./search/query-parser.check.js";
 import { run as dateRange } from "./shared/date-range.check.js";
+import { run as importResults } from "./search/import-results.check.js";
 
 const checks: Array<[string, () => void]> = [
   ["tag rules (port of Tag-Generator.js selfTest)", tagRules],
@@ -11,6 +12,7 @@ const checks: Array<[string, () => void]> = [
   ["query parser (brand, size, price), intents, spelling fix", queryParser],
   ["date ranges in IST", dateRange],
   ["analytics rollup (events -> daily counters)", rollup],
+  ["Typesense partial imports and publication guard", importResults],
 ];
 
 let failed = 0;

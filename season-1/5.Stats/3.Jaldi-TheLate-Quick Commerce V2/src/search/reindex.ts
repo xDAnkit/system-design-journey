@@ -16,6 +16,7 @@ import { ProductModel } from "../features/products/products.model.js";
 import type { Product } from "../features/products/products.types.js";
 import { assertSafeDatabase, confirm, hasFlag, intFlag } from "../shared/cli.js";
 import { getOrCreateEmbeddings, vectorsByKeys } from "./embeddings.js";
+import { requireCompleteImport } from "./import-results.js";
 import { activeProductsCollection, createProductsCollection, importDocs, newProductsCollectionName, toProductDoc } from "./typesense.schema.js";
 
 const BATCH = intFlag("batch", 2000);
@@ -77,6 +78,8 @@ const main = async (): Promise<void> => {
   }
   if (batch.length) await flush(batch);
 
+  // A partially built collection must never replace the live one. Keep both for diagnosis/retry.
+  requireCompleteImport({ ok: done, failed, firstError }, done + failed);
   await typesense.aliases().upsert(tsNames.productsAlias, { collection_name: name });
   await ProductModel.updateMany({ status: "enriched" }, { $set: { status: "indexed" } });
   if (old && old.collection !== name && !hasFlag("keep-old")) await typesense.collections(old.collection).delete();
