@@ -6,6 +6,7 @@ import { logger } from "../bootstrap/logger.js";
 import { typesense, tsNames } from "../bootstrap/typesense.js";
 import type { Product } from "../features/products/products.types.js";
 import { upsertSynonyms } from "./synonyms.js";
+import { summarizeImportResults, type ImportSummary } from "./import-results.js";
 
 export interface ProductDoc {
   id: string;
@@ -138,7 +139,7 @@ export async function importDocs(
   collection: string,
   docs: object[],
   action: "upsert" | "update" | "emplace" = "upsert",
-): Promise<{ ok: number; failed: number; firstError?: string }> {
+): Promise<ImportSummary> {
   if (!docs.length) return { ok: 0, failed: 0 };
   let results: Array<{ success: boolean; error?: string }>;
   try {
@@ -148,8 +149,7 @@ export async function importDocs(
     if (!partial) throw err;
     results = partial;
   }
-  const failed = results.filter((r) => !r.success);
-  return { ok: results.length - failed.length, failed: failed.length, firstError: failed[0]?.error };
+  return summarizeImportResults(results, docs.length);
 }
 
 /** One collection per vector size for the searched-queries list ("log ye bhi search karte hain"). */

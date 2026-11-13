@@ -185,6 +185,9 @@ infra/           Docker compose for Typesense, Kafka, Mongo
 
 ## Notes
 
+- Product indexing checks every Typesense document result. A partial or incomplete import rejects the Kafka batch before products are marked indexed. Successful upserts can be replayed safely; a persistent invalid document requires correction before the batch can complete.
+- Reindex publishes its new collection only after all document imports succeed. On failure it exits with an error, preserves the live alias and old collection, and leaves the new collection available for diagnosis. Embedding updates already written to Mongo are not rolled back. Reindex still requires approval because it writes data.
+- `pnpm check` includes offline import-result checks and seven worker/reindex scenarios with isolated service doubles. `pnpm check:indexing` runs only those seven scenarios on Node 24; it does not start services or access databases.
 - Analytics is at-least-once. A batch read again after a crash can count twice. Fine for dashboards.
 - Days are India time (IST). A search at 23:30 belongs to that day.
 - Seeded products share the vector of their base item, so 2 lakh products need about 150 embeddings.
