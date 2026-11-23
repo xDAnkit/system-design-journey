@@ -1,0 +1,77 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap");
+
+@import "tailwindcss";
+
+:root {
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --navy: #0f172a;
+  --navy-2: #1e293b;
+  --ink: #1e293b;
+  --muted: #475569;
+  --surface: #ffffff;
+  --page: #f8fafc;
+  --line: #cbd5e1;
+  --blue-tint: #dbeafe;
+  --mint-tint: #ccfbf1;
+  --amber-tint: #fef3c7;
+  --gold: #d4a017;
+  --gold-soft: #fef3c7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #0f172a;
+    --page: #0b1220;
+    --ink: #f1f5f9;
+    --muted: #cbd5e1;
+    --line: #334155;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  background: var(--page);
+}
+body {
+  margin: 0;
+  font-family:
+    "IBM Plex Sans",
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  color: var(--ink);
+  background: var(--page);
+  -webkit-font-smoothing: antialiased;
+}
+.font-display {
+  font-family: "Sora", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+}
+.card-shadow {
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    0 8px 20px rgba(15, 23, 42, 0.05);
+}
+.card-shadow:hover {
+  box-shadow:
+    0 2px 4px rgba(15, 23, 42, 0.08),
+    0 12px 28px rgba(15, 23, 42, 0.09);
+}
+@media print {
+  body {
+    background: #fff !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  * {
+    box-shadow: none !important;
+  }
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+}

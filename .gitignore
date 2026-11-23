@@ -1,4 +1,6 @@
 hooks/denied.log
 .DS_Store
+node_modules/
+dist/
 season-1/2.vertical-vs-horizontal-scaling/servers/nginx/run/
 season-1/2.vertical-vs-horizontal-scaling/servers/nginx/modules/
