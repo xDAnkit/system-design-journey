@@ -1,5 +1,6 @@
 #!/bin/bash
-# Rebuilds AGENTS.md from rules/always. Strips YAML frontmatter. Does not copy scoped rules.
+# Rebuilds AGENTS.md from rules/always. Strips YAML frontmatter.
+# Also relinks every rule into each agent tool dir so a new rule is never missed.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -34,3 +35,25 @@ EOF
 
 mv "$TMP" "$OUT"
 printf 'Wrote %s\n' "$OUT"
+
+# Agent tool dirs. Every rule file is linked with a path relative to the repo root.
+DIRS=(".qoder/rules:.md" ".cursor/rules:.mdc" ".agents/rules:.md")
+
+for entry in "${DIRS[@]}"; do
+  dir="${entry%%:*}"
+  ext="${entry##*:}"
+  mkdir -p "$ROOT/$dir"
+  for group in always scoped; do
+    for file in "$ROOT/rules/$group"/*.md; do
+      [[ -e "$file" ]] || continue
+      name="$(basename "$file")"
+      link="$ROOT/$dir/${name%.md}$ext"
+      if [[ -e "$link" && ! -L "$link" ]]; then
+        printf 'Skip %s: real file, not a link\n' "$dir/${name%.md}$ext"
+        continue
+      fi
+      ln -sfn "../../rules/$group/$name" "$link"
+    done
+  done
+done
+printf 'Relinked rules into .qoder/rules, .cursor/rules, .agents/rules\n'

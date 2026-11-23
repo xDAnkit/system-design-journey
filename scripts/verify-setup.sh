@@ -7,7 +7,7 @@ fail=0
 ok() { printf 'ok %s\n' "$1"; }
 bad() { printf 'FAIL %s\n' "$1"; fail=1; }
 
-for f in hooks/block-dangerous.sh hooks/self-check.sh scripts/sync-agent-rules.sh .githooks/pre-push; do
+for f in hooks/block-dangerous.sh hooks/self-check.sh scripts/qoder-hook.sh scripts/sync-agent-rules.sh .githooks/pre-push; do
   if [[ -x "$f" ]]; then ok "exec $f"; else bad "exec $f"; fi
 done
 
@@ -19,6 +19,12 @@ else
   bad "hook configs"
 fi
 
+if [[ -f .qoder/settings.json ]] && grep -q 'PreToolUse' .qoder/settings.json && grep -q 'scripts/qoder-hook.sh' .qoder/settings.json; then
+  ok "qoder hook config"
+else
+  bad "qoder hook config"
+fi
+
 if grep -q 'hooks/denied.log' .gitignore; then ok "gitignore log"; else bad "gitignore log"; fi
 
 if [[ -e .cursor/rules/strict.mdc || -e .qoder/rules/strict.md || -e .agents/rules/strict.md ]]; then
@@ -28,20 +34,18 @@ else
 fi
 
 python3 - <<'PY'
-import os, sys
+import glob, os, sys
 root = os.getcwd()
 pairs = [
-    (".cursor/rules/response-style.mdc", "rules/always/response-style.md"),
-    (".cursor/rules/repo.mdc", "rules/always/repo.md"),
-    (".cursor/rules/safety.mdc", "rules/always/safety.md"),
-    (".cursor/rules/api.mdc", "rules/scoped/api.md"),
-    (".cursor/rules/backend.mdc", "rules/scoped/backend.md"),
-    (".cursor/rules/bench.mdc", "rules/scoped/bench.md"),
-    (".qoder/rules/api.md", "rules/scoped/api.md"),
-    (".agents/rules/bench.md", "rules/scoped/bench.md"),
     ("CLAUDE.md", "AGENTS.md"),
     ("GEMINI.md", "AGENTS.md"),
 ]
+for group in ("always", "scoped"):
+    for rule in sorted(glob.glob(f"rules/{group}/*.md")):
+        name = os.path.splitext(os.path.basename(rule))[0]
+        pairs.append((f".qoder/rules/{name}.md", rule))
+        pairs.append((f".agents/rules/{name}.md", rule))
+        pairs.append((f".cursor/rules/{name}.mdc", rule))
 bad = False
 for link, target in pairs:
     real = os.path.realpath(link)
@@ -61,11 +65,50 @@ else
   bad "AGENTS.md synced"
 fi
 
-for f in rules/always/response-style.md rules/always/repo.md rules/always/safety.md rules/scoped/api.md rules/scoped/backend.md rules/scoped/bench.md; do
+for f in rules/always/*.md rules/scoped/*.md; do
   [[ -f "$f" ]] && ok "file $f" || bad "file $f"
 done
 
+for f in rules/always/*.md; do
+  heading="$(sed -n 's/^# //p' "$f" | head -1)"
+  if [[ -n "$heading" ]] && grep -qF "$heading" AGENTS.md; then
+    ok "AGENTS.md has $heading"
+  else
+    bad "AGENTS.md has $heading"
+  fi
+done
+
 bash hooks/self-check.sh || fail=1
+
+# Qoder reads hook output as JSON, so the adapter must speak the Qoder shape.
+qoder_check() {
+  local expect="$1"
+  local name="$2"
+  local payload="$3"
+  local out code
+  set +e
+  out="$(printf '%s' "$payload" | scripts/qoder-hook.sh 2>/dev/null)"
+  code=$?
+  set -e
+  if [[ "$expect" == "deny" ]]; then
+    if [[ "$code" -eq 2 ]] && printf '%s' "$out" | grep -q '"permissionDecision":"deny"'; then
+      ok "qoder $name"
+    else
+      bad "qoder $name (code $code)"
+    fi
+  else
+    if [[ "$code" -eq 0 ]] && printf '%s' "$out" | grep -q '"permissionDecision":"allow"'; then
+      ok "qoder $name"
+    else
+      bad "qoder $name (code $code)"
+    fi
+  fi
+}
+
+qoder_check deny bash-rm '{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"rm -rf ./data"}}'
+qoder_check deny delete-tool '{"hook_event_name":"PreToolUse","tool_name":"DeleteFile","tool_input":{"file_path":"notes.md"}}'
+qoder_check deny protected-write '{"hook_event_name":"PreToolUse","tool_name":"Write","tool_input":{"file_path":"rules/always/safety.md"}}'
+qoder_check allow git-status '{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"git status"}}'
 
 # pre-push: first push of a branch is allowed. Non-ancestor is blocked.
 zero="0000000000000000000000000000000000000000"

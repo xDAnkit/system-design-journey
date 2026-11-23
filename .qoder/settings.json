@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|SearchReplace|DeleteFile|Delete",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "scripts/qoder-hook.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

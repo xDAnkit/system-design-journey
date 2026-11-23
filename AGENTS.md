@@ -32,6 +32,7 @@ Shared contracts, loaded when their paths are open:
 | `rules/scoped/api.md` | `GET /items` pagination |
 | `rules/scoped/backend.md` | `pnpm`, one server at a time, vertical phase 1 |
 | `rules/scoped/bench.md` | k6, compression, result columns |
+| `rules/scoped/content-safety.md` | tag guard, safe tags only |
 
 
 # Language
