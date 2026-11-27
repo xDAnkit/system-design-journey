@@ -1,6 +1,6 @@
-# Insta Story API
+# Insta Story API and demo UI
 
-Instagram-style backend for the Season 1 story episode: profiles, posts, reels, likes, views, follows, Meta One premium and stories. TypeScript, Fastify, Mongoose, Redis counters, Kafka, cursor pagination, Swagger.
+Instagram-style backend for the Season 1 story episode: profiles, posts, reels, likes, views, follows, Meta One premium and stories. TypeScript, Fastify, Mongoose, Redis counters, Kafka, cursor pagination, Swagger, plus a single-file demo UI in `public/index.html`.
 
 ## Stack
 
@@ -16,28 +16,29 @@ Instagram-style backend for the Season 1 story episode: profiles, posts, reels, 
 | Build           | tsup (esbuild)                                                                                                     |
 | Process manager | node:cluster (`WORKERS`, default 1), pm2 via `ecosystem.config.json`                                               |
 | API docs        | swagger-jsdoc + @fastify/swagger-ui                                                                                |
+| UI              | one static file, `public/index.html`, Tailwind from the CDN, no build step                                          |
 
 ## Folder structure
 
 ```
 src/
-├── server.ts                 # API: bootstrap → listen → graceful shutdown
+├── server.ts                 # API: bootstrap → listen → graceful shutdown, node:cluster workers
 ├── consumers.ts              # Kafka consumers + story sweeper, separate process
-├── app.ts                    # routes, onRequest hooks, /health, /ready, /api-docs
+├── app.ts                    # routes, hooks, /health, /ready, /api-docs, /uploads, the three static pages
 ├── bootstrap/                # env, logger, database, redis, kafka, mongo topology
-├── shared/                   # counters, cuckoo, pairs, pagination, redisGateway, error, user, client-meta, geo
+├── shared/                   # counters, cuckoo, pairs, pagination, mongo-gate, redisGateway, error, user, client-meta, geo
 ├── docs/swagger.ts           # @openapi comments are read from *.router.ts
 ├── features/
 │   ├── products/             # leftover ecommerce demo, kept for pagination practice
 │   ├── profiles/ follows/    # profile cards and the follow graph
-│   ├── posts/ likes/ views/ comments/
+│   ├── posts/ likes/ views/ comments/   # posts and reels share posts.router.ts, comments is model only
 │   ├── premium/              # Meta One, demo plan, no payment
 │   ├── stories/              # create, feed, open, view, likes, replies, viewers, extend, highlights, consumer, sweeper
 │   └── audit/                # audit_events, one row per write action
 └── seed/                     # seed-products, seed-insta, boost
 ```
 
-No `*.service.ts` layer: controllers call Mongoose models directly, except the shared primitives in `shared/`.
+No CRUD service layer: controllers call Mongoose models directly. Only `audit/audit.service.ts` and the shared primitives in `shared/` are separate modules.
 
 ## Setup
 
@@ -51,23 +52,32 @@ cp .env.example .env   # already created, adjust values if needed
 1. Mongo (`mongod` on 27017, or `pnpm mongo:up`), Redis on 6379, Kafka (`pnpm kafka:up`).
 2. `pnpm dev` starts the API on 5003.
 3. `pnpm consumers` in a second terminal. The API never consumes; without this process likes, views, follows, story views and story likes stay queued in Kafka.
-4. `pnpm seed:insta` once for the demo profiles.
+4. `pnpm seed:insta` once for the demo data: 14 profiles, 24 posts + 12 reels each, 3 to 8 comments per post.
+5. Open `http://localhost:5003`, pick a user, that click is the "login".
 
 ### Env vars (`.env`, validated by `src/bootstrap/env.ts`)
 
-| Var                                        | Default                               | Notes                                                              |
-| ------------------------------------------ | ------------------------------------- | ------------------------------------------------------------------ |
-| `PORT`                                     | 5003                                  |                                                                    |
-| `MONGO_URI`                                | `mongodb://127.0.0.1:27017/instagram` | one database, `MONGO_MODE` decides standalone vs replica behaviour |
-| `REDIS_URL`                                | `redis://127.0.0.1:6379`              | counters, HLL, Cuckoo, caches                                      |
-| `KAFKA_BROKERS`                            | `127.0.0.1:9092`                      | comma separated                                                    |
-| `LOG_LEVEL`                                | `info`                                | `error` \| `warn` \| `info` \| `http` \| `debug`                   |
-| `NODE_ENV`                                 | `development`                         | `development` \| `production` \| `test`                            |
-| `TRUST_PROXY`                              | `true`                                | client IP from `X-Forwarded-For`; the socket peer is stored too    |
-| `AUDIT_SALT`                               | dev default                           | salts `ipHash`, keep the real value in `.env`                      |
-| `AUDIT_RETENTION_DAYS`                     | 90                                    | TTL on `audit_events.at`                                           |
-| `GEO_DB_PATH`                              | empty                                 | optional local JSON IP table for geo, empty means geo is null      |
-| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | required                              | reserved for the auth episode, currently unused                    |
+| Var                                                | Default                               | Notes                                                                                             |
+| -------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `PORT`                                             | 5003                                  |                                                                                                   |
+| `MONGO_URI`                                        | `mongodb://127.0.0.1:27017/instagram` | comma-separated hosts allowed, `MONGO_MODE` decides standalone vs replica behaviour               |
+| `MONGO_MODE`                                       | `auto`                                | `auto` \| `standalone` \| `replica` \| `sharded`                                                   |
+| `MONGO_MAX_POOL` / `MONGO_MIN_POOL`                | 50 / 10                               | pool per worker, the min pre-warms connections                                                     |
+| `MONGO_SELECT_TIMEOUT_MS`                          | 10000                                 | driver server selection timeout, also the `Retry-After` hint                                       |
+| `MONGO_CIRCUIT_MS` / `MONGO_CIRCUIT_FAILS`         | 2000 / 3                              | after this many infra failures inside the window the gate answers `503` with `Retry-After`         |
+| `REDIS_URL`                                        | `redis://127.0.0.1:6379`              | counters, HLL, Cuckoo, caches                                                                      |
+| `KAFKA_BROKERS`                                    | `127.0.0.1:9092`                      | comma separated                                                                                    |
+| `KAFKA_CLIENT_ID`                                  | `insta-stats`                         | Kafka client name                                                                                  |
+| `LOG_LEVEL`                                        | `info`                                | `error` \| `warn` \| `info` \| `http` \| `debug`                                                   |
+| `NODE_ENV`                                         | `development`                         | `development` \| `production` \| `test`, `test` loads `.env.test` instead of `.env`                 |
+| `WORKERS`                                          | 1                                     | node:cluster workers for `src/server.ts` (read outside zod)                                        |
+| `TRUST_PROXY`                                      | `true`                                | client IP from `X-Forwarded-For`; the socket peer is stored too                                    |
+| `AUDIT_SALT`                                       | dev default                           | salts `ipHash`, keep the real value in `.env`                                                      |
+| `AUDIT_RETENTION_DAYS`                             | 90                                    | TTL on `audit_events.at`                                                                           |
+| `GEO_DB_PATH`                                      | empty                                 | optional local JSON IP table for geo, empty means geo is null                                      |
+| `ENABLE_ZSTD` / `COMPRESSION_LEVEL`                | `false` / 1                           | reserved, compression is off right now                                                             |
+| `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET`         | required                              | reserved for the auth episode, currently unused                                                    |
+| `JWT_ACCESS_EXPIRES_IN` / `JWT_REFRESH_EXPIRES_IN` | `6h` / `7d`                           | reserved, only read by the unwired JWT helpers                                                     |
 
 Invalid/missing required env values fail fast at startup with a clear error.
 
@@ -79,7 +89,7 @@ Caveat: identity is still the client-claimed `x-user-id` header, so the trail be
 
 ### Known dead code
 
-`shared/auth.ts`, `shared/jwt.ts`, `shared/session.ts` and `bcrypt` are not wired. `shared/zstd-compression.ts` is unused and `@fastify/compress` is commented out in `src/app.ts`. Left in place for the auth episode on purpose.
+`shared/auth.ts`, `shared/jwt.ts`, `shared/session.ts` and `bcrypt` are not wired. `shared/zstd-compression.ts` is never imported and `@fastify/compress` is commented out in `src/app.ts`, so `ENABLE_ZSTD` and `COMPRESSION_LEVEL` currently do nothing. `helmet` is commented out too. Left in place for the auth and compression episodes on purpose.
 
 ## Optional: Mongo replica set (Docker)
 
@@ -91,24 +101,24 @@ The app runs fine on a local standalone `mongod` (`MONGO_MODE=auto`). This compo
 | Secondary | `fk-mongo-secondary-1` | 27018     | `fk-mongo-secondary-1-data` |
 | Secondary | `fk-mongo-secondary-2` | 27019     | `fk-mongo-secondary-2-data` |
 
-Replica set: `fk-rs`. App DB: `instagram`. Test DB: `fk-test` (same cluster). Write concern: `w: majority`. Read: `primaryPreferred` (PRIMARY nahi to last SECONDARY se read).
+Replica set: `fk-rs`. App DB: `instagram`. Test DB: `fk-test` (same cluster). Write concern: `w: majority`. Read: `primaryPreferred`, so a read falls back to the last secondary when there is no primary.
 
 ```bash
 pnpm mongo:up       # start (reuses volumes)
 pnpm mongo:status   # 1 PRIMARY, 2 SECONDARY
-pnpm mongo:down     # stop, data rehti
-pnpm mongo:reset    # data mitati + dubara init
+pnpm mongo:down     # stop, data stays
+pnpm mongo:reset    # wipe data + re-init
 ```
 
-Host pe pehle se `mongod` 27017 pe ho to band karo, warna primary port bind fail.
+If a `mongod` already listens on 27017 on the host, stop it first, otherwise the primary fails to bind the port.
 
-App `host.docker.internal` ko `127.0.0.1` map karti hai (Mac pe wo DNS nahi milta). Compass/mongosh se replica set connect karna ho to `/etc/hosts` me ye line:
+The app maps `host.docker.internal` to `127.0.0.1` because that DNS name does not resolve on macOS. To connect to the replica set from Compass or mongosh, add this line to `/etc/hosts`:
 
 `127.0.0.1 host.docker.internal`
 
-Init: `fk-mongo-init` ek baar `rs.initiate` chalata hai (already initiated ho to skip), phir exit.
+Init: `fk-mongo-init` runs `rs.initiate` once (skipped when the set is already initiated), then exits.
 
-Docker Desktop (Linux VM kernel 6.19+) pe Mongo 8 ko `GLIBC_TUNABLES=glibc.pthread.rseq=1` chahiye — compose me already set (SERVER-121912).
+Mongo 8 on Docker Desktop (Linux VM kernel 6.19+) needs `GLIBC_TUNABLES=glibc.pthread.rseq=1`. The compose file already sets it (SERVER-121912).
 
 ## Scripts
 
@@ -121,18 +131,20 @@ Docker Desktop (Linux VM kernel 6.19+) pe Mongo 8 ko `GLIBC_TUNABLES=glibc.pthre
 | `pnpm seed:products`                                                                                                | builds + runs the bulk product seeder                                                                                                                            |
 | `pnpm consumers`                                                                                                    | runs the Kafka consumers (likes, follows, views, story views, story likes) and the story expiry sweeper in their own process. Keep it running next to the server |
 | `pnpm boost -- --post=<id> --likes=N --views=N --unique=N --comments=N --yes` / `--profile=<u> --followers=N --yes` | fake traffic through Kafka, 50k events per send. Without `--yes` it only prints the plan                                                                         |
-| `pnpm seed:insta`                                                                                                   | builds + seeds 3 demo profiles with posts, reels and comments (insert-only, skips a profile that already has posts)                                              |
+| `pnpm seed:insta`                                                                                                   | builds + seeds 14 demo profiles with 24 posts + 12 reels each and 3 to 8 comments per post (insert-only, skips a profile that already has posts)                                              |
+| `pnpm seed:test`                                                                                                    | builds + seeds the product collection into the test DB (`NODE_ENV=test`, reads `.env.test`)                                                                      |
+| `pnpm start:test`                                                                                                   | `build:prod`, then the API with `NODE_ENV=test` and `MONGO_MODE=replica`                                                                                         |
 | `pnpm typecheck`                                                                                                    | `tsc --noEmit`                                                                                                                                                   |
 | `pnpm mongo:up`                                                                                                     | start replica set (`infra/mongo/compose.yaml`)                                                                                                                   |
-| `pnpm mongo:down`                                                                                                   | stop containers — **volumes stay**                                                                                                                               |
+| `pnpm mongo:down`                                                                                                   | stop containers, **volumes stay**                                                                                                                                |
 | `pnpm mongo:status`                                                                                                 | compact replica roles (PRIMARY / SECONDARY / DOWN)                                                                                                               |
-| `pnpm mongo:reset`                                                                                                  | wipe volumes + start fresh — **only this deletes data**                                                                                                          |
+| `pnpm mongo:reset`                                                                                                  | wipe volumes + start fresh, **only this deletes data**                                                                                                           |
 | `pnpm kafka:up`                                                                                                     | start Kafka (`infra/kafka/compose.yaml`, `localhost:9092`, volume `insta-kafka-data`)                                                                            |
 | `pnpm kafka:stop`                                                                                                   | stop the container, keep it and the data                                                                                                                         |
-| `pnpm kafka:down`                                                                                                   | remove the container — **volume stays**                                                                                                                          |
+| `pnpm kafka:down`                                                                                                   | remove the container, **volume stays**                                                                                                                           |
 | `pnpm kafka:status`                                                                                                 | show the container state                                                                                                                                         |
 | `pnpm kafka:logs`                                                                                                   | follow the last 100 log lines (Ctrl+C to leave)                                                                                                                  |
-| `pnpm kafka:reset`                                                                                                  | wipe the volume + start fresh — **deletes all Kafka data**                                                                                                       |
+| `pnpm kafka:reset`                                                                                                  | wipe the volume + start fresh, **deletes all Kafka data**                                                                                                        |
 
 ## Mongo mode
 
@@ -147,24 +159,33 @@ Two pm2 apps are defined in `ecosystem.config.json`:
 | `flipkart-dev`  | fork        | 1         | false (tsup `--watch` already rebuilds + restarts) | `pnpm dev`                       |
 | `flipkart-prod` | **cluster** | **4**     | false                                              | `dist/server.js` (already built) |
 
-`flipkart-prod` runs the already-built file directly — not `pnpm start:prod` — on purpose: in cluster mode pm2 forks 4 worker processes from the same script, so if the script itself triggered a build (like `pnpm start:prod` does), all 4 workers would race to build at once. `scripts/start-prod.sh` builds once _before_ handing the built file to pm2.
+`flipkart-prod` runs the already-built file directly, not `pnpm start:prod`, on purpose: in cluster mode pm2 forks 4 worker processes from the same script, so if the script itself triggered a build (like `pnpm start:prod` does), all 4 workers would race to build at once. `scripts/start-prod.sh` builds once _before_ handing the built file to pm2.
 
 ```bash
 ./scripts/dev.sh          # pm2: start "flipkart-dev" (runs `pnpm dev`) if not running, else restart
 ./scripts/start-prod.sh   # pnpm build:prod, then pm2 start/reload "flipkart-prod" (4 cluster workers)
 ```
 
-Both scripts are idempotent — safe to re-run any time you change code. `start-prod.sh` uses `pm2 reload` (zero-downtime rolling restart across the 4 workers) when already running, `dev.sh` uses `pm2 restart`. Logs land in `logs/{dev,prod}-{out,error}.log`.
+Both scripts are idempotent, safe to re-run any time you change code. `start-prod.sh` uses `pm2 reload` (zero-downtime rolling restart across the 4 workers) when already running, `dev.sh` uses `pm2 restart`. Logs land in `logs/{dev,prod}-{out,error}.log`.
 
 ## API docs
 
-Swagger UI: `http://localhost:5003/api-docs` (once the server is running).
+Swagger UI: `http://localhost:5003/api-docs` (once the server is running). The spec is built from the `@openapi` comments in `*.router.ts`.
 
-Health check: `GET /health`.
+| Path                 | What it serves                                                                          |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| `GET /`              | the UI, user picker                                                                     |
+| `GET /u/:username`   | the same file, profile route                                                            |
+| `GET /p/:postId`     | the same file, post modal route                                                         |
+| `GET /uploads/:name` | composed story media. Only a `uuid.png` style name is served, `max-age=31536000, immutable` |
+| `GET /health`        | `{ status: "ok" }`                                                                      |
+| `GET /ready`         | Mongo topology and Redis state, answers `503` when Mongo reads are down                 |
+
+The HTML is read from disk on every request, so UI edits show on reload, no restart and no rebuild.
 
 ## Routes
 
-All list endpoints use **cursor pagination**: `?cursor=<last _id from previous page>&limit=<n>`. `limit` is clamped to a maximum of **100** (default 20) regardless of what's requested.
+Endpoints that paginate use **cursor pagination**: `?cursor=<last _id from previous page>&limit=<n>`. `limit` is clamped to a maximum of **100** (default 20) regardless of what's requested. Exceptions: `/profiles` returns up to 50 cards (20 with `?q=`), `/stories/feed` returns up to 200 followed plus 60 discovery stories, `/profiles/:username/highlights` returns up to 50.
 
 ### Products (`/products`)
 
@@ -178,7 +199,9 @@ All list endpoints use **cursor pagination**: `?cursor=<last _id from previous p
 
 ### Instagram
 
-Pages: `/` (pick a user, this is the "login") and `/u/:username` (profile). One file, `public/index.html`, Tailwind from the CDN. Logout goes back to `/`. The picked user is sent as the `x-user-id` header.
+Pages: `/` (pick a user, this is the "login"), `/u/:username` (profile) and `/p/:postId` (post modal). One file, `public/index.html`, Tailwind from the CDN. Logout goes back to `/`. The picked user is sent as the `x-user-id` header.
+
+The UI renders the picker, the profile (header, story tray, highlights, Meta One card, posts and reels grid with hover stats), the search overlay, the composer and the full-screen story player with the owner sheets. Story playback pauses while an owner sheet is open and resumes from the same point.
 
 | Method | Path                         | Notes                                                                                                                                                                                                                 |
 | ------ | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -227,6 +250,34 @@ Demo plan, no payment and no pricing UI. Only the owner can change their own pla
 
 Consumer writes `story_views` (one row per story + viewer, `watchCount`, `lastClient` evidence), `story:{id}:views`, `story:{id}:uv` HyperLogLog and the Cuckoo filter `user:{id}:seenStory`. A sweeper runs every 60s and sets `status=expired`; rows are never deleted. The second consumer writes `story_likes` and moves `story:{id}:likes` only by rows that really changed, so a replayed batch changes nothing.
 
+### Story lifecycle
+
+| Rule          | Value                                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------------------- |
+| Live window   | 24h from `createdAt`. `expiresAt` never moves on edit                                                    |
+| Edit window   | 15 min, caption and media only, `version + 1`, `edited = true`                                           |
+| Extend        | once, owner plus Meta One, `createdAt + 48h`                                                             |
+| Delete        | soft delete, the row stays for audit, tombstone in Redis 300s                                            |
+| Expiry        | the sweeper sets `status=expired`. The author can still open it, everyone else gets `404`                |
+| Viewer window | first 48h, `?q=` prefix search, cached 300s, and the cache is dropped on every new view                  |
+
+### Redis keys and Kafka events
+
+| Key                            | Type          | Holds                                                     |
+| ------------------------------ | ------------- | --------------------------------------------------------- |
+| `story:{id}:meta`              | JSON          | the slide, written with `EXAT` at `expiresAt`             |
+| `story:{id}:views`             | counter       | total opens, rewatches included                           |
+| `story:{id}:uv`                | HyperLogLog   | unique viewers                                            |
+| `story:{id}:likes`             | counter       | likes                                                     |
+| `story:{id}:shares`            | counter       | shares                                                    |
+| `story:{id}:viewers`           | JSON          | first viewer page, 300s                                   |
+| `story:{id}:tombstone`         | marker        | deleted, 300s                                             |
+| `tray:{username}`              | JSON          | followee list for the feed, 300s                           |
+| `user:{username}:seenStory`    | Cuckoo filter | stories opened, drives the tray ring                      |
+| `user:{username}:likedStory`   | Cuckoo filter | stories liked, skips a Mongo read on open                  |
+
+`story-views` carries `{ storyId, viewerId, anonymous, at, client }`. The consumer keeps one `story_views` row per story plus viewer with `watchCount` and `lastClient` evidence, moves the totals, adds to the HyperLogLog and the seen filter, and drops the cached viewer page. `story-likes` carries `{ action, storyId, userId }`. One `story_likes` row per pair, and the counter moves only for rows that really changed.
+
 ### Story composer (UI)
 
 The composer has two modes:
@@ -263,15 +314,27 @@ A highlight is a named list of story references. The story may expire, the highl
 | DELETE | `/highlights/:id/items/:storyId` | owner, the cover moves to the next story                             |
 | GET    | `/profiles/:username/highlights` | profile tray with cover and slides, one query per collection, no N+1 |
 
+## Seeding demo data
+
+`pnpm seed:insta` builds and runs `src/seed/seed-insta.ts`:
+
+| What                       | Count                                                          |
+| -------------------------- | -------------------------------------------------------------- |
+| Profiles                   | 14 (12 demo accounts plus 2 kept from the first run)           |
+| Posts and reels per profile | 24 posts + 12 reels, a reel roughly every third grid item      |
+| Comments per post          | 3 to 8, from the profiles and 5 fan accounts                   |
+
+Insert-only: a profile that already has posts is skipped, nothing is deleted or overwritten. Images are `picsum.photos` placeholders, so the same seed text always gives the same picture. Stories, highlights and the Meta One plan are created from the UI, not by the seeder.
+
 ## Seeding products
 
-Bulk-inserts fake products directly via the MongoDB driver (bypasses Mongoose document hydration — the dominant cost at millions-of-docs scale). Non-`_id` indexes are dropped before the insert and rebuilt after, to avoid index-maintenance overhead mid-insert.
+Bulk-inserts fake products directly via the MongoDB driver (bypasses Mongoose document hydration, the dominant cost at millions-of-docs scale). Non-`_id` indexes are dropped before the insert and rebuilt after, to avoid index-maintenance overhead mid-insert.
 
 ```bash
 # Interactive menu (only when run in a real terminal)
 pnpm seed:products
 
-# Skip the menu — pass the count directly
+# Skip the menu, pass the count directly
 pnpm seed:products -- --count=1000000
 
 # Tune batch size / concurrency for your machine (defaults: batch 5000, concurrency = min(CPU cores, 8))

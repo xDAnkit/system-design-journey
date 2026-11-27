@@ -13,6 +13,7 @@ This is not an app. There is no root build, lint, or test command. Each video to
 | `season-1/3.Searching/` | Searching: username availability with Bloom, Cuckoo, Xor and Fuse filters |
 | `season-1/4.Database/` | Database: ScyllaDB with Fastify and Go (planned) |
 | `season-1/5.Stats/` | Stats: Insta Stats, and Blinkit-style quick commerce search (V1 and V2) |
+| `season-1/6.Insta-Story/` | Insta Story: architecture questions, a docs site, and the Fastify + Mongo + Redis + Kafka API with a single-file UI |
 
 New topic path: `season-1/<number>.<topic-name>/`.
 
@@ -28,7 +29,7 @@ New topic path: `season-1/<number>.<topic-name>/`.
 | `6.cuckoo-filters-uwebsocket/` | Cuckoo filter on uWebSockets |
 | `7.cuckoo-filters-with-rust/` | Cuckoo filter as a Rust native module |
 | `8.Filters/` | Planned |
-| `design/` | HLD and LLD |
+| `design/` | HLD and LLD (HLD live, LLD pending) |
 
 ### Stats folders
 
@@ -37,8 +38,19 @@ New topic path: `season-1/<number>.<topic-name>/`.
 | `1.Insta Stats/` | Instagram-style likes, views and follows, counted through Kafka consumers |
 | `2.Quick Commerce Searching/` | V1. Blinkit-style search in 12 Indian languages and Hinglish: Typesense hybrid search, Ollama (`bge-m3` vectors, `gemma3:4b` tags), Kafka pipeline, dark store per pincode, analytics dashboard |
 | `3.Jaldi-TheLate-Quick Commerce V2/` | V2. Copy of V1 plus a tag safety gate (no abusive or sensitive tag ever), suggested tags only on admin approval, light and dark theme. Own data next to V1: db `jaldi`, Redis DB 1, port 5004 |
+| `4.Tags-Generation/` | Standalone tag engine (`Tag-Generator.js`) and its `product-kb.json` knowledge base: normalize, brand fuzzy match, category, rule tags in 12 scripts, and the LLM only for spelling, synonyms and Hinglish |
 
-Both search folders share the same Kafka and Typesense containers. Each has its own README with the setup and run order.
+The two quick commerce search folders share the same Kafka and Typesense containers. Each has its own README with the setup and run order.
+
+### Insta Story folders
+
+| Path | Contents |
+|---|---|
+| `1.Architectural-discussion/` | The questions that drive the design |
+| `2.Docs/` | Vite + React docs site, run `pnpm dev` inside the folder |
+| `3.Apps/1.Insta Story/` | Fastify 5 API, MongoDB, Redis counters, Kafka consumers, Swagger and the single-file UI in `public/index.html` |
+
+The app has its own README with the full run order: `pnpm install`, `pnpm dev` on port 5003, then `pnpm consumers` in a second terminal and `pnpm seed:insta` once.
 
 ## Shared scripts
 
