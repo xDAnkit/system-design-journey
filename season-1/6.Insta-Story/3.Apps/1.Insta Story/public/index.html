@@ -1,0 +1,2156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Instagram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-[#0c1014] text-[#f5f5f5] antialiased">
+    <!-- left icon rail, like Instagram desktop -->
+    <aside
+      id="rail"
+      class="fixed inset-y-0 left-0 z-30 hidden w-[72px] flex-col items-center justify-between border-r border-[#262626] py-6 sm:flex"
+    >
+      <a href="/" title="Instagram" class="rail-ico"></a>
+      <nav id="railNav" class="flex flex-col items-center gap-7"></nav>
+      <div id="railBottom" class="flex flex-col items-center gap-7"></div>
+    </aside>
+
+    <main
+      id="app"
+      class="mx-auto max-w-[935px] px-4 py-8 sm:pl-[88px] lg:max-w-[1100px]"
+    ></main>
+
+    <div
+      id="session"
+      class="fixed bottom-6 right-6 z-30 flex items-center gap-3 cursor-default rounded-full bg-[#262626] py-3 pl-5 pr-4 text-sm shadow-xl"
+    ></div>
+    <div id="modal" class="fixed inset-0 z-40 hidden bg-black/70"></div>
+    <div id="storyView" class="fixed inset-0 z-50 hidden bg-black/95"></div>
+    <div id="searchView" class="fixed inset-0 z-50 hidden bg-black/80"></div>
+    <div id="composer" class="fixed inset-0 z-50 hidden bg-black/80"></div>
+    <div
+      id="toast"
+      class="pointer-events-none fixed bottom-6 left-1/2 z-[70] hidden -translate-x-1/2 rounded-lg bg-zinc-800 px-4 py-2 text-sm shadow-lg"
+    ></div>
+
+    <script>
+      const $ = (s) => document.querySelector(s);
+      const esc = (s) =>
+        String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+
+      // "Login" only remembers which user you picked. It is sent as the x-user-id header on every call.
+      const session = {
+        get() {
+          try {
+            return localStorage.getItem("userId");
+          } catch {
+            return null;
+          }
+        },
+        set(v) {
+          try {
+            localStorage.setItem("userId", v);
+          } catch {}
+        },
+        clear() {
+          try {
+            localStorage.removeItem("userId");
+          } catch {}
+        },
+      };
+
+      // 8500000 -> "8.5M". null means the server could not read the counter.
+      const fmt = (n) =>
+        n == null
+          ? "-"
+          : new Intl.NumberFormat("en", {
+              notation: "compact",
+              maximumFractionDigits: 1,
+            }).format(n);
+      // Likes, follows and views go through Kafka, so the real number lands a moment after the click.
+      const SYNC_MS = 1500;
+
+      // A stable per-browser id. The server cannot invent one, so it is sent on every call and
+      // stored with each write, next to the IP and the parsed user agent.
+      const clientId = (() => {
+        try {
+          let id = localStorage.getItem("clientId");
+          if (!id) {
+            id = String(Date.now()) + Math.random().toString(36).slice(2);
+            localStorage.setItem("clientId", id);
+          }
+          return id;
+        } catch {
+          return null;
+        }
+      })();
+
+      async function api(url, method = "GET", body) {
+        const user = session.get();
+        const headers = {
+          "x-client-tz": Intl.DateTimeFormat().resolvedOptions().timeZone || "",
+        };
+        if (clientId) headers["x-client-id"] = clientId;
+        if (user) headers["x-user-id"] = user;
+        if (body) headers["content-type"] = "application/json";
+        const res = await fetch(url, {
+          method,
+          headers,
+          body: body ? JSON.stringify(body) : undefined,
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok)
+          throw new Error(data.error || "Request failed (" + res.status + ")");
+        return data;
+      }
+
+      let toastTimer;
+      function toast(msg) {
+        const el = $("#toast");
+        el.textContent = msg;
+        el.classList.remove("hidden");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.add("hidden"), 2500);
+      }
+
+      const showError = (msg) => {
+        $("#app").innerHTML =
+          '<p class="py-20 text-center text-zinc-400">' + esc(msg) + "</p>";
+      };
+      const tick =
+        '<svg viewBox="0 0 40 40" class="inline h-[18px] w-[18px] shrink-0" aria-label="Verified"><path fill="#0095f6" d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z"/></svg>';
+      // Meta One mark, shown next to a premium username
+      const crown =
+        '<svg viewBox="0 0 24 24" class="inline h-[18px] w-[18px] shrink-0 text-amber-300" fill="currentColor" aria-label="Meta One"><path d="M3 8.5 7.2 12 12 5l4.8 7L21 8.5 19.2 19H4.8L3 8.5Zm2.4 12.2h13.2a.9.9 0 0 1 0 1.8H5.4a.9.9 0 0 1 0-1.8Z"/></svg>';
+
+      // stroke icons, 24px, currentColor
+      const svg = (d, cls = "h-6 w-6") =>
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="' +
+        cls +
+        '">' +
+        d +
+        "</svg>";
+      const I = {
+        insta: svg(
+          '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/>',
+          "h-7 w-7",
+        ),
+        home: svg('<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>'),
+        reels: svg(
+          '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="m10 8.5 5 3.5-5 3.5z"/>',
+        ),
+        send: svg('<path d="M22 3 9.2 10.1M22 3l-7 18-3.8-8.9L3 8.3z"/>'),
+        search: svg(
+          '<circle cx="10.5" cy="10.5" r="7"/><path d="m21 21-5.5-5.5"/>',
+        ),
+        heart: svg(
+          '<path d="M16.8 3.5c-2 0-3.6 1-4.8 2.7C10.8 4.5 9.2 3.5 7.2 3.5A4.7 4.7 0 0 0 2.5 8.4c0 5.5 9.5 12.1 9.5 12.1s9.5-6.6 9.5-12.1a4.7 4.7 0 0 0-4.7-4.9z"/>',
+        ),
+        plus: svg('<path d="M12 4v16M4 12h16"/>'),
+        chart: svg(
+          '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 16v-4M12 16V8M16 16v-6"/>',
+        ),
+        menu: svg('<path d="M3 6h18M3 12h18M3 18h18"/>'),
+        apps: svg(
+          '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+        ),
+        grid: svg('<path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18"/>'),
+        repost: svg(
+          '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
+        ),
+        tagged: svg(
+          '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M6.5 19a6 6 0 0 1 11 0"/>',
+        ),
+        comment: svg('<path d="M20.7 16.4A9 9 0 1 0 17 19.9L21 21z"/>'),
+        bookmark: svg('<path d="M19 21l-7-6-7 6V3h14z"/>'),
+        more: svg(
+          '<circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/>',
+        ),
+        close: svg('<path d="M5 5l14 14M19 5 5 19"/>', "h-7 w-7"),
+        left: svg('<path d="m15 18-6-6 6-6"/>', "h-5 w-5"),
+        right: svg('<path d="m9 18 6-6-6-6"/>', "h-5 w-5"),
+        smile: svg(
+          '<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0M9 9.5h.01M15 9.5h.01"/>',
+        ),
+        eye: svg(
+          '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+          "h-5 w-5",
+        ),
+        person: svg(
+          '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+          "h-5 w-5",
+        ),
+      };
+      const heartFill = (cls) =>
+        '<svg viewBox="0 0 24 24" class="' +
+        cls +
+        '" fill="currentColor"><path d="M16.8 3.5c-2 0-3.6 1-4.8 2.7C10.8 4.5 9.2 3.5 7.2 3.5A4.7 4.7 0 0 0 2.5 8.4c0 5.5 9.5 12.1 9.5 12.1s9.5-6.6 9.5-12.1a4.7 4.7 0 0 0-4.7-4.9z"/></svg>';
+      const bubbleFill = (cls) =>
+        '<svg viewBox="0 0 24 24" class="' +
+        cls +
+        '" fill="currentColor"><path d="M20.7 16.4A9 9 0 1 0 17 19.9L21 21z"/></svg>';
+      const avatarOf = (u) =>
+        "https://picsum.photos/seed/" +
+        encodeURIComponent(u) +
+        "-avatar/200/200";
+      // "18w", "1d", "5h": Instagram style age
+      const ago = (iso) => {
+        const s = Math.max(1, (Date.now() - new Date(iso).getTime()) / 1000);
+        for (const [n, u] of [
+          [604800, "w"],
+          [86400, "d"],
+          [3600, "h"],
+          [60, "m"],
+        ])
+          if (s >= n) return Math.floor(s / n) + u;
+        return Math.floor(s) + "s";
+      };
+
+      function renderRail() {
+        $("#rail a").innerHTML = I.insta;
+        const me = session.get();
+        // Home reloads your own profile, the other icons only look the part
+        $("#railNav").innerHTML =
+          (me
+            ? '<a href="/u/' +
+              encodeURIComponent(me) +
+              '" title="Home" class="text-[#f5f5f5]">' +
+              I.home +
+              "</a>"
+            : '<span class="text-[#f5f5f5]">' + I.home + "</span>") +
+          [I.reels, I.send]
+            .map(
+              (i) =>
+                '<span class="cursor-default text-[#f5f5f5]">' + i + "</span>",
+            )
+            .join("") +
+          // The search icon is the one icon here that really does something.
+          '<button id="searchBtn" title="Search" class="text-[#f5f5f5] hover:text-[#a8a8a8]">' +
+          I.search +
+          "</button>" +
+          [I.heart, I.plus, I.chart]
+            .map(
+              (i) =>
+                '<span class="cursor-default text-[#f5f5f5]">' + i + "</span>",
+            )
+            .join("") +
+          (me
+            ? '<button id="meBtn" title="You"><img src="' +
+              avatarOf(me) +
+              '" class="h-7 w-7 rounded-full object-cover ring-2 ring-transparent hover:ring-white/40" alt="" /></button>'
+            : "");
+        $("#railBottom").innerHTML = I.menu + I.apps;
+        $("#searchBtn").onclick = openSearch;
+        if (!me) return;
+
+        // avatar menu: Profile / Log out
+        let menu = $("#meMenu");
+        if (!menu) {
+          menu = document.createElement("div");
+          menu.id = "meMenu";
+          menu.className =
+            "fixed left-[80px] z-40 hidden w-56 overflow-hidden rounded-2xl bg-[#262626] py-2 text-sm shadow-2xl";
+          document.body.appendChild(menu);
+        }
+        menu.innerHTML =
+          '<a href="/u/' +
+          encodeURIComponent(me) +
+          '" class="flex items-center gap-3 px-4 py-3 hover:bg-[#363636]">' +
+          svg(
+            '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+            "h-5 w-5",
+          ) +
+          "Profile</a>" +
+          '<div class="my-1 h-px bg-[#363636]"></div>' +
+          '<button id="railLogout" class="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-[#363636]">' +
+          svg('<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/>', "h-5 w-5") +
+          "Log out</button>";
+        $("#meBtn").onclick = (e) => {
+          e.stopPropagation();
+          const r = e.currentTarget.getBoundingClientRect();
+          menu.style.top = Math.max(8, r.top - 40) + "px";
+          menu.classList.toggle("hidden");
+        };
+        $("#railLogout").onclick = () => {
+          session.clear();
+          location.assign("/");
+        };
+        document.addEventListener("click", (e) => {
+          if (!menu.contains(e.target)) menu.classList.add("hidden");
+        });
+      }
+
+      function renderSession() {
+        const user = session.get();
+        $("#session").innerHTML = user
+          ? // looks like Instagram's Messages pill (not wired). Log out lives in the left rail, under your avatar.
+            I.send +
+            '<span class="text-[15px] font-semibold">Messages</span>' +
+            '<span class="ml-2 flex -space-x-2">' +
+            ["priya.nair", "aarav.sharma", "ananya.iyer"]
+              .map(
+                (u) =>
+                  '<img src="' +
+                  avatarOf(u) +
+                  '" class="h-6 w-6 rounded-full border-2 border-[#262626] object-cover" alt="" />',
+              )
+              .join("") +
+            "</span>"
+          : "";
+        $("#session").classList.toggle("hidden", !user);
+        renderRail();
+        const btn = $("#logout");
+        if (btn)
+          btn.onclick = () => {
+            session.clear();
+            location.assign("/");
+          };
+      }
+
+      // ---- / : pick a user ----
+      async function pickerPage() {
+        $("#app").innerHTML =
+          '<p class="py-20 text-center text-zinc-500">Loading...</p>';
+        const { items } = await api("/profiles");
+        $("#app").innerHTML =
+          '<h1 class="text-center text-2xl font-semibold">Who is this?</h1>' +
+          '<p class="mt-1 mb-8 text-center text-sm text-zinc-400">Click a card to log in as that user.</p>' +
+          '<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">' +
+          items
+            .map(
+              (p) =>
+                '<button data-user="' +
+                esc(p.username) +
+                '" class="flex items-center gap-4 rounded-2xl border border-zinc-800 bg-zinc-950 p-5 text-left transition hover:border-zinc-600 hover:bg-zinc-900">' +
+                '<img src="' +
+                esc(p.avatarUrl) +
+                '" alt="" class="h-16 w-16 rounded-full object-cover" />' +
+                '<span class="min-w-0"><span class="flex items-center gap-1.5 font-semibold"><span class="truncate">' +
+                esc(p.username) +
+                "</span>" +
+                (p.verified ? tick : "") +
+                "</span>" +
+                '<span class="block truncate text-sm text-zinc-400">' +
+                esc(p.displayName) +
+                "</span></span>" +
+                "</button>",
+            )
+            .join("") +
+          "</div>";
+        document.querySelectorAll("[data-user]").forEach((card) => {
+          card.onclick = () => {
+            session.set(card.dataset.user);
+            location.assign("/u/" + encodeURIComponent(card.dataset.user));
+          };
+        });
+      }
+
+      // ---- /u/:username : profile ----
+      async function profilePage(username) {
+        if (!session.get()) {
+          location.replace("/");
+          return;
+        }
+        $("#app").innerHTML =
+          '<p class="py-20 text-center text-zinc-500">Loading...</p>';
+        let p = await api("/profiles/" + encodeURIComponent(username));
+        const isMe = session.get() === p.username;
+
+        $("#app").innerHTML =
+          '<div class="mx-auto max-w-[790px]">' +
+          '<section class="flex items-center gap-6 sm:gap-10">' +
+          '<img src="' +
+          esc(p.avatarUrl) +
+          '" alt="" class="h-20 w-20 shrink-0 rounded-full object-cover sm:h-[170px] sm:w-[170px]" />' +
+          '<div class="min-w-0">' +
+          '<h1 class="flex items-center gap-2 text-xl font-semibold sm:text-[26px]"><span class="truncate">' +
+          esc(p.username) +
+          "</span>" +
+          (p.verified ? tick : "") +
+          (p.isPremium ? crown : "") +
+          '<span class="ml-1 text-[#a8a8a8]">' +
+          I.more +
+          "</span></h1>" +
+          '<p class="mt-1 text-[15px]">' +
+          esc(p.displayName) +
+          "</p>" +
+          '<p id="stats" class="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-[15px]"></p>' +
+          (p.bio ? '<p class="mt-4 text-[15px]">' + esc(p.bio) + "</p>" : "") +
+          "</div>" +
+          "</section>" +
+          (isMe
+            ? ""
+            : '<div class="mt-5 grid grid-cols-2 gap-2 sm:max-w-[300px]">' +
+              '<button id="follow"></button>' +
+              '<button class="cursor-default rounded-lg bg-[#262626] py-2.5 text-sm font-semibold">Message</button>' +
+              "</div>") +
+          '<div id="tray" class="mt-8 flex items-start gap-4 overflow-x-auto pb-2"></div>' +
+          // The strip must stay a flex row, otherwise each highlight becomes its own line.
+          '<div id="highlights" class="mt-4 hidden flex items-start gap-4 overflow-x-auto pb-2"></div>' +
+          (isMe ? '<div id="premium"></div>' : "") +
+          "</div>" +
+          '<nav class="mx-auto mt-10 grid max-w-[935px] grid-cols-4 border-b border-[#262626] text-[#a8a8a8] lg:max-w-none">' +
+          '<button data-tab="post" class="flex justify-center border-b py-3" title="Posts">' +
+          I.grid +
+          "</button>" +
+          '<button data-tab="reel" class="flex justify-center border-b py-3" title="Reels">' +
+          I.reels +
+          "</button>" +
+          '<span class="flex cursor-default justify-center border-b border-transparent py-3 opacity-60" title="Reposts">' +
+          I.repost +
+          "</span>" +
+          '<span class="flex cursor-default justify-center border-b border-transparent py-3 opacity-60" title="Tagged">' +
+          I.tagged +
+          "</span>" +
+          "</nav>" +
+          '<div id="grid" class="mt-[2px] grid grid-cols-3 gap-[2px] sm:grid-cols-4"></div>' +
+          '<div class="mt-6 text-center"><button id="more" class="hidden rounded-lg bg-zinc-800 px-4 py-2 text-sm font-medium hover:bg-zinc-700">Load more</button></div>';
+
+        const paint = () => {
+          $("#stats").innerHTML =
+            "<span><b>" +
+            Number(p.postsCount).toLocaleString() +
+            "</b> posts</span>" +
+            "<span><b>" +
+            fmt(p.followers) +
+            "</b> followers</span>" +
+            "<span><b>" +
+            fmt(p.following) +
+            "</b> following</span>";
+          const btn = $("#follow");
+          if (btn) {
+            btn.textContent = p.isFollowing ? "Following" : "Follow";
+            btn.className =
+              "rounded-lg py-2.5 text-sm font-semibold " +
+              (p.isFollowing
+                ? "bg-[#262626] hover:bg-[#363636]"
+                : "bg-[#4a5df9] hover:bg-[#3b4ee8]");
+          }
+        };
+        paint();
+
+        // Follow: the number moves at once, the server number replaces it after the Kafka consumer has run.
+        const followBtn = $("#follow");
+        if (followBtn) {
+          followBtn.onclick = async () => {
+            const was = p.isFollowing;
+            followBtn.disabled = true;
+            p.isFollowing = !was;
+            p.followers = Math.max(0, p.followers + (was ? -1 : 1));
+            paint();
+            try {
+              await api(
+                "/profiles/" + encodeURIComponent(username) + "/follow",
+                was ? "DELETE" : "POST",
+              );
+              // A follow changes what the tray may show, so repaint it now.
+              renderTray(p, isMe).catch(() => {});
+              setTimeout(async () => {
+                try {
+                  p = await api("/profiles/" + encodeURIComponent(username));
+                  paint();
+                } catch {}
+              }, SYNC_MS);
+            } catch (e) {
+              p.isFollowing = was;
+              p.followers = Math.max(0, p.followers + (was ? 1 : -1));
+              paint();
+              toast(e.message);
+            } finally {
+              followBtn.disabled = false;
+            }
+          };
+        }
+
+        renderTray(p, isMe).catch(() => {});
+        renderHighlights(p).catch(() => {});
+        renderPremium(p, isMe).catch(() => {});
+
+        let type = "post";
+        let cursor = null;
+
+        const stat = (icon, value, label) =>
+          '<span class="flex min-w-0 items-center gap-1.5 whitespace-nowrap" title="' +
+          label +
+          '">' +
+          icon +
+          '<span class="leading-none"><b class="text-[14px]">' +
+          fmt(value) +
+          '</b><span class="ml-1 text-[11px] font-medium text-white/75">' +
+          label +
+          "</span></span></span>";
+        const eyeFill =
+          '<svg viewBox="0 0 24 24" class="h-4 w-4 shrink-0" fill="currentColor"><path d="M12 5C5.6 5 2 12 2 12s3.6 7 10 7 10-7 10-7-3.6-7-10-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>';
+        const usersFill =
+          '<svg viewBox="0 0 24 24" class="h-4 w-4 shrink-0" fill="currentColor"><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm7.5 0a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM1 20c0-3.9 3.6-7 8-7s8 3.1 8 7v1H1zm17.5 1v-1c0-2.4-1-4.5-2.7-5.9A6.4 6.4 0 0 1 23 20v1z"/></svg>';
+
+        // hover: likes and comments like Instagram, plus total views and unique viewers (the HyperLogLog demo)
+        const tile = (post) =>
+          '<a href="/p/' +
+          esc(post._id) +
+          '" data-post="' +
+          esc(post._id) +
+          '" class="group relative block aspect-[3/4] overflow-hidden bg-[#1a1a1a]">' +
+          '<img loading="lazy" src="' +
+          esc(post.mediaUrl) +
+          '" alt="' +
+          esc(post.caption) +
+          '" class="h-full w-full object-cover" />' +
+          (post.type === "reel"
+            ? '<span class="absolute right-2.5 top-2.5 text-white drop-shadow">' +
+              svg(
+                '<rect x="3" y="3" width="18" height="18" rx="4" fill="currentColor" stroke="none"/><path d="m10 8.5 5 3.5-5 3.5z" fill="#000" stroke="none"/>',
+                "h-5 w-5",
+              ) +
+              "</span>"
+            : "") +
+          '<div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100">' +
+          '<div class="grid grid-cols-2 gap-x-4 gap-y-3 px-3">' +
+          stat(heartFill("h-4 w-4 shrink-0"), post.likes, "likes") +
+          stat(
+            bubbleFill("h-4 w-4 shrink-0 -scale-x-100"),
+            post.comments,
+            "comments",
+          ) +
+          stat(eyeFill, post.totalViews, "views") +
+          stat(usersFill, post.uniqueViews, "unique") +
+          "</div>" +
+          "</div>" +
+          "</a>";
+
+        async function load(reset) {
+          if (reset) {
+            cursor = null;
+            $("#grid").innerHTML = "";
+          }
+          const q =
+            "?authorId=" +
+            encodeURIComponent(username) +
+            "&type=" +
+            type +
+            "&limit=12" +
+            (cursor ? "&cursor=" + cursor : "");
+          const { items, nextCursor } = await api("/posts" + q);
+          $("#grid").insertAdjacentHTML("beforeend", items.map(tile).join(""));
+          gridIds = [...document.querySelectorAll("#grid [data-post]")].map(
+            (a) => a.dataset.post,
+          );
+          cursor = nextCursor;
+          $("#more").classList.toggle("hidden", !nextCursor);
+          if (reset && items.length === 0)
+            $("#grid").innerHTML =
+              '<p class="col-span-full py-16 text-center text-zinc-500">Nothing here yet.</p>';
+        }
+
+        function markTabs() {
+          document.querySelectorAll("[data-tab]").forEach((b) => {
+            const on = b.dataset.tab === type;
+            b.classList.toggle("border-white", on);
+            b.classList.toggle("border-transparent", !on);
+            b.classList.toggle("text-[#f5f5f5]", on);
+          });
+        }
+        document.querySelectorAll("[data-tab]").forEach((b) => {
+          b.onclick = () => {
+            type = b.dataset.tab;
+            markTabs();
+            load(true).catch((e) => showError(e.message));
+          };
+        });
+        $("#more").onclick = () =>
+          load(false).catch((e) => showError(e.message));
+        // a tile opens the post as a modal over the grid (Ctrl / Cmd click still opens a new tab)
+        $("#grid").onclick = (e) => {
+          const a = e.target.closest("[data-post]");
+          if (!a || e.metaKey || e.ctrlKey) return;
+          e.preventDefault();
+          openPost(a.dataset.post).catch((err) => toast(err.message));
+        };
+        window.profileUser = username;
+        markTabs();
+        await load(true);
+      }
+
+      // ---- Meta One card, own profile only ----
+      async function renderPremium(p, isMe) {
+        const el = $("#premium");
+        if (!isMe || !el) return;
+        const state = await api(
+          "/premium/" + encodeURIComponent(p.username),
+        ).catch(() => null);
+        const active = state ? state.active : !!p.isPremium;
+        const since =
+          state && state.startedAt
+            ? new Date(state.startedAt).toLocaleDateString("en", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })
+            : null;
+        el.innerHTML =
+          '<div class="mt-6 rounded-2xl border p-4 sm:p-5 ' +
+          (active
+            ? "border-amber-300/40 bg-amber-300/[0.07]"
+            : "border-[#262626] bg-[#12161b]") +
+          '">' +
+          '<div class="flex flex-wrap items-start justify-between gap-4">' +
+          '<div class="min-w-0">' +
+          '<p class="flex items-center gap-2 text-[15px] font-semibold">' +
+          crown +
+          "<span>Meta One</span>" +
+          '<span class="rounded-full px-2 py-0.5 text-[11px] font-semibold ' +
+          (active
+            ? "bg-amber-300/20 text-amber-200"
+            : "bg-white/10 text-white/60") +
+          '">' +
+          (active ? "Active" : "Free") +
+          "</span></p>" +
+          '<p class="mt-1.5 max-w-[540px] text-[13px] leading-5 text-[#a8a8a8]">' +
+          (active
+            ? "Active" +
+              (since ? " since " + since : "") +
+              ". Viewer list with search, rewatch count, 48h extend and anonymous view are on."
+            : "Demo plan, no payment. Unlocks the searchable viewer list, rewatch count, one 48h extend and anonymous view.") +
+          "</p>" +
+          "</div>" +
+          '<button id="premiumBtn" class="shrink-0 rounded-lg px-3.5 py-2 text-[13px] font-semibold ' +
+          (active
+            ? "bg-[#262626] hover:bg-[#363636]"
+            : "bg-gradient-to-r from-amber-300 to-yellow-500 text-black hover:brightness-110") +
+          '">' +
+          (active ? "Cancel Meta One" : "Become Meta One") +
+          "</button>" +
+          "</div>" +
+          "</div>";
+        $("#premiumBtn").onclick = async (e) => {
+          const btn = e.currentTarget;
+          btn.disabled = true;
+          try {
+            await api(
+              "/premium/" + encodeURIComponent(p.username),
+              active ? "DELETE" : "POST",
+            );
+            toast(
+              active ? "Meta One cancelled" : "Meta One active, crown added",
+            );
+            // Story sheets read this cache, so drop it before repainting the profile.
+            premiumCache = null;
+            await profilePage(p.username);
+          } catch (err) {
+            toast(err.message);
+            btn.disabled = false;
+          }
+        };
+      }
+
+      // ---- story tray: your create ring plus every author with a live story ----
+      async function renderTray(p, isMe) {
+        const el = $("#tray");
+        if (!el) return;
+        el.innerHTML = "";
+
+        if (isMe) {
+          const add = document.createElement("button");
+          add.className =
+            "flex w-[76px] shrink-0 flex-col items-center gap-1.5";
+          add.innerHTML =
+            '<span class="relative rounded-full bg-[#262626] p-[2px]">' +
+            '<img src="' +
+            esc(p.avatarUrl) +
+            '" class="h-16 w-16 rounded-full border-2 border-[#0c1014] object-cover" alt="" />' +
+            '<span class="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full border-2 border-[#0c1014] bg-[#4a5df9] text-white">' +
+            svg('<path d="M12 5v14M5 12h14"/>', "h-3.5 w-3.5") +
+            "</span>" +
+            "</span>" +
+            '<span class="text-[11px] text-[#a8a8a8]">New story</span>';
+          add.onclick = () => openComposer(p.username);
+          el.appendChild(add);
+        }
+
+        // Your own page asks for the whole tray. Someone else's page asks for that author
+        // only, so their public stories still show when you do not follow them.
+        let items = [];
+        try {
+          items = (
+            await api(
+              isMe
+                ? "/stories/feed"
+                : "/stories/feed?authorId=" + encodeURIComponent(p.username),
+            )
+          ).items;
+        } catch {
+          return;
+        }
+        items.sort(
+          (a, b) => (b.authorId === p.username) - (a.authorId === p.username),
+        );
+
+        for (const group of items) {
+          const btn = document.createElement("button");
+          btn.className =
+            "flex w-[76px] shrink-0 flex-col items-center gap-1.5";
+          btn.innerHTML =
+            '<span class="rounded-full p-[2px] ' +
+            (group.hasUnseen
+              ? "bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-500"
+              : "bg-[#333]") +
+            '">' +
+            '<img src="' +
+            esc(group.avatarUrl || avatarOf(group.authorId)) +
+            '" class="h-16 w-16 rounded-full border-2 border-[#0c1014] object-cover" alt="" />' +
+            "</span>" +
+            '<span class="w-full truncate text-center text-[11px] ' +
+            (group.hasUnseen ? "font-semibold text-white" : "text-[#a8a8a8]") +
+            '">' +
+            esc(
+              group.authorId === session.get() ? "Your story" : group.authorId,
+            ) +
+            "</span>";
+          btn.onclick = () =>
+            openStories(group.authorId).catch((e) => toast(e.message));
+          el.appendChild(btn);
+        }
+      }
+
+      // File -> image element -> a canvas capped at 1440px, so drag redraws stay cheap.
+      function readImage(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = () => reject(new Error("read failed"));
+          reader.onload = () => {
+            const img = new Image();
+            img.onerror = () => reject(new Error("decode failed"));
+            img.onload = () => resolve(img);
+            img.src = String(reader.result);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function downscale(img, max) {
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        if (scale === 1) return img;
+        const out = document.createElement("canvas");
+        out.width = Math.round(img.width * scale);
+        out.height = Math.round(img.height * scale);
+        out.getContext("2d").drawImage(img, 0, 0, out.width, out.height);
+        return out;
+      }
+
+      // ---- create a story: pick a photo and write on it, or paste a link ----
+      function openComposer(me) {
+        const box = $("#composer");
+        box.classList.remove("hidden");
+        box.innerHTML =
+          '<div class="flex h-full items-start justify-center overflow-y-auto p-3 sm:items-center">' +
+          '<form id="storyForm" class="w-full max-w-[420px] rounded-2xl bg-[#16191d] p-4 sm:p-5">' +
+          '<div class="flex items-center justify-between"><h2 class="text-base font-semibold">New story</h2><button type="button" id="storyCancel" class="text-[#a8a8a8]" aria-label="Close">' +
+          I.close +
+          "</button></div>" +
+          '<div class="mt-3 grid grid-cols-2 gap-2 text-[13px] font-medium">' +
+          '<button type="button" data-mode="upload" class="rounded-lg bg-white/10 py-2">From device</button>' +
+          '<button type="button" data-mode="link" class="rounded-lg py-2 text-[#a8a8a8]">From link</button>' +
+          "</div>" +
+          '<div id="uploadPane" class="mt-3">' +
+          '<div id="storyStage" class="relative mx-auto aspect-[9/16] w-full max-w-[230px] overflow-hidden rounded-xl bg-[#0c1014] ring-1 ring-[#2a2a2a]">' +
+          '<canvas id="storyCanvas" width="1080" height="1920" class="h-full w-full"></canvas>' +
+          '<button type="button" id="storyPick" class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/50 text-[13px] text-white/85"><span class="rounded-full bg-white px-4 py-2 text-[13px] font-semibold text-black">Choose image</span><span>or drop a file here</span></button>' +
+          '<input id="storyFile" type="file" accept="image/*" class="hidden" />' +
+          "</div>" +
+          '<input id="storyText" maxlength="120" class="mt-3 w-full rounded-lg bg-[#0c1014] px-3 py-2.5 text-sm outline-none ring-1 ring-[#2a2a2a] focus:ring-[#4a5df9]" placeholder="Type on the image (optional)" />' +
+          '<div class="mt-2 flex items-center justify-between text-[12px] text-[#a8a8a8]">' +
+          '<div class="flex items-center gap-1" id="textSizes">' +
+          '<button type="button" data-size="44" class="rounded-md px-2 py-1 text-[#a8a8a8] ring-1 ring-[#2a2a2a]">S</button>' +
+          '<button type="button" data-size="64" class="rounded-md bg-white/10 px-2 py-1 text-white ring-1 ring-[#2a2a2a]">M</button>' +
+          '<button type="button" data-size="88" class="rounded-md px-2 py-1 text-[#a8a8a8] ring-1 ring-[#2a2a2a]">L</button>' +
+          "</div>" +
+          '<div class="flex items-center gap-1" id="textColors">' +
+          '<button type="button" data-color="#ffffff" class="h-6 w-6 rounded-full bg-white ring-2 ring-white"></button>' +
+          '<button type="button" data-color="#111111" class="h-6 w-6 rounded-full bg-[#111] ring-2 ring-white/20"></button>' +
+          '<button type="button" data-color="#f43f5e" class="h-6 w-6 rounded-full bg-rose-500 ring-2 ring-white/20"></button>' +
+          "</div>" +
+          "</div>" +
+          '<p class="mt-1.5 text-[11px] text-[#8a8a8a]">Drag the text on the image to place it.</p>' +
+          "</div>" +
+          '<div id="linkPane" class="mt-3 hidden">' +
+          '<input id="storyUrl" value="https://picsum.photos/seed/' +
+          encodeURIComponent(me) +
+          '-story/720/1280" class="w-full rounded-lg bg-[#0c1014] px-3 py-2.5 text-sm outline-none ring-1 ring-[#2a2a2a] focus:ring-[#4a5df9]" placeholder="Image or video URL" />' +
+          '<input id="storyCaption" maxlength="500" class="mt-3 w-full rounded-lg bg-[#0c1014] px-3 py-2.5 text-sm outline-none ring-1 ring-[#2a2a2a] focus:ring-[#4a5df9]" placeholder="Caption (optional)" />' +
+          '<select id="storyType" class="mt-3 w-full rounded-lg bg-[#0c1014] px-3 py-2.5 text-sm outline-none ring-1 ring-[#2a2a2a]"><option value="image">Image</option><option value="video">Video</option></select>' +
+          "</div>" +
+          '<div class="mt-3 flex items-center gap-3 text-sm">' +
+          '<select id="storyAudience" class="flex-1 rounded-lg bg-[#0c1014] px-3 py-2.5 outline-none ring-1 ring-[#2a2a2a]"><option value="public">Public</option><option value="followers">Followers only</option></select>' +
+          '<span class="text-[11px] text-[#8a8a8a]">Live 24h</span>' +
+          "</div>" +
+          '<p class="mt-2 text-[11px] text-[#8a8a8a]">Your own open never counts as a view.</p>' +
+          '<button type="submit" id="storyShare" class="mt-3 w-full rounded-lg bg-[#4a5df9] py-2.5 text-sm font-semibold hover:bg-[#3b4ee8] disabled:cursor-not-allowed disabled:opacity-60">Share to story</button>' +
+          "</form></div>";
+
+        const close = () => {
+          box.classList.add("hidden");
+          box.innerHTML = "";
+        };
+        $("#storyCancel").onclick = close;
+
+        const canvas = $("#storyCanvas");
+        const ctx = canvas.getContext("2d");
+        const FONT =
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        const state = {
+          mode: "upload",
+          img: null,
+          text: "",
+          size: 64,
+          color: "#ffffff",
+          pos: { x: 0.5, y: 0.58 },
+          box: null,
+          drag: null,
+        };
+
+        // Wrap by words against the real font metrics, so long text never runs off the canvas.
+        const wrap = (text, maxWidth) => {
+          ctx.font = "700 " + state.size + "px " + FONT;
+          const lines = [];
+          let line = "";
+          for (const word of text.split(/\s+/)) {
+            const test = line ? line + " " + word : word;
+            if (line && ctx.measureText(test).width > maxWidth) {
+              lines.push(line);
+              line = word;
+            } else {
+              line = test;
+            }
+          }
+          if (line) lines.push(line);
+          return lines;
+        };
+
+        // Cover fit: the image fills 1080x1920 and the overflow is cropped, like Instagram.
+        const draw = () => {
+          const W = canvas.width;
+          const H = canvas.height;
+          ctx.clearRect(0, 0, W, H);
+          ctx.fillStyle = "#111315";
+          ctx.fillRect(0, 0, W, H);
+          if (state.img) {
+            const scale = Math.max(W / state.img.width, H / state.img.height);
+            const w = state.img.width * scale;
+            const h = state.img.height * scale;
+            ctx.drawImage(state.img, (W - w) / 2, (H - h) / 2, w, h);
+          }
+          const text = state.text.trim();
+          if (!text) {
+            state.box = null;
+            return;
+          }
+          const lines = wrap(text, W * 0.82);
+          const lh = state.size * 1.28;
+          const cx = state.pos.x * W;
+          const cy = state.pos.y * H;
+          const width = Math.max(
+            ...lines.map((line) => ctx.measureText(line).width),
+          );
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.shadowColor = "rgba(0,0,0,0.55)";
+          ctx.shadowBlur = 24;
+          ctx.fillStyle = state.color;
+          lines.forEach((line, i) =>
+            ctx.fillText(
+              line,
+              cx,
+              cy - (lines.length * lh) / 2 + lh / 2 + i * lh,
+            ),
+          );
+          ctx.shadowBlur = 0;
+          state.box = { cx, cy, w: width + 40, h: lines.length * lh + 30 };
+        };
+
+        const toCanvas = (e) => {
+          const rect = canvas.getBoundingClientRect();
+          return {
+            x: ((e.clientX - rect.left) * canvas.width) / rect.width,
+            y: ((e.clientY - rect.top) * canvas.height) / rect.height,
+          };
+        };
+
+        canvas.style.touchAction = "none";
+        canvas.addEventListener("pointerdown", (e) => {
+          if (!state.box) return;
+          const p = toCanvas(e);
+          if (
+            Math.abs(p.x - state.box.cx) > state.box.w / 2 ||
+            Math.abs(p.y - state.box.cy) > state.box.h / 2
+          )
+            return;
+          state.drag = { dx: p.x - state.box.cx, dy: p.y - state.box.cy };
+          canvas.setPointerCapture(e.pointerId);
+        });
+        canvas.addEventListener("pointermove", (e) => {
+          if (!state.drag) return;
+          const p = toCanvas(e);
+          state.pos = {
+            x: Math.min(
+              0.95,
+              Math.max(0.05, (p.x - state.drag.dx) / canvas.width),
+            ),
+            y: Math.min(
+              0.95,
+              Math.max(0.05, (p.y - state.drag.dy) / canvas.height),
+            ),
+          };
+          draw();
+        });
+        canvas.addEventListener("pointerup", () => {
+          state.drag = null;
+        });
+        canvas.addEventListener("pointercancel", () => {
+          state.drag = null;
+        });
+
+        const fileInput = $("#storyFile");
+        const useFile = async (file) => {
+          if (!file || !file.type.startsWith("image/")) {
+            toast("Pick an image file");
+            return;
+          }
+          try {
+            state.img = downscale(await readImage(file), 1440);
+            const pick = $("#storyPick");
+            pick.className =
+              "absolute right-2 top-2 rounded-full bg-black/60 px-3 py-1.5 text-[11px] font-semibold text-white";
+            pick.textContent = "Change";
+            draw();
+            // Reset, so picking the same file again still fires a change event.
+            fileInput.value = "";
+          } catch {
+            toast("Could not read that image");
+          }
+        };
+
+        $("#storyPick").onclick = () => fileInput.click();
+        fileInput.onchange = () =>
+          useFile(fileInput.files && fileInput.files[0]);
+        const stage = $("#storyStage");
+        stage.addEventListener("dragover", (e) => e.preventDefault());
+        stage.addEventListener("drop", (e) => {
+          e.preventDefault();
+          useFile(
+            e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0],
+          );
+        });
+
+        $("#storyText").oninput = (e) => {
+          state.text = e.target.value;
+          draw();
+        };
+
+        const markSize = (btn) => {
+          document.querySelectorAll("#textSizes button").forEach((b) => {
+            const on = b === btn;
+            b.classList.toggle("bg-white/10", on);
+            b.classList.toggle("text-white", on);
+            b.classList.toggle("text-[#a8a8a8]", !on);
+          });
+        };
+        document.querySelectorAll("#textSizes [data-size]").forEach((btn) => {
+          btn.onclick = () => {
+            state.size = Number(btn.dataset.size);
+            markSize(btn);
+            draw();
+          };
+        });
+
+        const markColor = (btn) => {
+          document.querySelectorAll("#textColors button").forEach((b) => {
+            const on = b === btn;
+            b.classList.toggle("scale-110", on);
+            b.classList.toggle("ring-white", on);
+            b.classList.toggle("ring-white/20", !on);
+          });
+        };
+        document.querySelectorAll("#textColors [data-color]").forEach((btn) => {
+          btn.onclick = () => {
+            state.color = btn.dataset.color;
+            markColor(btn);
+            draw();
+          };
+        });
+
+        const setMode = (mode) => {
+          state.mode = mode;
+          document.querySelectorAll("[data-mode]").forEach((b) => {
+            const on = b.dataset.mode === mode;
+            b.classList.toggle("bg-white/10", on);
+            b.classList.toggle("text-white", on);
+            b.classList.toggle("text-[#a8a8a8]", !on);
+          });
+          $("#uploadPane").classList.toggle("hidden", mode !== "upload");
+          $("#linkPane").classList.toggle("hidden", mode !== "link");
+        };
+        document.querySelectorAll("[data-mode]").forEach((b) => {
+          b.onclick = () => setMode(b.dataset.mode);
+        });
+
+        $("#storyForm").onsubmit = async (e) => {
+          e.preventDefault();
+          if (state.mode === "upload" && !state.img) {
+            toast("Pick an image first");
+            return;
+          }
+          const btn = $("#storyShare");
+          const audience = $("#storyAudience").value;
+          btn.disabled = true;
+          try {
+            if (state.mode === "upload") {
+              btn.textContent = "Uploading...";
+              const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+              const { url } = await api("/stories/media", "POST", { dataUrl });
+              // The text is baked into the image, and also stored as the caption so the
+              // edit sheet can prefill it and a change has somewhere to go.
+              await api("/stories", "POST", {
+                type: "image",
+                mediaUrl: url,
+                caption: state.text.trim(),
+                audience,
+              });
+            } else {
+              await api("/stories", "POST", {
+                type: $("#storyType").value,
+                mediaUrl: $("#storyUrl").value.trim(),
+                caption: $("#storyCaption").value.trim(),
+                audience,
+              });
+            }
+            close();
+            toast("Story shared, live for 24 hours");
+            await profilePage(me);
+          } catch (err) {
+            toast(err.message);
+            btn.disabled = false;
+            btn.textContent = "Share to story";
+          }
+        };
+
+        draw();
+        setMode("upload");
+      }
+
+      // ---- story player: progress bars, auto advance, one view event per slide ----
+      let storyFrame = 0;
+      let anonMode = false; // Meta One: send the view without the viewer name
+      let premiumCache = null; // null = not asked yet
+
+      // While an owner sheet is open the slide must not advance. The timer is frozen by adding
+      // the paused time to the elapsed clock, so it resumes from the same point.
+      let storyPaused = false;
+      let pausedMs = 0;
+      let pauseAt = 0;
+
+      function pauseStory() {
+        if (storyPaused) return;
+        storyPaused = true;
+        pauseAt = performance.now();
+        const video = $("#storyVideo");
+        if (video) video.pause();
+      }
+
+      function resumeStory() {
+        if (!storyPaused) return;
+        storyPaused = false;
+        pausedMs += performance.now() - pauseAt;
+        pauseAt = 0;
+        const video = $("#storyVideo");
+        if (video) video.play().catch(() => {});
+      }
+
+      function closeStory() {
+        cancelAnimationFrame(storyFrame);
+        storyPaused = false;
+        pausedMs = 0;
+        pauseAt = 0;
+        const view = $("#storyView");
+        view.classList.add("hidden");
+        view.innerHTML = "";
+        document.body.classList.remove("overflow-hidden");
+      }
+
+      async function openStories(authorId) {
+        const { items } = await api("/stories/feed");
+        const groups = items.filter((g) => g.stories.length > 0);
+        let at = groups.findIndex((g) => g.authorId === authorId);
+        if (at === -1) {
+          // Not in the main feed: ask for this author's tray directly. Public stories come
+          // back even when you do not follow them, followers-only ones only when you do.
+          const own = await api(
+            "/stories/feed?authorId=" + encodeURIComponent(authorId),
+          );
+          const extra = (own.items || []).filter((g) => g.stories.length > 0);
+          if (extra.length === 0) {
+            toast("No live stories for this user");
+            return;
+          }
+          at = groups.length + extra.findIndex((g) => g.authorId === authorId);
+          groups.push(...extra);
+        }
+        showStory(groups, at);
+      }
+
+      // ---- search: find any profile by name, then open their page ----
+      let searchTimer = 0;
+      let searchSeq = 0;
+
+      function closeSearch() {
+        $("#searchView").classList.add("hidden");
+        $("#searchView").innerHTML = "";
+        document.body.classList.remove("overflow-hidden");
+      }
+
+      function openSearch() {
+        const view = $("#searchView");
+        view.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+        view.innerHTML =
+          '<div class="mx-auto mt-[6vh] w-full max-w-[480px] px-3">' +
+          '<div class="flex items-center gap-2 rounded-t-2xl border-b border-[#262626] bg-[#1a1a1a] px-4 py-3">' +
+          '<span class="text-[#a8a8a8]">' +
+          I.search +
+          "</span>" +
+          '<input id="searchInput" placeholder="Search profiles" autocomplete="off" spellcheck="false" class="flex-1 bg-transparent text-[15px] text-white outline-none placeholder:text-[#8a8a8a]" />' +
+          '<button id="searchClose" class="text-[#a8a8a8] hover:text-white" aria-label="Close">' +
+          I.close +
+          "</button>" +
+          "</div>" +
+          '<div id="searchBody" class="max-h-[62vh] overflow-y-auto rounded-b-2xl bg-[#1a1a1a] p-2"></div>' +
+          "</div>";
+
+        view.onclick = (e) => {
+          if (e.target === view) closeSearch();
+        };
+        $("#searchClose").onclick = closeSearch;
+
+        const input = $("#searchInput");
+        input.oninput = () => {
+          clearTimeout(searchTimer);
+          searchTimer = setTimeout(
+            () => void runSearch(input.value.trim()),
+            220,
+          );
+        };
+        input.focus();
+        void runSearch("");
+      }
+
+      // One Escape listener for the whole page, it only acts while the search is open.
+      document.addEventListener("keydown", (e) => {
+        const view = $("#searchView");
+        if (e.key === "Escape" && view && !view.classList.contains("hidden"))
+          closeSearch();
+      });
+
+      async function runSearch(q) {
+        const seq = ++searchSeq;
+        const body = $("#searchBody");
+        if (!body) return;
+        const label = (text) =>
+          '<p class="px-3 py-2 text-xs uppercase tracking-wide text-[#8a8a8a]">' +
+          text +
+          "</p>";
+        if (!q) body.innerHTML = label("Suggested profiles");
+        try {
+          const { items } = await api(
+            "/profiles" + (q ? "?q=" + encodeURIComponent(q) : ""),
+          );
+          if (seq !== searchSeq || !$("#searchBody")) return;
+          const list = items.filter((p) => p.username !== session.get());
+          if (list.length === 0) {
+            body.innerHTML =
+              '<p class="px-3 py-6 text-center text-sm text-[#8a8a8a]">No profile matches "' +
+              esc(q) +
+              '"</p>';
+            return;
+          }
+          body.innerHTML =
+            label(q ? "Results" : "Suggested profiles") +
+            list
+              .map(
+                (p) =>
+                  '<button data-go="' +
+                  esc(p.username) +
+                  '" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left hover:bg-[#262626]">' +
+                  '<img src="' +
+                  esc(p.avatarUrl) +
+                  '" alt="" class="h-11 w-11 rounded-full object-cover" />' +
+                  '<span class="min-w-0"><span class="flex items-center gap-1.5 text-[15px] font-semibold"><span class="truncate">' +
+                  esc(p.username) +
+                  "</span>" +
+                  (p.verified ? tick : "") +
+                  "</span>" +
+                  '<span class="block truncate text-[13px] text-[#a8a8a8]">' +
+                  esc(p.displayName) +
+                  "</span></span>" +
+                  "</button>",
+              )
+              .join("");
+          body.querySelectorAll("[data-go]").forEach((row) => {
+            row.onclick = () => {
+              const username = row.dataset.go;
+              closeSearch();
+              location.assign("/u/" + encodeURIComponent(username));
+            };
+          });
+        } catch {
+          if (seq === searchSeq && $("#searchBody"))
+            body.innerHTML =
+              '<p class="px-3 py-6 text-center text-sm text-[#8a8a8a]">Search failed, try again</p>';
+        }
+      }
+
+      function showStory(groups, gi) {
+        cancelAnimationFrame(storyFrame);
+        const group = groups[gi];
+        const stories = [...group.stories].sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        );
+        let index = 0;
+
+        const view = $("#storyView");
+        view.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+        view.innerHTML =
+          '<button id="storyClose" class="absolute right-3 top-3 z-20 text-white/80 hover:text-white" aria-label="Close">' +
+          I.close +
+          "</button>" +
+          (gi > 0
+            ? '<button id="storyPrev" class="absolute left-1 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/15 p-1.5 text-white hover:bg-white/30" aria-label="Previous">' +
+              I.left +
+              "</button>"
+            : "") +
+          (gi < groups.length - 1
+            ? '<button id="storyNext" class="absolute right-1 top-1/2 z-20 -translate-y-1/2 rounded-full bg-white/15 p-1.5 text-white hover:bg-white/30" aria-label="Next">' +
+              I.right +
+              "</button>"
+            : "") +
+          '<div class="flex h-full items-center justify-center p-2 sm:p-6">' +
+          '<div class="relative h-full max-h-[92vh] w-full max-w-[430px] overflow-hidden rounded-xl bg-[#101010]">' +
+          '<div id="storyBars" class="absolute inset-x-0 top-0 z-10 flex gap-1 px-2 pt-2"></div>' +
+          '<div id="storyHead" class="absolute inset-x-0 top-0 z-10 flex items-center gap-2.5 px-3 pt-7 text-white"></div>' +
+          '<div id="storyMedia" class="h-full w-full"></div>' +
+          '<div id="storyFoot" class="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/85 via-black/40 to-transparent px-4 pb-4 pt-10 text-white"></div>' +
+          "</div>" +
+          "</div>";
+
+        $("#storyClose").onclick = closeStory;
+        if ($("#storyPrev"))
+          $("#storyPrev").onclick = () => showStory(groups, gi - 1);
+        if ($("#storyNext"))
+          $("#storyNext").onclick = () => showStory(groups, gi + 1);
+
+        const setBar = (pct) => {
+          const bar = document.querySelectorAll("#storyBars i")[index];
+          if (bar)
+            bar.style.width =
+              Math.round(Math.min(1, Math.max(0, pct)) * 100) + "%";
+        };
+
+        const step = (n) => {
+          const nextIndex = index + n;
+          if (nextIndex < 0) return;
+          if (nextIndex >= stories.length) {
+            if (gi < groups.length - 1) showStory(groups, gi + 1);
+            else closeStory();
+            return;
+          }
+          index = nextIndex;
+          void paint();
+        };
+
+        const paint = async () => {
+          cancelAnimationFrame(storyFrame);
+          const s = stories[index];
+          pausedMs = 0; // a fresh slide always gets its full 5 seconds first
+
+          $("#storyBars").innerHTML = stories
+            .map(
+              (_, i) =>
+                '<span class="h-[2.5px] flex-1 overflow-hidden rounded bg-white/30"><i class="block h-full rounded bg-white" style="width:' +
+                (i < index ? 100 : 0) +
+                '%"></i></span>',
+            )
+            .join("");
+
+          $("#storyHead").innerHTML =
+            '<img src="' +
+            esc(group.avatarUrl || avatarOf(group.authorId)) +
+            '" class="h-8 w-8 rounded-full object-cover" alt="" />' +
+            '<span class="flex items-center gap-1 text-[13px] font-semibold">' +
+            esc(group.authorId) +
+            (group.verified ? tick : "") +
+            "</span>" +
+            '<span class="ml-auto text-[12px] text-white/70">' +
+            ago(s.createdAt) +
+            "</span>";
+
+          const media = $("#storyMedia");
+          if (s.type === "video") {
+            media.innerHTML =
+              '<video id="storyVideo" src="' +
+              esc(s.mediaUrl) +
+              '" class="h-full w-full object-contain" autoplay muted playsinline></video>';
+            const video = $("#storyVideo");
+            video.onended = () => step(1);
+            video.ontimeupdate = () => {
+              if (video.duration) setBar(video.currentTime / video.duration);
+            };
+          } else {
+            media.innerHTML =
+              '<img src="' +
+              esc(s.mediaUrl) +
+              '" class="h-full w-full object-contain" alt="" />';
+            const started = performance.now();
+            const frame = (now) => {
+              // The current pause is subtracted too, so the bar itself freezes, not just the step.
+              const held = pausedMs + (storyPaused ? now - pauseAt : 0);
+              const pct = (now - started - held) / 5000;
+              setBar(pct);
+              if (pct < 1) storyFrame = requestAnimationFrame(frame);
+              else if (storyPaused) storyFrame = requestAnimationFrame(frame);
+              else step(1);
+            };
+            storyFrame = requestAnimationFrame(frame);
+          }
+
+          media.onclick = (e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            step(e.clientX - rect.left > rect.width / 2 ? 1 : -1);
+          };
+
+          // The open call brings the real counters (likes, shares, rewatch, isLiked). A failed
+          // open still renders the slide, so playback never waits on stats.
+          const isOwner = group.authorId === session.get();
+          let info = {
+            views: s.views ?? 0,
+            uniqueViews: 0,
+            likes: 0,
+            shares: 0,
+            isLiked: false,
+            rewatches: null,
+          };
+          try {
+            info = await api("/stories/" + s._id);
+            s.views = info.views;
+          } catch {}
+          if (!stories[index] || stories[index]._id !== s._id) return;
+          // Meta One is your own plan: the author needs it for the viewer list, a viewer needs
+          // it for anonymous views. One call answers both.
+          const premium = await isMyPremium();
+          renderStoryFoot({
+            s,
+            info,
+            isOwner,
+            group,
+            premium,
+            repaint: () => void paint(),
+          });
+
+          // The view is fire and forget, the counter moves after the consumer runs.
+          api(
+            "/stories/" + s._id + "/view" + (anonMode ? "?anonymous=true" : ""),
+            "POST",
+          ).catch(() => {});
+          setTimeout(async () => {
+            try {
+              const fresh = await api("/stories/" + s._id);
+              if (stories[index] && stories[index]._id === s._id) {
+                s.views = fresh.views;
+                renderStoryFoot({
+                  s,
+                  info: fresh,
+                  isOwner,
+                  group,
+                  premium,
+                  repaint: () => void paint(),
+                });
+              }
+            } catch {}
+          }, SYNC_MS);
+        };
+
+        void paint();
+      }
+
+      // Meta One state for the viewer, asked once per page load.
+      async function isMyPremium() {
+        const me = session.get();
+        if (!me) return false;
+        if (premiumCache !== null) return premiumCache;
+        try {
+          premiumCache = !!(await api("/premium/" + encodeURIComponent(me)))
+            .active;
+        } catch {
+          premiumCache = false;
+        }
+        return premiumCache;
+      }
+
+      // ---- highlight tray: named lists that outlive the story ----
+      async function renderHighlights(p) {
+        const el = $("#highlights");
+        if (!el) return;
+        let items = [];
+        try {
+          items = (
+            await api(
+              "/profiles/" + encodeURIComponent(p.username) + "/highlights",
+            )
+          ).items;
+        } catch {
+          return;
+        }
+        if (items.length === 0) {
+          el.classList.add("hidden");
+          return;
+        }
+        el.classList.remove("hidden");
+        el.innerHTML = items
+          .map((h) => {
+            const cover = h.cover
+              ? h.cover.thumbnailUrl ||
+                (h.cover.type === "image" ? h.cover.mediaUrl : "")
+              : "";
+            return (
+              '<button data-hl="' +
+              esc(h._id) +
+              '" class="flex w-[76px] shrink-0 flex-col items-center gap-1.5">' +
+              '<span class="rounded-full border border-[#333] p-[2px]">' +
+              (cover
+                ? '<img src="' +
+                  esc(cover) +
+                  '" class="h-16 w-16 rounded-full object-cover" alt="" />'
+                : '<span class="flex h-16 w-16 items-center justify-center rounded-full bg-[#262626] text-lg font-semibold">' +
+                  esc(h.title.slice(0, 1).toUpperCase()) +
+                  "</span>") +
+              "</span>" +
+              '<span class="w-full truncate text-center text-[11px] text-[#a8a8a8]">' +
+              esc(h.title) +
+              "</span>" +
+              "</button>"
+            );
+          })
+          .join("");
+        el.querySelectorAll("[data-hl]").forEach((btn) => {
+          const h = items.find((x) => x._id === btn.dataset.hl);
+          btn.onclick = () => {
+            if (!h || h.items.length === 0) {
+              toast("This highlight is empty");
+              return;
+            }
+            showStory(
+              [
+                {
+                  authorId: p.username,
+                  avatarUrl: p.avatarUrl,
+                  verified: p.verified,
+                  stories: h.items,
+                },
+              ],
+              0,
+            );
+          };
+        });
+      }
+
+      // ---- story footer: stats, like, reply, share, and the owner tools ----
+      function renderStoryFoot({ s, info, isOwner, group, premium, repaint }) {
+        const foot = $("#storyFoot");
+        if (!foot) return;
+        s.liked = info.isLiked === true;
+        s.views = info.views;
+
+        const button = (id, label, extra = "bg-white/15 hover:bg-white/25") =>
+          '<button id="' +
+          id +
+          '" class="rounded-full px-3 py-1.5 ' +
+          extra +
+          '">' +
+          label +
+          "</button>";
+
+        // Views, unique viewers and rewatches are author-only. A viewer sees likes and shares.
+        const viewStats = isOwner
+          ? '<span class="flex items-center gap-1.5">' +
+            I.eye +
+            '<b class="text-white" data-views>' +
+            fmt(info.views) +
+            "</b></span>" +
+            '<span><b class="text-white" data-uv>' +
+            fmt(info.uniqueViews) +
+            "</b> viewers</span>" +
+            (info.rewatches != null
+              ? '<span><b class="text-white">' +
+                fmt(info.rewatches) +
+                "</b> rewatches</span>"
+              : "")
+          : "";
+
+        foot.innerHTML =
+          (s.caption
+            ? '<p class="text-[13px]">' +
+              esc(s.caption) +
+              (s.edited
+                ? ' <span class="ml-1 text-[10px] uppercase tracking-wide text-white/50">edited</span>'
+                : "") +
+              "</p>"
+            : "") +
+          '<div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-white/75">' +
+          viewStats +
+          '<span class="flex items-center gap-1"><b class="text-white" data-likes>' +
+          fmt(info.likes) +
+          "</b>" +
+          heartFill("h-3 w-3") +
+          "</span>" +
+          '<span><b class="text-white" data-shares>' +
+          fmt(info.shares) +
+          "</b> shares</span>" +
+          "</div>" +
+          (isOwner
+            ? '<div class="mt-3 flex flex-wrap gap-2 text-[12px]">' +
+              // The named viewer list is a Meta One feature, so the button only exists for subscribers.
+              (premium ? button("storyViewers", "Viewers") : "") +
+              button("storyExtend", "Extend 48h") +
+              button("storyHighlight", "Highlight") +
+              button("storyEdit", "Edit") +
+              button(
+                "storyDelete",
+                "Delete",
+                "bg-rose-500/80 hover:bg-rose-500",
+              ) +
+              "</div>"
+            : '<div class="mt-3 flex items-center gap-2">' +
+              '<input id="storyReply" maxlength="500" placeholder="Reply to ' +
+              esc(group.authorId) +
+              '" class="min-w-0 flex-1 rounded-full bg-white/15 px-3 py-2 text-[13px] text-white placeholder-white/60 outline-none" />' +
+              '<button id="storyLike" class="rounded-full p-2 hover:bg-white/15" aria-label="Like">' +
+              (s.liked ? heartFill("h-6 w-6 text-rose-500") : I.heart) +
+              "</button>" +
+              '<button id="storyShare" class="rounded-full p-2 hover:bg-white/15" aria-label="Share">' +
+              I.send +
+              "</button>" +
+              (premium
+                ? '<button id="storyAnon" class="rounded-full px-2.5 py-1 text-[11px] font-semibold ' +
+                  (anonMode
+                    ? "bg-amber-300 text-black"
+                    : "bg-white/15 text-white/80") +
+                  '">Anon</button>'
+                : "") +
+              "</div>");
+
+        const paintCounts = () => {
+          const views = $("[data-views]");
+          if (views) views.textContent = fmt(info.views);
+          const uv = $("[data-uv]");
+          if (uv) uv.textContent = fmt(info.uniqueViews);
+          const likes = $("[data-likes]");
+          if (likes) likes.textContent = fmt(info.likes);
+          const shares = $("[data-shares]");
+          if (shares) shares.textContent = fmt(info.shares);
+        };
+
+        const likeBtn = $("#storyLike");
+        if (likeBtn) {
+          likeBtn.onclick = async () => {
+            const next = !s.liked;
+            s.liked = next;
+            info.likes = Math.max(0, info.likes + (next ? 1 : -1));
+            likeBtn.innerHTML = next
+              ? heartFill("h-6 w-6 text-rose-500")
+              : I.heart;
+            paintCounts();
+            try {
+              await api(
+                "/stories/" + s._id + "/like",
+                next ? "POST" : "DELETE",
+              );
+            } catch (err) {
+              s.liked = !next;
+              info.likes = Math.max(0, info.likes + (next ? -1 : 1));
+              likeBtn.innerHTML = s.liked
+                ? heartFill("h-6 w-6 text-rose-500")
+                : I.heart;
+              paintCounts();
+              toast(err.message);
+            }
+          };
+        }
+
+        const input = $("#storyReply");
+        if (input) {
+          input.onkeydown = async (e) => {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+            e.stopPropagation();
+            const text = input.value.trim();
+            if (!text) return;
+            input.value = "";
+            try {
+              await api("/stories/" + s._id + "/reply", "POST", { text });
+              toast("Reply sent");
+            } catch (err) {
+              input.value = text;
+              toast(err.message);
+            }
+          };
+        }
+
+        const shareBtn = $("#storyShare");
+        if (shareBtn) {
+          shareBtn.onclick = async () => {
+            try {
+              await navigator.clipboard.writeText(
+                location.origin + "/u/" + encodeURIComponent(group.authorId),
+              );
+            } catch {}
+            info.shares += 1;
+            paintCounts();
+            await api("/stories/" + s._id + "/share", "POST").catch(() => {});
+            toast("Link copied");
+          };
+        }
+
+        const anonBtn = $("#storyAnon");
+        if (anonBtn) {
+          anonBtn.onclick = () => {
+            anonMode = !anonMode;
+            toast(
+              anonMode
+                ? "Next views stay anonymous"
+                : "Views show your name again",
+            );
+            renderStoryFoot({ s, info, isOwner, group, premium, repaint });
+          };
+        }
+
+        if ($("#storyViewers"))
+          $("#storyViewers").onclick = () => void openViewers(s._id);
+        if ($("#storyExtend")) {
+          $("#storyExtend").onclick = async () => {
+            const story = await extendStory(s._id);
+            if (story)
+              toast(
+                "Extended to 48h, ends " +
+                  new Date(story.expiresAt).toLocaleString(),
+              );
+          };
+        }
+        if ($("#storyHighlight"))
+          $("#storyHighlight").onclick = () => void addToHighlight(s._id);
+        if ($("#storyEdit"))
+          $("#storyEdit").onclick = () => openEditor(s, repaint);
+        if ($("#storyDelete")) {
+          $("#storyDelete").onclick = async () => {
+            if (await deleteStory(s._id)) closeStory();
+          };
+        }
+      }
+
+      // ---- owner tools ----
+      async function extendStory(id) {
+        try {
+          return (await api("/stories/" + id + "/extend", "POST")).story;
+        } catch (err) {
+          toast(err.message);
+          return null;
+        }
+      }
+
+      async function deleteStory(id) {
+        pauseStory();
+        if (
+          !confirm(
+            "Delete this story? It stops rendering at once, the row stays for audit.",
+          )
+        ) {
+          resumeStory();
+          return false;
+        }
+        try {
+          await api("/stories/" + id, "DELETE");
+          toast("Story deleted");
+          return true;
+        } catch (err) {
+          toast(err.message);
+          return false;
+        } finally {
+          resumeStory();
+        }
+      }
+
+      async function addToHighlight(id) {
+        pauseStory();
+        const title = (
+          window.prompt("Highlight name (max 50 characters)") || ""
+        ).trim();
+        if (!title) {
+          resumeStory();
+          return;
+        }
+        try {
+          await api("/highlights", "POST", { title, storyIds: [id] });
+          toast('Saved to "' + title + '"');
+          // The highlight row lives on the profile behind the player, repaint it now.
+          const me = session.get();
+          if (me) renderHighlights({ username: me }).catch(() => {});
+        } catch (err) {
+          toast(err.message);
+        } finally {
+          resumeStory();
+        }
+      }
+
+      // Edit reuses the composer overlay. It shows the current caption, freezes playback, and
+      // disables the button up front when the 15 minute window is already gone.
+      function openEditor(s, onSaved) {
+        const box = $("#composer");
+        const editable =
+          Date.now() - new Date(s.createdAt).getTime() <= 15 * 60 * 1000;
+        pauseStory();
+        box.classList.remove("hidden");
+        box.innerHTML =
+          '<div class="flex h-full items-center justify-center p-4">' +
+          '<form id="editForm" class="w-full max-w-[420px] rounded-2xl bg-[#16191d] p-5">' +
+          '<div class="flex items-center justify-between"><h2 class="text-base font-semibold">Edit story</h2><button type="button" id="editCancel" class="text-[#a8a8a8]" aria-label="Close">' +
+          I.close +
+          "</button></div>" +
+          '<label class="mt-4 block text-[11px] uppercase tracking-wide text-[#8a8a8a]">Caption</label>' +
+          '<input id="editCaption" maxlength="500" value="' +
+          esc(s.caption || "") +
+          '" class="mt-1 w-full rounded-lg bg-[#0c1014] px-3 py-2.5 text-sm outline-none ring-1 ring-[#2a2a2a] focus:ring-[#4a5df9]" placeholder="No caption yet" />' +
+          '<label class="mt-3 block text-[11px] uppercase tracking-wide text-[#8a8a8a]">Media URL</label>' +
+          '<input id="editUrl" value="' +
+          esc(s.mediaUrl) +
+          '" class="mt-1 w-full rounded-lg bg-[#0c1014] px-3 py-2.5 text-sm outline-none ring-1 ring-[#2a2a2a] focus:ring-[#4a5df9]" placeholder="Image or video URL" />' +
+          '<div class="mt-3 rounded-xl bg-[#0c1014] p-3">' +
+          '<p class="text-[11px] uppercase tracking-wide text-[#8a8a8a]">Preview on the story</p>' +
+          '<p id="editPreview" class="mt-1.5 text-[13px] text-white"></p>' +
+          '<p class="text-[10px] text-white/50">views · viewers · likes</p>' +
+          "</div>" +
+          '<p class="mt-3 text-xs ' +
+          (editable ? "text-[#a8a8a8]" : "text-amber-300") +
+          '">' +
+          (editable
+            ? "Editable for 15 minutes after posting. Saving writes Mongo and the story cache."
+            : "The 15 minute edit window is closed for this story.") +
+          "</p>" +
+          '<button type="submit" id="editSave" ' +
+          (editable ? "" : "disabled ") +
+          'class="mt-4 w-full rounded-lg bg-[#4a5df9] py-2.5 text-sm font-semibold hover:bg-[#3b4ee8] disabled:cursor-not-allowed disabled:opacity-50">' +
+          (editable ? "Save changes" : "Edit window closed") +
+          "</button>" +
+          "</form>" +
+          "</div>";
+
+        // Escape cancels the sheet, it must not close the whole player.
+        const onKey = (e) => {
+          if (e.key !== "Escape") return;
+          e.preventDefault();
+          close();
+        };
+        const close = () => {
+          document.removeEventListener("keydown", onKey);
+          box.classList.add("hidden");
+          box.innerHTML = "";
+          resumeStory();
+        };
+        document.addEventListener("keydown", onKey);
+        $("#editCancel").onclick = close;
+
+        // Live preview: the caption is the line that renders above the stats in the story.
+        const syncPreview = () => {
+          const text = $("#editCaption").value.trim();
+          const preview = $("#editPreview");
+          if (!preview) return;
+          preview.textContent =
+            text || "No caption, the story shows only the image";
+          preview.className = text
+            ? "mt-1.5 text-[13px] text-white"
+            : "mt-1.5 text-[13px] italic text-[#8a8a8a]";
+        };
+        $("#editCaption").oninput = syncPreview;
+        syncPreview();
+        $("#editForm").onsubmit = async (e) => {
+          e.preventDefault();
+          if (!editable) {
+            toast("Edit window closed, a story is editable for 15 minutes");
+            return;
+          }
+          const btn = $("#editSave");
+          btn.disabled = true;
+          btn.textContent = "Saving...";
+          try {
+            const { story } = await api("/stories/" + s._id, "PATCH", {
+              mediaUrl: $("#editUrl").value.trim(),
+              caption: $("#editCaption").value.trim(),
+            });
+            s.mediaUrl = story.mediaUrl;
+            s.caption = story.caption;
+            s.edited = true;
+            close();
+            toast("Story updated");
+            onSaved();
+          } catch (err) {
+            toast(err.message);
+            btn.disabled = false;
+            btn.textContent = "Save changes";
+          }
+        };
+      }
+
+      // ---- viewer list: owner only, 48h window, search runs on the server ----
+      async function openViewers(id) {
+        const view = $("#storyView");
+        if (!view || $("#viewersSheet")) return;
+        pauseStory();
+        const sheet = document.createElement("div");
+        sheet.id = "viewersSheet";
+        sheet.className =
+          "absolute inset-0 z-30 flex items-end justify-center bg-black/60";
+        sheet.innerHTML =
+          '<div class="max-h-[75%] w-full max-w-[430px] overflow-hidden rounded-t-2xl bg-[#16191d] text-white">' +
+          '<div class="flex items-center justify-between px-4 pt-3"><h3 class="text-sm font-semibold">Viewers</h3><button id="viewersClose" class="text-white/70" aria-label="Close">' +
+          I.close +
+          "</button></div>" +
+          '<input id="viewersSearch" placeholder="Search viewers" class="mx-4 mt-3 w-[calc(100%-2rem)] rounded-lg bg-[#0c1014] px-3 py-2 text-[13px] outline-none ring-1 ring-[#2a2a2a] focus:ring-[#4a5df9]" />' +
+          '<div id="viewersList" class="mt-2 max-h-[52vh] overflow-y-auto px-4 pb-4 text-[13px]">Loading...</div>' +
+          "</div>";
+        view.appendChild(sheet);
+        const closeSheet = () => {
+          sheet.remove();
+          resumeStory();
+        };
+        sheet.onclick = (e) => {
+          if (e.target === sheet) closeSheet();
+        };
+        $("#viewersClose").onclick = closeSheet;
+
+        let timer;
+        const load = async (q) => {
+          const list = $("#viewersList");
+          if (!list) return;
+          try {
+            const qs = "?limit=50" + (q ? "&q=" + encodeURIComponent(q) : "");
+            const { items } = await api("/stories/" + id + "/viewers" + qs);
+            list.innerHTML =
+              items.length === 0
+                ? '<p class="py-6 text-center text-[#a8a8a8]">No viewers in this window yet.</p>'
+                : items
+                    .map(
+                      (v) =>
+                        '<div class="flex items-center justify-between border-b border-white/5 py-2">' +
+                        '<span class="flex items-center gap-2"><img src="' +
+                        esc(avatarOf(v.viewerId)) +
+                        '" class="h-7 w-7 rounded-full object-cover" alt="" />' +
+                        esc(v.viewerId) +
+                        "</span>" +
+                        '<span class="text-[11px] text-[#a8a8a8]">' +
+                        v.watchCount +
+                        "x, " +
+                        ago(v.lastViewedAt) +
+                        "</span>" +
+                        "</div>",
+                    )
+                    .join("");
+          } catch (err) {
+            list.innerHTML =
+              '<p class="py-6 text-center text-rose-300">' +
+              esc(err.message) +
+              "</p>";
+          }
+        };
+        $("#viewersSearch").oninput = (e) => {
+          clearTimeout(timer);
+          const q = e.target.value.trim();
+          timer = setTimeout(() => void load(q), 250);
+        };
+        await load("");
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if ($("#storyView").classList.contains("hidden")) return;
+        // An owner sheet is on top, it owns the keyboard while it is open.
+        if (!$("#composer").classList.contains("hidden")) return;
+        if (e.key === "Escape") closeStory();
+        if (e.key === "ArrowRight") $("#storyNext")?.click();
+        if (e.key === "ArrowLeft") $("#storyPrev")?.click();
+      });
+
+      // ---- post modal (/p/:postId): opens over the profile like Instagram ----
+      let gridIds = []; // posts shown in the grid, for the prev / next arrows
+      let modalToken = 0; // a newer open wins over a slower older one
+
+      function closePost(push = true) {
+        $("#modal").classList.add("hidden");
+        $("#modal").innerHTML = "";
+        document.body.classList.remove("overflow-hidden");
+        if (push && location.pathname.startsWith("/p/") && window.profileUser)
+          history.pushState(
+            {},
+            "",
+            "/u/" + encodeURIComponent(window.profileUser),
+          );
+      }
+
+      async function openPost(postId, push = true) {
+        const token = ++modalToken;
+        if (push) history.pushState({}, "", "/p/" + postId);
+        document.body.classList.add("overflow-hidden");
+        const m = $("#modal");
+        m.classList.remove("hidden");
+        m.innerHTML =
+          '<div class="flex h-full items-center justify-center text-[#a8a8a8]">Loading...</div>';
+
+        let post = await api("/posts/" + postId);
+        const author = await api(
+          "/profiles/" + encodeURIComponent(post.authorId),
+        ).catch(() => null);
+        if (token !== modalToken) return;
+        const at = gridIds.indexOf(postId);
+        const prev = at > 0 ? gridIds[at - 1] : null;
+        const next =
+          at >= 0 && at < gridIds.length - 1 ? gridIds[at + 1] : null;
+        const av = (u, src, size) =>
+          '<img src="' +
+          esc(src || avatarOf(u)) +
+          '" alt="" class="' +
+          size +
+          ' shrink-0 rounded-full object-cover" />';
+        const arrow = (id, dir, side) =>
+          id
+            ? '<button data-go="' +
+              id +
+              '" class="absolute ' +
+              side +
+              ' top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black">' +
+              I[dir] +
+              "</button>"
+            : "";
+
+        m.innerHTML =
+          '<button id="closeModal" class="absolute right-4 top-4 z-10 text-white" aria-label="Close">' +
+          I.close +
+          "</button>" +
+          arrow(prev, "left", "left-4") +
+          arrow(next, "right", "right-4") +
+          '<div id="card" class="absolute inset-0 m-auto flex h-[92vh] w-[92vw] max-w-[1350px] overflow-hidden rounded-r bg-[#0c1014]">' +
+          '<div class="flex flex-1 items-center justify-center bg-black"><img src="' +
+          esc(post.mediaUrl) +
+          '" alt="' +
+          esc(post.caption) +
+          '" class="max-h-full max-w-full object-contain" /></div>' +
+          '<div class="hidden w-[500px] shrink-0 flex-col border-l border-[#262626] md:flex">' +
+          '<div class="flex items-center gap-3 border-b border-[#262626] px-4 py-3.5">' +
+          '<a href="/u/' +
+          encodeURIComponent(post.authorId) +
+          '" class="flex items-center gap-3">' +
+          av(post.authorId, author && author.avatarUrl, "h-8 w-8") +
+          '<span class="flex items-center gap-1 text-sm font-semibold">' +
+          esc(post.authorId) +
+          (author && author.verified ? tick : "") +
+          "</span></a>" +
+          '<span class="ml-auto text-[#f5f5f5]">' +
+          I.more +
+          "</span>" +
+          "</div>" +
+          '<div class="flex-1 space-y-5 overflow-y-auto px-4 py-4 text-sm">' +
+          '<div class="flex gap-3">' +
+          av(post.authorId, author && author.avatarUrl, "h-8 w-8") +
+          '<div><p><b class="mr-1">' +
+          esc(post.authorId) +
+          "</b>" +
+          esc(post.caption) +
+          '</p><p class="mt-2 text-xs text-[#a8a8a8]">' +
+          ago(post.createdAt) +
+          "</p></div></div>" +
+          '<div id="comments" class="space-y-5"></div>' +
+          '<button id="moreComments" class="hidden w-full text-center text-[#a8a8a8]">' +
+          I.plus +
+          "</button>" +
+          "</div>" +
+          '<div class="border-t border-[#262626] px-4 pt-2">' +
+          '<div class="flex items-center gap-4 py-1.5"><button id="like" class="transition active:scale-90" aria-label="Like"></button>' +
+          I.comment +
+          I.repost +
+          I.send +
+          '<span class="ml-auto">' +
+          I.bookmark +
+          "</span></div>" +
+          '<p id="nums" class="text-sm"></p>' +
+          '<p class="mt-1 pb-3 text-xs text-[#a8a8a8]">' +
+          esc(
+            new Date(post.createdAt).toLocaleDateString("en", {
+              month: "long",
+              day: "numeric",
+            }),
+          ) +
+          "</p>" +
+          "</div>" +
+          '<div class="flex items-center gap-3 border-t border-[#262626] px-4 py-3 text-sm">' +
+          I.smile +
+          '<input disabled placeholder="Add a comment..." class="flex-1 bg-transparent placeholder-[#a8a8a8] outline-none" />' +
+          '<span class="font-semibold text-[#0095f6]/50">Post</span></div>' +
+          "</div>" +
+          "</div>";
+
+        const paint = () => {
+          $("#like").innerHTML = post.isLiked
+            ? heartFill("h-6 w-6 text-[#ff3040]")
+            : I.heart;
+          $("#nums").innerHTML =
+            "<b>" +
+            fmt(post.likes) +
+            " likes</b>" +
+            '<span class="mt-1 flex items-center gap-4 text-[#a8a8a8]"><span class="flex items-center gap-1" title="Total views">' +
+            I.eye +
+            '<b class="text-[#f5f5f5]">' +
+            fmt(post.totalViews) +
+            "</b> views</span>" +
+            '<span class="flex items-center gap-1" title="Unique viewers, counted with a HyperLogLog">' +
+            I.person +
+            '<b class="text-[#f5f5f5]">' +
+            fmt(post.uniqueViews) +
+            "</b> unique</span></span>";
+        };
+        paint();
+        const refresh = async () => {
+          try {
+            post = await api("/posts/" + postId);
+            if (token === modalToken) paint();
+          } catch {}
+        };
+
+        // Like: the number moves at once, the server number replaces it after the Kafka consumer has run.
+        $("#like").onclick = async () => {
+          const btn = $("#like");
+          const was = post.isLiked;
+          btn.disabled = true;
+          post.isLiked = !was;
+          post.likes = Math.max(0, (post.likes ?? 0) + (was ? -1 : 1));
+          paint();
+          try {
+            await api("/posts/" + postId + "/like", was ? "DELETE" : "POST");
+            setTimeout(refresh, SYNC_MS);
+          } catch (e) {
+            post.isLiked = was;
+            post.likes = Math.max(0, post.likes + (was ? 1 : -1));
+            paint();
+            toast(e.message);
+          } finally {
+            btn.disabled = false;
+          }
+        };
+
+        $("#closeModal").onclick = () => closePost();
+        m.onclick = (e) => {
+          if (e.target === m) closePost();
+        }; // click on the dark backdrop
+        m.querySelectorAll("[data-go]").forEach((b) => {
+          b.onclick = () => {
+            history.replaceState({}, "", "/p/" + b.dataset.go);
+            openPost(b.dataset.go, false).catch((e) => toast(e.message));
+          };
+        });
+
+        // comments, newest first
+        let cursor = null;
+        async function loadComments() {
+          const { items, nextCursor } = await api(
+            "/posts/" +
+              postId +
+              "/comments?limit=15" +
+              (cursor ? "&cursor=" + cursor : ""),
+          );
+          if (token !== modalToken) return;
+          $("#comments").insertAdjacentHTML(
+            "beforeend",
+            items
+              .map(
+                (c) =>
+                  '<div class="flex gap-3">' +
+                  av(c.authorId, null, "h-8 w-8") +
+                  '<div class="flex-1"><p><b class="mr-1">' +
+                  esc(c.authorId) +
+                  "</b>" +
+                  esc(c.text) +
+                  "</p>" +
+                  '<p class="mt-1.5 text-xs text-[#a8a8a8]">' +
+                  ago(c.createdAt) +
+                  '<span class="ml-3 font-semibold">Reply</span></p></div>' +
+                  '<span class="pt-1 text-[#a8a8a8]">' +
+                  svg(
+                    '<path d="M16.8 3.5c-2 0-3.6 1-4.8 2.7C10.8 4.5 9.2 3.5 7.2 3.5A4.7 4.7 0 0 0 2.5 8.4c0 5.5 9.5 12.1 9.5 12.1s9.5-6.6 9.5-12.1a4.7 4.7 0 0 0-4.7-4.9z"/>',
+                    "h-3 w-3",
+                  ) +
+                  "</span>" +
+                  "</div>",
+              )
+              .join(""),
+          );
+          cursor = nextCursor;
+          $("#moreComments").classList.toggle("hidden", !nextCursor);
+        }
+        $("#moreComments").onclick = () =>
+          loadComments().catch((e) => toast(e.message));
+        await loadComments();
+
+        // Opening the post is the view. The count shows up after the Kafka consumer has run, so read it again a moment later.
+        api("/posts/" + postId + "/view", "POST")
+          .then(() => setTimeout(refresh, SYNC_MS))
+          .catch((e) => toast(e.message));
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !$("#modal").classList.contains("hidden"))
+          closePost();
+      });
+
+      // ---- router: the server sends this same file for "/", "/u/:username" and "/p/:postId" ----
+      renderSession();
+      const userMatch = location.pathname.match(/^\/u\/([^/]+)\/?$/);
+      const postMatch = location.pathname.match(/^\/p\/([0-9a-fA-F]{24})\/?$/);
+      // a /p/ link opened directly: show the author's profile behind it, then the post on top
+      const postFirst = async (id) => {
+        const post = await api("/posts/" + id);
+        await profilePage(post.authorId);
+        await openPost(id, false);
+      };
+      let page = Promise.resolve();
+      if (!userMatch && !postMatch) page = pickerPage();
+      else if (!session.get())
+        location.replace("/"); // not logged in: back to the cards
+      else
+        page = userMatch
+          ? profilePage(decodeURIComponent(userMatch[1]))
+          : postFirst(postMatch[1]);
+      page.catch((e) => showError(e.message));
+
+      // browser back / forward between the profile and an open post
+      window.addEventListener("popstate", () => {
+        const id = location.pathname.match(/^\/p\/([0-9a-fA-F]{24})\/?$/);
+        if (id) openPost(id[1], false).catch((e) => toast(e.message));
+        else closePost(false);
+      });
+    </script>
+  </body>
+</html>

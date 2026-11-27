@@ -1,0 +1,5 @@
+allowBuilds:
+  '@confluentinc/kafka-javascript': true
+  '@scarf/scarf': true
+  bcrypt: true
+  esbuild: true

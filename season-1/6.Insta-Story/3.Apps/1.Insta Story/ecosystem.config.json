@@ -1,0 +1,70 @@
+{
+  "apps": [
+    {
+      "name": "flipkart-dev",
+      "script": "dist/server.js",
+      "args": "dev",
+      "exec_mode": "cluster",
+      "instances": 4,
+      "watch": false,
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "error_file": "./logs/dev-error.log",
+      "out_file": "./logs/dev-out.log",
+      "merge_logs": true,
+      "log_date_format": "YYYY-MM-DD HH:mm:ss",
+      "max_memory_restart": "1G",
+      "exp_backoff_restart_delay": 100,
+      "min_uptime": "10s",
+      "max_restarts": 10
+    },
+    {
+      "name": "flipkart-prod",
+      "script": "dist/server.js",
+      "exec_mode": "cluster",
+      "instances": 4,
+      "watch": false,
+      "max_memory_restart": "1G",
+      "exp_backoff_restart_delay": 100,
+      "min_uptime": "10s",
+      "max_restarts": 10,
+      "env": {
+        "NODE_ENV": "production",
+        "MONGO_MODE": "replica"
+      },
+      "error_file": "./logs/prod-error.log",
+      "out_file": "./logs/prod-out.log",
+      "merge_logs": true,
+      "log_date_format": "YYYY-MM-DD HH:mm:ss"
+    },
+    {
+      "name": "flipkart-test-single",
+      "script": "dist/server.js",
+      "exec_mode": "fork",
+      "instances": 1,
+      "watch": false,
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "error_file": "./logs/test-single-error.log",
+      "out_file": "./logs/test-single-out.log",
+      "merge_logs": true,
+      "log_date_format": "YYYY-MM-DD HH:mm:ss"
+    },
+    {
+      "name": "flipkart-test-cluster",
+      "script": "dist/server.js",
+      "exec_mode": "cluster",
+      "instances": 4,
+      "watch": false,
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "error_file": "./logs/test-cluster-error.log",
+      "out_file": "./logs/test-cluster-out.log",
+      "merge_logs": true,
+      "log_date_format": "YYYY-MM-DD HH:mm:ss"
+    }
+  ]
+}

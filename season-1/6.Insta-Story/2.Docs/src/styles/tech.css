@@ -1,0 +1,251 @@
+/* Phase 3 stack map. Accent tokens live on the page root so both the canvas
+   and the tech grid can use them. Canvas surface tokens stay local. */
+
+.features-root {
+  --acc-sky: #0284c7;
+  --acc-sky-soft: rgba(2, 132, 199, 0.1);
+  --acc-sky-line: rgba(2, 132, 199, 0.32);
+  --acc-violet: #7c3aed;
+  --acc-violet-soft: rgba(124, 58, 237, 0.1);
+  --acc-violet-line: rgba(124, 58, 237, 0.3);
+  --acc-blue: #2563eb;
+  --acc-blue-soft: rgba(37, 99, 235, 0.1);
+  --acc-blue-line: rgba(37, 99, 235, 0.3);
+  --acc-indigo: #4f46e5;
+  --acc-indigo-soft: rgba(79, 70, 229, 0.1);
+  --acc-indigo-line: rgba(79, 70, 229, 0.3);
+  --acc-amber: #b45309;
+  --acc-amber-soft: rgba(180, 83, 9, 0.1);
+  --acc-amber-line: rgba(180, 83, 9, 0.3);
+  --acc-teal: #0f766e;
+  --acc-teal-soft: rgba(15, 118, 110, 0.1);
+  --acc-teal-line: rgba(15, 118, 110, 0.3);
+  --acc-pink: #be185d;
+  --acc-pink-soft: rgba(190, 24, 93, 0.1);
+  --acc-pink-line: rgba(190, 24, 93, 0.3);
+  --acc-green: #15803d;
+  --acc-green-soft: rgba(21, 128, 61, 0.1);
+  --acc-green-line: rgba(21, 128, 61, 0.3);
+  --tech-on-accent: #ffffff;
+}
+
+.features-root[data-theme="dark"] {
+  --acc-sky: #38bdf8;
+  --acc-sky-soft: rgba(56, 189, 248, 0.14);
+  --acc-sky-line: rgba(56, 189, 248, 0.42);
+  --acc-violet: #a78bfa;
+  --acc-violet-soft: rgba(167, 139, 250, 0.14);
+  --acc-violet-line: rgba(167, 139, 250, 0.42);
+  --acc-blue: #60a5fa;
+  --acc-blue-soft: rgba(96, 165, 250, 0.14);
+  --acc-blue-line: rgba(96, 165, 250, 0.42);
+  --acc-indigo: #818cf8;
+  --acc-indigo-soft: rgba(129, 140, 248, 0.14);
+  --acc-indigo-line: rgba(129, 140, 248, 0.42);
+  --acc-amber: #fbbf24;
+  --acc-amber-soft: rgba(251, 191, 36, 0.14);
+  --acc-amber-line: rgba(251, 191, 36, 0.42);
+  --acc-teal: #2dd4bf;
+  --acc-teal-soft: rgba(45, 212, 191, 0.14);
+  --acc-teal-line: rgba(45, 212, 191, 0.42);
+  --acc-pink: #f472b6;
+  --acc-pink-soft: rgba(244, 114, 182, 0.14);
+  --acc-pink-line: rgba(244, 114, 182, 0.42);
+  --acc-green: #4ade80;
+  --acc-green-soft: rgba(74, 222, 128, 0.14);
+  --acc-green-line: rgba(74, 222, 128, 0.42);
+  --tech-on-accent: #0b1220;
+}
+
+.tech-canvas {
+  position: relative;
+  --tc-page: #f8fafc;
+  --tc-card: #ffffff;
+  --tc-card-2: #f1f5f9;
+  --tc-line: #e2e8f0;
+  --tc-line-strong: #cbd5e1;
+  --tc-ink: #0f172a;
+  --tc-muted: #475569;
+  --tc-faint: rgba(15, 23, 42, 0.045);
+  --tc-glow-1: rgba(37, 99, 235, 0.14);
+  --tc-glow-2: rgba(219, 39, 119, 0.09);
+  --tc-glow-3: rgba(20, 184, 166, 0.07);
+  --tc-spot: rgba(37, 99, 235, 0.1);
+  --tc-shadow: 0 10px 30px -18px rgba(15, 23, 42, 0.45);
+
+  border-radius: 24px;
+  background:
+    radial-gradient(760px 320px at 12% -14%, var(--tc-glow-1), transparent 62%),
+    radial-gradient(620px 320px at 92% 108%, var(--tc-glow-2), transparent 62%),
+    radial-gradient(520px 280px at 58% 52%, var(--tc-glow-3), transparent 72%),
+    var(--tc-page);
+}
+
+.features-root[data-theme="dark"] .tech-canvas {
+  --tc-page: #0b1220;
+  --tc-card: rgba(17, 28, 51, 0.92);
+  --tc-card-2: #16213a;
+  --tc-line: #26314a;
+  --tc-line-strong: #3c4c6b;
+  --tc-ink: #f1f5f9;
+  --tc-muted: #cbd5e1;
+  --tc-faint: rgba(148, 163, 184, 0.08);
+  --tc-glow-1: rgba(37, 99, 235, 0.26);
+  --tc-glow-2: rgba(219, 39, 119, 0.18);
+  --tc-glow-3: rgba(20, 184, 166, 0.12);
+  --tc-spot: rgba(96, 165, 250, 0.16);
+  --tc-shadow: 0 16px 40px -22px rgba(0, 0, 0, 0.85);
+}
+
+.tech-hairlines {
+  position: absolute;
+  inset: 1px;
+  border-radius: 23px;
+  background-image:
+    linear-gradient(var(--tc-faint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--tc-faint) 1px, transparent 1px);
+  background-size: 34px 34px;
+  -webkit-mask-image: radial-gradient(circle at 50% 26%, #000 20%, transparent 86%);
+  mask-image: radial-gradient(circle at 50% 26%, #000 20%, transparent 86%);
+  pointer-events: none;
+}
+
+/* Layer card: colours come from CSS so hover and focus stay consistent. */
+.tech-row {
+  background: var(--tc-card);
+  border: 1.5px solid var(--tc-line);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition:
+    border-color 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+.tech-row:hover {
+  border-color: var(--tc-line-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--tc-shadow);
+}
+.tech-row:focus-visible {
+  outline: none;
+  border-color: var(--acc);
+  box-shadow: 0 0 0 3px var(--acc-soft);
+}
+.tech-row[data-active="true"] {
+  border-color: var(--acc);
+  background: linear-gradient(90deg, var(--acc-soft), var(--tc-card) 62%);
+  box-shadow: var(--tc-shadow);
+}
+
+/* Soft light that follows the pointer across the canvas. */
+.tech-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 0%), var(--tc-spot), transparent 70%);
+}
+.tech-canvas:hover .tech-spotlight {
+  opacity: 1;
+}
+
+@keyframes techRing {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+.tech-ring {
+  border: 1.5px solid currentColor;
+  animation: techRing 1.7s ease-out infinite;
+}
+
+@keyframes techDash {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+.tech-dash {
+  animation: techDash 0.9s linear infinite;
+}
+
+@keyframes techDot {
+  0% {
+    top: -6%;
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    top: 104%;
+    opacity: 0;
+  }
+}
+.tech-dot {
+  animation: techDot 1.9s ease-in-out infinite;
+}
+
+@keyframes techPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.tech-pulse {
+  animation: techPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes techRise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.tech-rise {
+  animation: techRise 0.3s ease both;
+}
+
+/* Filter change: tiles pop in from the bottom with a small scale. */
+@keyframes techPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.tech-pop {
+  animation: techPop 0.38s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech-dash,
+  .tech-dot,
+  .tech-pulse,
+  .tech-ring,
+  .tech-rise,
+  .tech-pop {
+    animation: none;
+  }
+  .tech-dot {
+    opacity: 0;
+  }
+}

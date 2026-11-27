@@ -1,0 +1,78 @@
+/* Your index2.css. Three changes are needed so it can sit next to the core docs page:
+   1. Selectors are scoped to .features-root, so the core page keeps its own look.
+   2. The reset block lives in @layer base, so Tailwind utilities still win.
+   3. The font @import moved to global.css, because @import must come first. */
+
+@layer base{
+  .features-root{
+    --surface:#F8FAFC;
+    --card:#ffffff;
+    --card-2:#F1F5F9;
+    --chip:#EEF2F7;
+    --ink:#0F172A;
+    --muted:#475569;
+    --line:#E2E8F0;
+    --blue:#2563eb;
+    --blue-soft:#EFF6FF;
+    --purple:#7c3aed;
+    --purple-soft:#F5F3FF;
+    --header:#0F172A;
+    --accent:#2563eb;
+    --success:#047857;
+    --success-bg:#ECFDF5;
+    --danger:#DC2626;
+    --danger-bg:#FEF2F2;
+    --danger-line:#FECACA;
+    --amber-bg:#FFFBEB;
+    --amber-line:#FDE68A;
+    --amber-ink:#78350F;
+  }
+  .features-root[data-theme="dark"]{
+    --surface:#0B1220;
+    --card:#111C33;
+    --card-2:#16213A;
+    --chip:#1B2A4A;
+    --ink:#F1F5F9;
+    --muted:#CBD5E1;
+    --line:#26314A;
+    --blue:#60A5FA;
+    --blue-soft:#162A4D;
+    --purple:#A78BFA;
+    --purple-soft:#241E4A;
+    --header:#0B1220;
+    --accent:#60A5FA;
+    --success:#34D399;
+    --success-bg:#06291F;
+    --danger:#F87171;
+    --danger-bg:#2A1215;
+    --danger-line:#7F1D1D;
+    --amber-bg:#231A0A;
+    --amber-line:#4A3510;
+    --amber-ink:#FDE68A;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  .features-root{margin:0;background:var(--surface);color:var(--ink);font-family:Manrope, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif}
+  .features-root button{font:inherit}
+  .features-root code,.features-root .mono{font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, monospace}
+}
+
+.detail-enter{animation:rise .28s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.no-scrollbar::-webkit-scrollbar{display:none}
+.no-scrollbar{scrollbar-width:none}
+
+.step-node{transition:box-shadow .3s ease, border-color .3s ease, opacity .3s ease, background .3s ease}
+.step-active{border-color:var(--blue) !important; box-shadow:0 0 0 2px var(--blue), 0 8px 22px rgba(37,99,235,.16); z-index:2}
+.step-done{border-color:#cbd5e1}
+.features-root[data-theme="dark"] .step-done{border-color:#334155}
+.step-next{opacity:.52}
+.packet-x{animation:packetX var(--packet-dur,1.4s) cubic-bezier(.45,0,.55,1) infinite}
+.packet-y{animation:packetY var(--packet-dur,1.4s) cubic-bezier(.45,0,.55,1) infinite}
+.packet-paused .packet-x,.packet-paused .packet-y{animation-play-state:paused}
+@keyframes packetX{0%{left:0;opacity:0;transform:translate(-50%,-50%) scale(.7)}12%{opacity:1;transform:translate(-50%,-50%) scale(1)}88%{opacity:1}100%{left:100%;opacity:0;transform:translate(-50%,-50%) scale(.7)}}
+@keyframes packetY{0%{top:0;opacity:0;transform:translate(-50%,-50%) scale(.7)}12%{opacity:1;transform:translate(-50%,-50%) scale(1)}88%{opacity:1}100%{top:100%;opacity:0;transform:translate(-50%,-50%) scale(.7)}}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.45)}50%{box-shadow:0 0 0 7px rgba(220,38,38,0)}}
+.error-pulse{animation:pulseDot 1.4s ease-in-out infinite}
+@keyframes progressShimmer{to{background-position:200% 0}}
+.progress-fill{background:linear-gradient(90deg,var(--blue),var(--purple),var(--blue));background-size:200% 100%;animation:progressShimmer 2.2s linear infinite}

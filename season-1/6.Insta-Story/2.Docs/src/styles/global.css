@@ -1,6 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap");
 
 @import "tailwindcss";
+
+/* Features theme. Loaded after Tailwind so the layer order is known. */
+@import "./features.css";
+
+/* Phase 3 stack map canvas. */
+@import "./tech.css";
 
 :root {
   --safe-area-inset-top: env(safe-area-inset-top, 0px);
@@ -47,6 +54,22 @@ body {
   background: var(--page);
   -webkit-font-smoothing: antialiased;
 }
+/* Clickable things show a pointer. Kept in the base layer so a utility
+   such as cursor-not-allowed or cursor-default can still win. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
 .font-display {
   font-family: "Sora", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
 }
